@@ -1,6 +1,10 @@
+---
+baseline_commit: 2c4fd806f5e189b2399c3dba492958d5d25bfa5e
+---
+
 # Story 1.1: Initialize Next.js Monorepo & Design System Foundation
 
-Status: ready-for-dev
+Status: review
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -49,54 +53,54 @@ So that all subsequent development starts from a convention-compliant foundation
 
 ## Tasks / Subtasks
 
-- [ ] **Task 1: Bootstrap Next.js 15 project** (AC: #1, #8)
-  - [ ] 1.1 — Run `pnpm create next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"` (or equivalent manual init for Next.js 15)
-  - [ ] 1.2 — Set `"strict": true` in `tsconfig.json`; confirm `"moduleResolution": "bundler"` is set
-  - [ ] 1.3 — Add `vercel.json` with `{ "regions": ["sin1"] }` to lock the Vercel deployment region to Singapore (irreversible — do this now)
-  - [ ] 1.4 — Configure `pnpm` workspace if necessary; verify `pnpm install` and `pnpm dev` work cleanly
+- [x] **Task 1: Bootstrap Next.js 15 project** (AC: #1, #8)
+  - [x] 1.1 — Run `pnpm create next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"` (or equivalent manual init for Next.js 15)
+  - [x] 1.2 — Set `"strict": true` in `tsconfig.json`; confirm `"moduleResolution": "bundler"` is set
+  - [x] 1.3 — Add `vercel.json` with `{ "regions": ["sin1"] }` to lock the Vercel deployment region to Singapore (irreversible — do this now)
+  - [x] 1.4 — Configure `pnpm` workspace if necessary; verify `pnpm install` and `pnpm dev` work cleanly
 
-- [ ] **Task 2: Create full directory structure** (AC: #2)
-  - [ ] 2.1 — Create all route group directories under `src/app/`: `(student)/session/`, `(student)/summary/`, `(parent)/dashboard/`, `(parent)/profiles/`, `(parent)/subscription/`, `(teacher)/assignments/`, `(teacher)/classes/`, `(teacher)/reports/`, `admin/teachers/`, `admin/questions/`, `admin/config/`, `api/auth/[...nextauth]/`, `api/payments/payos/webhook/`
-  - [ ] 2.2 — Create `src/domain/entities/`, `src/domain/use-cases/`, and stub `src/domain/constants.ts` (export empty object or placeholder constants)
-  - [ ] 2.3 — Create `src/infrastructure/repositories/`, `src/infrastructure/email/resend.ts` (stub), `src/infrastructure/storage/supabase-storage.ts` (stub), `src/infrastructure/payment/payos.ts` (stub)
-  - [ ] 2.4 — Create `src/components/ui/` (shadcn output target), `src/components/student/`, `src/components/parent/`, `src/components/teacher/`
-  - [ ] 2.5 — Create `src/locales/vi/common.ts` (export empty object `{}` or a typed `Record<string, string>`)
-  - [ ] 2.6 — Create `prisma/fixtures/` directory with a `.gitkeep`
-  - [ ] 2.7 — Create stub `prisma/seed.ts` (empty main function)
-  - [ ] 2.8 — Verify all file and directory names are kebab-case
+- [x] **Task 2: Create full directory structure** (AC: #2)
+  - [x] 2.1 — Create all route group directories under `src/app/`: `(student)/session/`, `(student)/summary/`, `(parent)/dashboard/`, `(parent)/profiles/`, `(parent)/subscription/`, `(teacher)/assignments/`, `(teacher)/classes/`, `(teacher)/reports/`, `admin/teachers/`, `admin/questions/`, `admin/config/`, `api/auth/[...nextauth]/`, `api/payments/payos/webhook/`
+  - [x] 2.2 — Create `src/domain/entities/`, `src/domain/use-cases/`, and stub `src/domain/constants.ts` (export empty object or placeholder constants)
+  - [x] 2.3 — Create `src/infrastructure/repositories/`, `src/infrastructure/email/resend.ts` (stub), `src/infrastructure/storage/supabase-storage.ts` (stub), `src/infrastructure/payment/payos.ts` (stub)
+  - [x] 2.4 — Create `src/components/ui/` (shadcn output target), `src/components/student/`, `src/components/parent/`, `src/components/teacher/`
+  - [x] 2.5 — Create `src/locales/vi/common.ts` (export empty object `{}` or a typed `Record<string, string>`)
+  - [x] 2.6 — Create `prisma/fixtures/` directory with a `.gitkeep`
+  - [x] 2.7 — Create stub `prisma/seed.ts` (empty main function)
+  - [x] 2.8 — Verify all file and directory names are kebab-case
 
-- [ ] **Task 3: Install and configure Tailwind CSS v4 + shadcn/ui** (AC: #3)
-  - [ ] 3.1 — Ensure `tailwindcss@4` is installed (not v3); install `@tailwindcss/postcss` for the PostCSS integration
-  - [ ] 3.2 — Update `postcss.config.mjs` to use `@tailwindcss/postcss` plugin (Tailwind v4 drops the `tailwindcss` PostCSS plugin)
-  - [ ] 3.3 — Replace any `@tailwind base/components/utilities` directives in `globals.css` with `@import "tailwindcss"` (Tailwind v4 syntax)
-  - [ ] 3.4 — Run `npx shadcn@latest init` — accept defaults; shadcn will inject its CSS variable layer; confirm it resolves against Tailwind v4
+- [x] **Task 3: Install and configure Tailwind CSS v4 + shadcn/ui** (AC: #3)
+  - [x] 3.1 — Ensure `tailwindcss@4` is installed (not v3); install `@tailwindcss/postcss` for the PostCSS integration
+  - [x] 3.2 — Update `postcss.config.mjs` to use `@tailwindcss/postcss` plugin (Tailwind v4 drops the `tailwindcss` PostCSS plugin)
+  - [x] 3.3 — Replace any `@tailwind base/components/utilities` directives in `globals.css` with `@import "tailwindcss"` (Tailwind v4 syntax)
+  - [x] 3.4 — Run `npx shadcn@latest init` — accept defaults; shadcn will inject its CSS variable layer; confirm it resolves against Tailwind v4
 
-- [ ] **Task 4: Configure brand design tokens** (AC: #4, #5, #6)
-  - [ ] 4.1 — In `src/app/globals.css`, inside the `@layer base` / `:root` + `.dark` blocks, add all brand CSS custom properties (see Dev Notes for exact values)
-  - [ ] 4.2 — Configure the five typography utility classes in the Tailwind v4 `@theme` block (see Dev Notes for exact spec)
-  - [ ] 4.3 — Configure the four border-radius tokens (`--radius-brand-sm`, `--radius-brand-md`, `--radius-brand-lg`, `--radius-brand-xl`) and expose as `rounded-brand-*` utilities via `@theme`
-  - [ ] 4.4 — Wire Be Vietnam Pro and Baloo 2 via `next/font/google` in the root layout (`src/app/layout.tsx`) and inject the font CSS variables into the `<html>` className
-  - [ ] 4.5 — Verify dark-mode variants work by checking that `.dark` overrides in CSS apply the correct token values
+- [x] **Task 4: Configure brand design tokens** (AC: #4, #5, #6)
+  - [x] 4.1 — In `src/app/globals.css`, inside the `@layer base` / `:root` + `.dark` blocks, add all brand CSS custom properties (see Dev Notes for exact values)
+  - [x] 4.2 — Configure the five typography utility classes in the Tailwind v4 `@theme` block (see Dev Notes for exact spec)
+  - [x] 4.3 — Configure the four border-radius tokens (`--radius-brand-sm`, `--radius-brand-md`, `--radius-brand-lg`, `--radius-brand-xl`) and expose as `rounded-brand-*` utilities via `@theme`
+  - [x] 4.4 — Wire Be Vietnam Pro and Baloo 2 via `next/font/google` in the root layout (`src/app/layout.tsx`) and inject the font CSS variables into the `<html>` className
+  - [x] 4.5 — Verify dark-mode variants work by checking that `.dark` overrides in CSS apply the correct token values
 
-- [ ] **Task 5: Create env.ts with Zod validation** (AC: #7)
-  - [ ] 5.1 — Install `zod` if not already present
-  - [ ] 5.2 — Create `src/lib/env.ts` using `z.object({ ... }).parse(process.env)` pattern; include all 12 required env vars (see Dev Notes for full list)
-  - [ ] 5.3 — Create `.env.example` with all required keys (empty values) so future developers know what to set
-  - [ ] 5.4 — Ensure the app throws a clear error at startup if any var is missing
+- [x] **Task 5: Create env.ts with Zod validation** (AC: #7)
+  - [x] 5.1 — Install `zod` if not already present
+  - [x] 5.2 — Create `src/lib/env.ts` using `z.object({ ... }).parse(process.env)` pattern; include all 12 required env vars (see Dev Notes for full list)
+  - [x] 5.3 — Create `.env.example` with all required keys (empty values) so future developers know what to set
+  - [x] 5.4 — Ensure the app throws a clear error at startup if any var is missing
 
-- [ ] **Task 6: Create stub lib files** (AC: #2)
-  - [ ] 6.1 — Create `src/lib/auth.ts` (stub: export placeholder `authConfig = {}`)
-  - [ ] 6.2 — Create `src/lib/utils.ts` (stub: export `cn` using `clsx + tailwind-merge` as per shadcn convention)
-  - [ ] 6.3 — Create `src/lib/child-profile-cookie.ts` (stub: export typed but unimplemented `setChildProfileCookie` and `getChildProfileId` with `throw new Error('Not yet implemented')`)
+- [x] **Task 6: Create stub lib files** (AC: #2)
+  - [x] 6.1 — Create `src/lib/auth.ts` (stub: export placeholder `authConfig = {}`)
+  - [x] 6.2 — Create `src/lib/utils.ts` (stub: export `cn` using `clsx + tailwind-merge` as per shadcn convention)
+  - [x] 6.3 — Create `src/lib/child-profile-cookie.ts` (stub: export typed but unimplemented `setChildProfileCookie` and `getChildProfileId` with `throw new Error('Not yet implemented')`)
 
-- [ ] **Task 7: Create stub Prisma schema** (AC: #2)
-  - [ ] 7.1 — Create `prisma/schema.prisma` with generator + datasource blocks pointing to `env("DATABASE_URL")` for migrations (full schema with all 13 entities is Story 1.2 — stub only here)
-  - [ ] 7.2 — Install `prisma` and `@prisma/client` dev deps; run `prisma generate` to confirm schema is valid
+- [x] **Task 7: Create stub Prisma schema** (AC: #2)
+  - [x] 7.1 — Create `prisma/schema.prisma` with generator + datasource blocks pointing to `env("DATABASE_URL")` for migrations (full schema with all 13 entities is Story 1.2 — stub only here)
+  - [x] 7.2 — Install `prisma` and `@prisma/client` dev deps; run `prisma generate` to confirm schema is valid
 
-- [ ] **Task 8: Build verification** (AC: #8)
-  - [ ] 8.1 — Run `pnpm build` and resolve any TypeScript strict-mode errors
-  - [ ] 8.2 — Confirm all filenames under `src/` and `prisma/` are kebab-case
-  - [ ] 8.3 — Run `pnpm dev` to confirm the dev server starts without errors
+- [x] **Task 8: Build verification** (AC: #8)
+  - [x] 8.1 — Run `pnpm build` and resolve any TypeScript strict-mode errors
+  - [x] 8.2 — Confirm all filenames under `src/` and `prisma/` are kebab-case
+  - [x] 8.3 — Run `pnpm dev` to confirm the dev server starts without errors
 
 ## Dev Notes
 
@@ -462,6 +466,69 @@ Claude Sonnet 4.6
 
 ### Debug Log References
 
+- Prisma 7.x dropped `url = env()` in schema.prisma — downgraded to Prisma 5.22 which matches story spec syntax
+- `pnpm create next-app` blocked by existing directories — scaffolded project manually (same outcome)
+- shadcn `pnpm dlx init -d` ran but dep install conflicted with concurrent pnpm; installed clsx/tailwind-merge/cva/lucide-react separately
+- ESLint `no-unused-vars` flagged `_`-prefixed stub params — added `argsIgnorePattern`/`varsIgnorePattern: ^_` rule override
+- `prisma/seed.ts` was inside TypeScript compilation scope; removed `@prisma/client` import from stub (no models generated yet)
+- Upgraded Next.js 15.3.4 → 15.3.9 to resolve CVE-2025-66478 security vulnerability
+
 ### Completion Notes List
 
+- Bootstrapped Next.js 15.3.9 (Turbopack) manually due to existing directory conflict with `create-next-app`; all config files match expected output
+- Prisma 5.22 installed (not v7) — v7 dropped `url = env()` schema syntax that all subsequent stories depend on
+- shadcn/ui initialized with `base-nova` style, Tailwind v4 detected and confirmed
+- All 12 brand CSS custom properties defined in `@theme` (light) and `.dark` override block; 5 typography `@layer utilities` classes created; 4 border-radius tokens registered
+- Baloo 2 (weight 700) and Be Vietnam Pro (weights 400/600/700) loaded via `next/font/google` with `vietnamese` subset; variables injected into `<html>` className
+- `src/lib/env.ts` uses Zod 4.4 — all 12 required vars validated at startup with `parse(process.env)`
+- `pnpm build`: 16 static/dynamic pages generated, zero TypeScript errors, linting passed
+- `pnpm dev`: ready in 4.6s, no errors
+
 ### File List
+
+- .gitignore
+- .env.example
+- package.json
+- tsconfig.json
+- next.config.ts
+- postcss.config.mjs
+- eslint.config.mjs
+- vercel.json
+- components.json
+- src/app/layout.tsx
+- src/app/page.tsx
+- src/app/globals.css
+- src/app/(student)/session/page.tsx
+- src/app/(student)/summary/page.tsx
+- src/app/(parent)/dashboard/page.tsx
+- src/app/(parent)/profiles/page.tsx
+- src/app/(parent)/subscription/page.tsx
+- src/app/(teacher)/assignments/page.tsx
+- src/app/(teacher)/classes/page.tsx
+- src/app/(teacher)/reports/page.tsx
+- src/app/admin/teachers/page.tsx
+- src/app/admin/questions/page.tsx
+- src/app/admin/config/page.tsx
+- src/app/api/auth/[...nextauth]/route.ts
+- src/app/api/payments/payos/webhook/route.ts
+- src/domain/constants.ts
+- src/domain/entities/.gitkeep
+- src/infrastructure/repositories/.gitkeep
+- src/infrastructure/email/resend.ts
+- src/infrastructure/storage/supabase-storage.ts
+- src/infrastructure/payment/payos.ts
+- src/components/student/.gitkeep
+- src/components/parent/.gitkeep
+- src/components/teacher/.gitkeep
+- src/locales/vi/common.ts
+- src/lib/auth.ts
+- src/lib/env.ts
+- src/lib/utils.ts
+- src/lib/child-profile-cookie.ts
+- prisma/schema.prisma
+- prisma/seed.ts
+- prisma/fixtures/.gitkeep
+
+## Change Log
+
+- 2026-07-08: Story 1.1 implemented — Next.js 15.3.9 monorepo scaffolded, full directory structure created, Tailwind v4 + shadcn/ui installed, brand design tokens configured, env.ts with Zod validation created, stub lib/infra files created, Prisma 5 stub schema validated, build passes zero errors

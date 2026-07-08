@@ -1,0 +1,13 @@
+// This is the stub Prisma schema for Story 1.1.
+// Full schema with all 13 entities is added in Story 1.2.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  // DATABASE_URL is used for CLI migrations only (prisma migrate / prisma db seed).
+  // At runtime, src/lib/db.ts (Story 1.2) uses DATABASE_URL_POOLED (Supabase PgBouncer).
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
