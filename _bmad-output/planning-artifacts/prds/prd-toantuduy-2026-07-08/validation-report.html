@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PRD Validation: ToanTuDuy</title>
+<style>
+  :root {
+    --bg: #fafaf9;
+    --surface: #ffffff;
+    --border: #e7e5e4;
+    --text: #1c1917;
+    --muted: #78716c;
+
+    --verdict-strong: #16a34a;
+    --verdict-adequate: #65a30d;
+    --verdict-thin: #d97706;
+    --verdict-broken: #dc2626;
+
+    --sev-low: #64748b;
+    --sev-medium: #ca8a04;
+    --sev-high: #ea580c;
+    --sev-critical: #dc2626;
+
+    --grade-exc: #16a34a;
+    --grade-good: #65a30d;
+    --grade-fair: #d97706;
+    --grade-poor: #dc2626;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  .container { max-width: 960px; margin: 0 auto; padding: 32px 24px 64px; }
+
+  header.report-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .title h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; }
+  .title .subtitle { color: var(--muted); font-size: 13px; margin-top: 4px; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
+  .grade {
+    padding: 10px 18px;
+    border-radius: 8px;
+    font-weight: 600;
+    color: white;
+    font-size: 15px;
+    white-space: nowrap;
+  }
+  .grade-excellent { background: var(--grade-exc); }
+  .grade-good { background: var(--grade-good); }
+  .grade-fair { background: var(--grade-fair); }
+  .grade-poor { background: var(--grade-poor); }
+
+  .synthesis {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--muted);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 24px;
+    font-size: 15.5px;
+  }
+  .synthesis p { margin: 0 0 10px; }
+  .synthesis p:last-child { margin-bottom: 0; }
+
+  .dimension-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 24px;
+  }
+  .dim-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .dim-card .dim-name { font-size: 13px; color: var(--muted); margin-bottom: 6px; }
+  .dim-card .dim-verdict { font-size: 14px; font-weight: 600; }
+
+  section.dimension, section.reviewer-section { margin-bottom: 14px; }
+  section.dimension details, section.reviewer-section details {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  section summary {
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  section summary::-webkit-details-marker { display: none; }
+  section summary::before {
+    content: "▸";
+    display: inline-block;
+    color: var(--muted);
+    transition: transform 0.15s ease;
+  }
+  section details[open] summary::before { transform: rotate(90deg); }
+  section summary h2 {
+    display: inline;
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.005em;
+    flex: 1;
+  }
+  .verdict-pill {
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: white;
+  }
+  .verdict-strong { background: var(--verdict-strong); }
+  .verdict-adequate { background: var(--verdict-adequate); }
+  .verdict-thin { background: var(--verdict-thin); }
+  .verdict-broken { background: var(--verdict-broken); }
+
+  .dim-body { padding: 4px 20px 18px; }
+  .dim-judgment { color: var(--text); font-size: 14.5px; }
+  .dim-judgment p { margin: 0 0 10px; }
+
+  .findings-list { padding: 0 20px 4px; }
+  article.finding {
+    padding: 14px 0;
+    border-top: 1px solid var(--border);
+  }
+  article.finding:first-child { border-top: none; }
+  article.finding header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 6px;
+  }
+  .badge {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.4;
+  }
+  .badge-sev-low { background: rgba(100, 116, 139, 0.12); color: var(--sev-low); }
+  .badge-sev-medium { background: rgba(202, 138, 4, 0.14); color: var(--sev-medium); }
+  .badge-sev-high { background: rgba(234, 88, 12, 0.14); color: var(--sev-high); }
+  .badge-sev-critical { background: rgba(220, 38, 38, 0.14); color: var(--sev-critical); }
+  .finding-title { margin: 0; font-size: 15px; font-weight: 500; flex: 1; min-width: 200px; }
+  .finding-location { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; color: var(--muted); }
+  .finding-note, .finding-fix { margin-top: 6px; font-size: 14px; }
+  .finding-fix strong { color: var(--muted); font-weight: 500; }
+
+  .mechanical {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin-top: 24px;
+    font-size: 14px;
+  }
+  .mechanical h3 { margin: 0 0 10px; font-size: 14px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+  .mechanical ul { margin: 0; padding-left: 20px; }
+  .mechanical li { margin-bottom: 4px; color: var(--text); }
+
+  .priority-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-size: 14px; }
+  .priority-table th { text-align: left; padding: 8px 12px; background: var(--surface); border-bottom: 2px solid var(--border); color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .priority-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .priority-table tr:last-child td { border-bottom: none; }
+
+  footer.report-footer {
+    margin-top: 40px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+  footer .meta { display: flex; gap: 24px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+  <div class="container">
+
+    <header class="report-header">
+      <div class="title">
+        <h1>ToanTuDuy — Validation Report</h1>
+        <div class="subtitle">_bmad-output/planning-artifacts/prds/prd-toantuduy-2026-07-08/prd.md</div>
+      </div>
+      <div class="grade grade-poor">Poor</div>
+    </header>
+
+    <div class="synthesis">
+      <p>The PRD is structurally sound and strategically coherent: vision → teacher-referral flywheel → metrics → counter-metrics form a clean arc, personas drive decisions, NFRs carry real thresholds, and non-goals do real work. The concentrated risk is in the session history / learning history cluster (FR-7, FR-13–FR-15, FR-17): FR-15's testable consequence is broken (normalization undefined), FR-7's accuracy model carries an unexamined early-anchoring problem, and a "streak" concept in UJ-2 has no FR backing it.</p>
+      <p>Grade is <strong>Poor</strong> because a critical finding exists (FR-15 normalization/Difficulty Level scale entirely undefined — neither UX nor engineering can proceed). Fix the three phase-blockers before the architecture sprint; the remaining six dimensions are ready to feed downstream work.</p>
+    </div>
+
+    <div class="dimension-summary">
+      <div class="dim-card">
+        <div class="dim-name">Decision-readiness</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">Adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Substance over theater</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">Adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Strategic coherence</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">Strong</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Done-ness clarity</div>
+        <div class="dim-verdict" style="color: var(--verdict-thin)">Thin</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Scope honesty</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">Adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Downstream usability</div>
+        <div class="dim-verdict" style="color: var(--verdict-adequate)">Adequate</div>
+      </div>
+      <div class="dim-card">
+        <div class="dim-name">Shape fit</div>
+        <div class="dim-verdict" style="color: var(--verdict-strong)">Strong</div>
+      </div>
+    </div>
+
+    <!-- Decision-readiness -->
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>1. Decision-readiness</h2>
+          <span class="verdict-pill verdict-adequate">Adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Trade-offs are surfaced honestly: free Teacher Portal cost vs. referral upside (Vision §1), Free Tier gate tension with teacher-assigned content (Open Question 5 / A-1), SSO deferral with a [NOTE FOR PM] callout. Counter-metrics (SM-C1, SM-C2) prevent metric gaming. Open Questions are genuinely open with named owners and revisit triggers.</p>
+            <p>Two gaps: (1) The "under 30 seconds" parent value proposition maps to five FRs (FR-13–FR-17) but none carries it as a testable consequence — if UX or engineering must trade off between them, there is no PRD basis. (2) Open Question 6 (question library size) is fully open with no provisional floor, leaving FR-9's weighting engine and content sprint planning unbounded.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">Medium</span>
+              <h3 class="finding-title">No 30-second decomposition across FR-13–FR-17</h3>
+              <span class="finding-location">Vision §1, §4.4</span>
+            </header>
+            <div class="finding-note">The "under 30 seconds" parent value claim maps to five FRs but no single FR carries it as a testable consequence. Engineering cannot reprioritize based on this claim.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a consequence to FR-14 or the Parent Dashboard section description: "A parent can identify the weakest Skill for the active Child Profile in ≤ 3 taps / ≤ 30 seconds from Dashboard open."</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">Medium</span>
+              <h3 class="finding-title">Open Question 6 has no provisional floor</h3>
+              <span class="finding-location">§9 OQ-6</span>
+            </header>
+            <div class="finding-note">"How many Questions are needed… No count is defined." Blocks FR-9's weighting algorithm, FR-1 session composition, and SM-4 learning signal — all require minimum question inventory per Grade Band × Skill × Difficulty Level cell.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a provisional [ASSUMPTION] with an order-of-magnitude floor (e.g., "≥ 50 Questions per Grade Band × Skill × Difficulty Level cell"); mark for content lead validation before content sprint.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <!-- Substance over theater -->
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>2. Substance over theater</h2>
+          <span class="verdict-pill verdict-adequate">Adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Personas drive decisions: Minh → FR-1/FR-5 edge cases; Lan → FR-13/FR-14/FR-15 specificity; Cô Hương → FR-20/FR-21 workflow. NFRs carry real thresholds (500ms, 2s, 1s, 3s, 60s, 44×44px). The Vision statement is product-specific (teacher-referral flywheel, "default standard…in place of a private reasoning tutor"). One theater instance: SM-4.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">High</span>
+              <h3 class="finding-title">SM-4 is measurement theater</h3>
+              <span class="finding-location">§8 SM-4</span>
+            </header>
+            <div class="finding-note">"Child Profiles with ≥ 2 weeks of Sessions show measurable improvement in word problem accuracy" has no baseline protocol, no delta threshold, no comparison group. SM-4 is the only metric validating the adaptive engine (FR-7–FR-9). As written, it passes with any positive accuracy delta, even noise.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Define a minimum meaningful delta (e.g., "per-Skill accuracy improves by ≥ 10 percentage points from Sessions 1–5 to Sessions 11–15 for Child Profiles with ≥ 15 Sessions") and a baseline condition (first-2-Sessions accuracy vs. Sessions 11–15).</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <!-- Strategic coherence -->
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>3. Strategic coherence</h2>
+          <span class="verdict-pill verdict-strong">Strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>The thesis is explicit: free Teacher Portal → teacher referral → parent acquisition → student practice → learning signal validates product. Every major feature cluster serves one leg of this arc. Counter-metrics are named and their anti-gaming logic is explained. Success Metrics link back to specific FRs. No findings.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- Done-ness clarity -->
+    <section class="dimension">
+      <details open>
+        <summary>
+          <h2>4. Done-ness clarity</h2>
+          <span class="verdict-pill verdict-thin">Thin</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Most FRs are adequately specified. The session history / learning history cluster (FR-7, FR-13–FR-15, FR-17) carries disproportionate ambiguity. FR-15's sole testable consequence is untestable (broken). FR-7's accuracy model has an undefined unit and an unexamined early-anchor effect. FR-14's drill-down meaning is ambiguous between two interpretations that tell completely different stories to a parent.</p>
+            <p><strong>FR-7 (per-Skill accuracy tracking) — thin:</strong> "Running accuracy (correct / total attempts)" — "attempt" is undefined. The all-time cumulative model also silently penalizes children who improve, a deliberate product choice never named as such.</p>
+            <p><strong>FR-13 (weekly activity summary) — adequate, one gap:</strong> UJ-2 shows "streak intact" as visible parent-facing UI, but no FR defines what a streak is or requires it. FR-13 covers count and day-presence, not streak.</p>
+            <p><strong>FR-14 (Skill breakdown view) — thin:</strong> "Per-Session accuracy" in the drill-down is ambiguous between Skill accuracy within that Session (a trend) vs. running accuracy at time of Session (a slowly-moving average). No minimum-attempts floor before a Skill is categorized.</p>
+            <p><strong>FR-15 (grade progress indicator) — broken:</strong> "Normalized within the Grade Band" is untestable. Difficulty Level ordinal scale, normalization function, and label-to-value mapping are all undefined. UX cannot design this; engineering cannot implement it.</p>
+            <p><strong>FR-17 (Session history) — adequate, one gap:</strong> No data retention policy for Sessions beyond the 30-Session display floor on active profiles.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-critical">Critical</span>
+              <h3 class="finding-title">FR-15 normalization undefined — untestable consequence</h3>
+              <span class="finding-location">§4.4 FR-15</span>
+            </header>
+            <div class="finding-note">Consequence 2 states "normalized within the Grade Band." Three things are undefined: (1) how many Difficulty Levels exist per Grade Band — the Glossary says "ordinal rating" with no count or names; (2) what "normalized" means — percentile, min-max, lookup table; (3) how a normalized value maps to the label "Đang ở: Lớp 2, giữa kỳ" — this label system (đầu kỳ / giữa kỳ / cuối kỳ) is undefined. A UX designer cannot design this widget. An engineer cannot implement it. A QA tester cannot verify it.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Define the Difficulty Level ordinal scale in the Glossary (e.g., 1–5 per Grade Band). Rewrite FR-15 consequence 2 with the actual normalization formula and label-to-value mapping. Add a [NOTE FOR PM] if the label system is still TBD.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">High</span>
+              <h3 class="finding-title">FR-7 "attempt" granularity undefined</h3>
+              <span class="finding-location">§4.2 FR-7</span>
+            </header>
+            <div class="finding-note">"Running accuracy (correct / total attempts)" — "attempt" is never defined in the Glossary or FR. If a Session has 4 Pattern Recognition Questions and 3 are correct, is that 4 attempts at 75%? This is the arithmetic foundation for FR-8 (difficulty selection) and FR-14 (Tốt/Cần luyện thresholds). Downstream implementers will make incompatible choices.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add to FR-7 consequences: "An attempt is defined as a single Question answered within a completed Session. Questions in incomplete Sessions are not counted."</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">High</span>
+              <h3 class="finding-title">FR-7 cumulative accuracy model unnamed — early-anchor effect</h3>
+              <span class="finding-location">§4.2 FR-7</span>
+            </header>
+            <div class="finding-note">"Accuracy reflects all historical attempts" — a child who answered their first 5 Pattern Recognition Questions at 20% correct must answer 45 more at 100% to reach the 70% "Tốt" threshold. A parent will see "Cần luyện" for a Skill the child has mastered in recent weeks. This is a deliberate product choice that has never been named as such, directly affecting parent trust (SM-2).</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a [NOTE FOR PM]: "All-time cumulative accuracy means a child who improves significantly will continue to see 'Cần luyện' for many Sessions. Confirm this is the intended model vs. a recency-weighted approach (e.g., last-N-Sessions accuracy)."</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">High</span>
+              <h3 class="finding-title">FR-14 "per-Session accuracy" ambiguous — trend vs. snapshot</h3>
+              <span class="finding-location">§4.4 FR-14</span>
+            </header>
+            <div class="finding-note">"Tapping a Skill shows the last 3 Sessions… with per-Session accuracy." Two interpretations: (a) accuracy for that Skill <em>within</em> that Session specifically (e.g., "2/3 correct") — a trend; (b) running accuracy <em>at time of</em> that Session — a slowly-moving average. A parent judging "is my child improving?" needs (a). These tell completely different stories and must be disambiguated before UX design.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Specify: "Tapping a Skill shows the last 3 Sessions that included Questions from that Skill, with the Child Profile's accuracy for that Skill <em>within that Session only</em> (e.g., '2/3 correct')."</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">Medium</span>
+              <h3 class="finding-title">FR-14 no minimum-attempts floor before Skill is categorized</h3>
+              <span class="finding-location">§4.4 FR-14</span>
+            </header>
+            <div class="finding-note">"All Skills the Child Profile has encountered at least once appear in the breakdown." A child who answered 1 Question and got it right shows 100% "Tốt" — a misleading signal to the parent on Day 1.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add a consequence: "A Skill appears in the breakdown only after the Child Profile has attempted ≥ [N] Questions from that Skill. Prior to that threshold, the Skill is listed as 'Chưa đủ dữ liệu' (insufficient data)." Mark [N] as a new [ASSUMPTION: A-12].</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">Medium</span>
+              <h3 class="finding-title">FR-17 no retention policy beyond 30-Session display floor</h3>
+              <span class="finding-location">§4.4 FR-17</span>
+            </header>
+            <div class="finding-note">Active Child Profile Session history has no stated upper bound. A parent with 18 months of daily Sessions — are Sessions 31+ accessible by scrolling or dropped? The Glossary's Child Profile entry says it "holds Session history" without bounds. Contrast with A-3 (deleted profile retained 30 days) — active profile history has no limit stated.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add to FR-17: "All completed Sessions are retained for the lifetime of the Child Profile. The display shows the most recent 30 by default with pagination/scroll to older entries."</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">Low</span>
+              <h3 class="finding-title">FR-4 single-Skill Session summary undefined</h3>
+              <span class="finding-location">§4.1 FR-4</span>
+            </header>
+            <div class="finding-note">"Summary includes a per-Skill breakdown if the Session contained Questions from more than one Skill." Teacher-assigned sets targeting a single Skill produce Sessions where this condition is false — the single-Skill case is left unspecified.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add: "If the Session contained Questions from only one Skill, the Session Summary shows that Skill's accuracy (e.g., '6/8 Pattern Recognition')."</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <!-- Scope honesty -->
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>5. Scope honesty</h2>
+          <span class="verdict-pill verdict-adequate">Adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Non-Goals section does real work: each entry carries reasoning and is specific. [ASSUMPTION] tags are inline and indexed. [NOTE FOR PM] callouts flag ZaloPay, SSO, and annual plan as real deferral tensions. One omission: "streak" is implied in scope by UJ-2 but has no FR and is not in Non-Goals.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">Medium</span>
+              <h3 class="finding-title">"Streak" in scope by implication, no FR or Non-Goal</h3>
+              <span class="finding-location">§2.3 UJ-2</span>
+            </header>
+            <div class="finding-note">UJ-2 shows "streak intact" as visible parent-facing UI. No FR covers streak calculation, display, or reset rules. No Non-Goal excludes it. If it's in scope, it is silently added complexity.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Either add a consequence to FR-13 defining streak (e.g., "A streak counter shows consecutive calendar days with ≥ 1 completed Session"), or add "streak tracking" to Non-Goals with an explanation.</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <!-- Downstream usability -->
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>6. Downstream usability</h2>
+          <span class="verdict-pill verdict-adequate">Adequate</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Glossary is comprehensive. FR IDs FR-1–FR-27 are contiguous. UJ protagonists are named. Assumptions A-1–A-11 all appear inline and in the index — roundtrip is clean. Three issues: "Streak" is active Glossary drift; FR-14 and FR-17 have overlapping data surfaces with no cross-reference; Difficulty Level ordinal scale is absent from the Glossary.</p>
+          </div>
+        </div>
+        <div class="findings-list">
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-high">High</span>
+              <h3 class="finding-title">"Streak" not in Glossary — active Glossary drift</h3>
+              <span class="finding-location">§3 Glossary, §2.3 UJ-2</span>
+            </header>
+            <div class="finding-note">UJ-2 uses "streak" as a UI-visible concept with no Glossary entry and no FR. UX design for the Parent Dashboard will need to invent its own definition.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add "Streak" to §3 Glossary with definition and reset rule; add testable consequence to FR-13. Or remove from UJ-2 explicitly and add to Non-Goals.</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-medium">Medium</span>
+              <h3 class="finding-title">FR-14 and FR-17 data surface overlap not cross-referenced</h3>
+              <span class="finding-location">§4.4 FR-14, FR-17</span>
+            </header>
+            <div class="finding-note">FR-14's Skill drill-down ("last 3 Sessions that included Questions from that Skill") overlaps with FR-17 (Session history list), but there is no cross-reference between them. UX will need to decide independently whether the FR-14 drill-down is a sub-view of FR-17 or a separate surface.</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add to FR-14: "The 3 Sessions shown in the Skill drill-down are sourced from the Session history (FR-17)."</div>
+          </article>
+          <article class="finding">
+            <header>
+              <span class="badge badge-sev-low">Low</span>
+              <h3 class="finding-title">Difficulty Level scale absent from Glossary</h3>
+              <span class="finding-location">§3 Glossary</span>
+            </header>
+            <div class="finding-note">Glossary defines Difficulty Level as "an ordinal rating within a Grade Band" with no stated range. FR-8 and FR-15 both depend on it. (Addressed more severely under Done-ness clarity / FR-15.)</div>
+            <div class="finding-fix"><strong>Fix:</strong> Add the ordinal range to the Difficulty Level Glossary entry (e.g., "1–5 per Grade Band, where 1 is easiest").</div>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <!-- Shape fit -->
+    <section class="dimension">
+      <details>
+        <summary>
+          <h2>7. Shape fit</h2>
+          <span class="verdict-pill verdict-strong">Strong</span>
+        </summary>
+        <div class="dim-body">
+          <div class="dim-judgment">
+            <p>Multi-stakeholder B2B/consumer product with named protagonists in every UJ. The PRD feeds UX → architecture → stories (stated in §0). Feature sections organized by user-role surface, which matches how downstream teams will work. The free Teacher Portal decision is the biggest structural bet and is named explicitly in Vision, not buried. No findings.</p>
+          </div>
+        </div>
+      </details>
+    </section>
+
+    <!-- Priority fix table -->
+    <div class="mechanical" style="margin-top: 24px;">
+      <h3>Priority Fix List</h3>
+      <table class="priority-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Severity</th>
+            <th>Item</th>
+            <th>Blocks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><span class="badge badge-sev-critical">Critical</span></td>
+            <td>FR-15 normalization + Difficulty Level scale undefined</td>
+            <td>UX design, FR-8 implementation</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><span class="badge badge-sev-high">High</span></td>
+            <td>FR-7 "attempt" granularity undefined</td>
+            <td>FR-8 difficulty selection, FR-14 accuracy display</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><span class="badge badge-sev-high">High</span></td>
+            <td>FR-14 "per-Session accuracy" ambiguity (trend vs. snapshot)</td>
+            <td>UX design of Skill drill-down, parent trust</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><span class="badge badge-sev-high">High</span></td>
+            <td>"Streak" in UJ-2 with no FR or Glossary entry</td>
+            <td>Scope clarity, engineering estimate</td>
+          </tr>
+          <tr>
+            <td>5</td>
+            <td><span class="badge badge-sev-high">High</span></td>
+            <td>FR-7 cumulative accuracy model undisclosed (early-anchor effect)</td>
+            <td>PM decision on recency weighting</td>
+          </tr>
+          <tr>
+            <td>6</td>
+            <td><span class="badge badge-sev-high">High</span></td>
+            <td>SM-4 has no measurable threshold</td>
+            <td>Validating the adaptive learning engine post-launch</td>
+          </tr>
+          <tr>
+            <td>7</td>
+            <td><span class="badge badge-sev-medium">Medium</span></td>
+            <td>FR-14 no minimum-attempts floor</td>
+            <td>Dashboard signal quality on Day 1</td>
+          </tr>
+          <tr>
+            <td>8</td>
+            <td><span class="badge badge-sev-medium">Medium</span></td>
+            <td>FR-17 no retention policy beyond 30-Session display floor</td>
+            <td>Architecture data retention decision</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mechanical">
+      <h3>Mechanical notes</h3>
+      <ul>
+        <li><strong>Glossary drift — "Streak":</strong> Appears as a visible UI concept in UJ-2 with no Glossary entry and no FR. Highest-priority drift item because it implies work.</li>
+        <li><strong>Glossary drift — label system:</strong> "Giữa kỳ" in FR-15 example implies a curriculum-period mapping (đầu kỳ / giữa kỳ / cuối kỳ) that is defined nowhere.</li>
+        <li><strong>Glossary drift — "Difficulty Level" scale:</strong> Defined as "ordinal rating" without a stated range. FR-8 and FR-15 depend on it.</li>
+        <li><strong>ID continuity:</strong> FR-1–FR-27 ✓ · SM-1–SM-6, SM-C1–SM-C2 ✓ · UJ-1–UJ-4 ✓ · A-1–A-11 ✓ — all contiguous and unique.</li>
+        <li><strong>Assumptions Index roundtrip:</strong> All 11 inline [ASSUMPTION] tags appear in the index; all index entries appear inline ✓. Minor cosmetic: Subscription Glossary entry has an untagged inline assumption that resolves to A-7.</li>
+        <li><strong>UJ protagonist naming:</strong> All four UJs have named protagonists (Minh, Lan / Khôi, Cô Hương) ✓.</li>
+      </ul>
+    </div>
+
+    <footer class="report-footer">
+      <div class="meta">
+        <span>Rubric: .agents/skills/bmad-prd/assets/prd-validation-checklist.md</span>
+        <span>Review: _bmad-output/planning-artifacts/prds/prd-toantuduy-2026-07-08/review-rubric.md</span>
+        <span>Generated: 2026-07-08T00:00:00+07:00</span>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

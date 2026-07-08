@@ -90,7 +90,7 @@ Teachers are the growth channel. They get the Teacher Portal for free: assign pr
 - **Question** — An individual logic puzzle or word problem presented during a Session. Each Question belongs to exactly one Skill and one Grade Band.
 - **Skill** — A named cognitive skill category used to tag Questions (e.g., Pattern Recognition, Spatial Reasoning, Word Problem Reading Comprehension, Classification). Skills are the unit of breakdown in the Parent Dashboard and Class Report.
 - **Grade Band** — One of three content tiers: Grade 1, Grade 2, or Grade 3, aligned to the Vietnamese national primary curriculum. Each Question is tagged to exactly one Grade Band.
-- **Difficulty Level** — An ordinal rating within a Grade Band. The Adaptive Difficulty engine selects Questions at the appropriate Difficulty Level based on a Child Profile's recent per-Skill accuracy.
+- **Difficulty Level** — An ordinal rating within a Grade Band, on a scale of 1–5 where 1 is easiest and 5 is hardest within that Grade Band. The Adaptive Difficulty engine selects Questions at the appropriate Difficulty Level based on a Child Profile's recent per-Skill accuracy.
 - **Adaptive Difficulty** — The system behavior of selecting Question Difficulty Levels based on a Child Profile's per-Skill accuracy history. Operates within the Child Profile's current Grade Band only; Grade Band does not change automatically.
 - **Child Profile** — A named student identity managed under a Parent Account. Holds the student's Grade Band, Session history, per-Skill accuracy, and Class membership. One Parent Account may have multiple Child Profiles.
 - **Parent Account** — The authenticated account of a parent or guardian. Creates and manages Child Profiles, holds the Subscription, and accesses the Parent Dashboard.
@@ -103,6 +103,7 @@ Teachers are the growth channel. They get the Teacher Portal for free: assign pr
 - **Parent Dashboard** — The parent-specific interface for viewing per-Child Profile Session history, weekly activity, Skill breakdown, grade progress, and Subscription status.
 - **Class Report** — A teacher-facing view showing completion status per student and class-average accuracy per Skill for a given Assignment Set.
 - **Admin Panel** — An internal tool for ToanTuDuy staff to approve Teacher Account requests and configure global session parameters (question count, time limit).
+- **Streak** — A count of consecutive calendar days on which a Child Profile completed at least one Session. The Streak resets to 0 if a calendar day passes with no completed Session. Displayed in the Parent Dashboard weekly activity summary.
 
 ---
 
@@ -149,6 +150,7 @@ On completion of all Questions in a Session, the system displays a Session Summa
 - Session Summary renders after the final Question is answered.
 - Summary shows total Questions answered and total correct.
 - Summary includes a per-Skill breakdown if the Session contained Questions from more than one Skill.
+- If the Session contained Questions from only one Skill, the Session Summary shows that Skill's accuracy (e.g., "6/8 Pattern Recognition").
 
 #### FR-5: Free Tier daily question gate
 
@@ -182,7 +184,10 @@ The system records, per Child Profile and per Skill, the running accuracy (corre
 
 **Consequences (testable):**
 - After each completed Session, per-Skill accuracy is updated for the Child Profile.
+- An attempt is defined as a single Question answered within a completed Session. Questions in incomplete Sessions are not counted.
 - Accuracy reflects all historical attempts for that Skill, not just the most recent Session.
+
+[NOTE FOR PM: All-time cumulative accuracy means a child who improves significantly will continue to see “Cần luyện” for many Sessions after real mastery. Confirm this is the intended model vs. a recency-weighted approach (e.g., accuracy over the last N Sessions).]
 
 #### FR-8: Difficulty-adjusted question selection
 
@@ -247,15 +252,17 @@ The Parent Dashboard shows, for the selected Child Profile: number of Sessions c
 **Consequences (testable):**
 - Weekly summary updates within 60 seconds of a Session completion.
 - Current week is defined as Monday–Sunday in the Asia/Ho_Chi_Minh timezone.
+- The weekly activity summary displays the Child Profile's current Streak (consecutive calendar days with at least one completed Session).
 
 #### FR-14: Skill breakdown view
 
 The Parent Dashboard shows per-Skill accuracy for the selected Child Profile, categorized as "Tốt" (strong, ≥70% accuracy) or "Cần luyện" (needs practice, <70% accuracy). [ASSUMPTION: A-4]
 
 **Consequences (testable):**
-- All Skills the Child Profile has encountered at least once appear in the breakdown.
+- A Skill appears in the breakdown only after the Child Profile has attempted ≥ 5 Questions from that Skill; prior to that threshold, the Skill is listed as "Chưa đủ dữ liệu" (insufficient data). [ASSUMPTION: A-12]
 - Needs-practice Skills are sorted before strong Skills.
-- Tapping a Skill shows the last 3 Sessions that included Questions from that Skill, with per-Session accuracy.
+- Tapping a Skill shows the last 3 Sessions that included Questions from that Skill, with the Child Profile's accuracy for that Skill *within that Session only* (e.g., "2/3 correct"). The 3 Sessions shown are sourced from the Session history (FR-17).
+- A parent can identify the weakest Skill for the active Child Profile in ≤ 3 taps / ≤ 30 seconds from Dashboard open.
 
 #### FR-15: Grade progress indicator
 
@@ -263,7 +270,9 @@ The Parent Dashboard shows a high-level indicator of where the Child Profile's c
 
 **Consequences (testable):**
 - The grade progress indicator is shown on the main Child Profile view.
-- It reflects the Child Profile's average Difficulty Level across all Skills, normalized within the Grade Band.
+- It reflects the Child Profile's average Difficulty Level (1–5 scale) across all Skills within the current Grade Band. The average maps to one of three labels: "đầu kỳ" (average 1.0–2.0), "giữa kỳ" (average 2.1–3.5), "cuối kỳ" (average 3.6–5.0).
+
+[NOTE FOR PM: The đầu kỳ / giữa kỳ / cuối kỳ label boundaries above are provisional. Confirm the correct curriculum-period mapping with the content team before the UX design sprint.]
 
 #### FR-16: Subscription upsell prompt
 
@@ -279,7 +288,7 @@ When a Free Tier Child Profile has exhausted its daily Question allotment, the P
 The Parent Dashboard provides a scrollable history of completed Sessions for the selected Child Profile, showing date, score (correct / total), and Skills covered per Session.
 
 **Consequences (testable):**
-- Session history shows at least the last 30 completed Sessions.
+- All completed Sessions are retained for the lifetime of the Child Profile. The display shows the most recent 30 by default with pagination or scroll to access older entries.
 - Each entry shows date, correct/total, and Skills covered.
 
 ---
@@ -472,7 +481,7 @@ An admin can set the global session question count (range: 5–30 inclusive) and
 - **SM-1: Student weekly retention** — ≥ 40% of active Child Profiles complete ≥ 3 Sessions in a given week, measured at end of month 1 post-launch. Validates FR-1, FR-3, FR-4.
 - **SM-2: Parent NPS** — ≥ 40 NPS from parents surveyed at 4 weeks of usage. Validates FR-13, FR-14, FR-15.
 - **SM-3: Teacher assignment adoption** — ≥ 50% of approved Teacher Accounts assign at least 1 Assignment Set within their first 30 days. Validates FR-20, FR-21.
-- **SM-4: Learning signal** — Child Profiles with ≥ 2 weeks of Sessions show measurable improvement in word problem accuracy (per-Skill accuracy tracked in app). Validates FR-7, FR-8, FR-9.
+- **SM-4: Learning signal** — For Child Profiles with ≥ 15 Sessions, per-Skill accuracy for word problem Skills improves by ≥ 10 percentage points from Sessions 1–5 (baseline) to Sessions 11–15. Validates FR-7, FR-8, FR-9.
 
 **Secondary**
 
@@ -493,7 +502,7 @@ An admin can set the global session question count (range: 5–30 inclusive) and
 3. **Teacher approval SLA** — How quickly will ToanTuDuy staff turn around Teacher Account approvals? A slow SLA will lag SM-3. Owner: ops. Revisit: before teacher beta launch.
 4. **Class join code expiry** — Do Class join codes expire? What happens to students in a Class if the Teacher Account is deactivated or rejected? Owner: PM + engineering. Revisit: before Teacher Portal sprint.
 5. **Assigned questions and Free Tier gate** — Confirmed assumption (A-1): assigned Questions count toward the daily Free Tier allotment. This may frustrate teachers whose Free Tier students cannot complete assigned work. Consider whether Teacher-assigned Sessions bypass the Free Tier gate. Owner: PM. Revisit: before Teacher Portal sprint.
-6. **Question library size at launch** — How many Questions are needed per Grade Band × Skill × Difficulty Level to avoid repetition within 30 days of daily Sessions? No count is defined. Owner: content lead + PM. Revisit: during content sprint planning.
+6. **Question library size at launch** — How many Questions are needed per Grade Band × Skill × Difficulty Level to avoid repetition within 30 days of daily Sessions? [ASSUMPTION: A-13, provisional floor ≥ 50 Questions per Grade Band × Skill × Difficulty Level cell; must be validated by the content lead before the content sprint.] Owner: content lead + PM. Revisit: during content sprint planning.
 7. **Child data privacy / PDPD compliance** — The product stores learning data for children ages 6–9. What are ToanTuDuy's obligations under Vietnam's Personal Data Protection Decree for children's data? Does account creation by a parent constitute sufficient consent? Owner: PM + legal. Revisit: before public launch.
 
 ---
@@ -511,3 +520,5 @@ An admin can set the global session question count (range: 5–30 inclusive) and
 - **A-9** (FR-18): Teacher rejection reason is a free-text field in the Admin Panel.
 - **A-10** (SM-5): 15% free-to-paid conversion is an initial target, subject to revision after cohort observation.
 - **A-11** (FR-5, Free Tier): Default free Question allotment is 5 Questions per Child Profile per calendar day. (See Open Question 2)
+- **A-12** (FR-14): Minimum attempts before a Skill appears in the Skill breakdown is 5 Questions. (Provisional; content team to validate.)
+- **A-13** (OQ-6): Provisional question library floor is ≥ 50 Questions per Grade Band × Skill × Difficulty Level cell. (Content lead to validate before content sprint.)
