@@ -126,6 +126,17 @@ _Technical requirements from the Architecture Spine that directly affect epic an
 
 - **Question content seeding (Epic 9)**: Initial question corpus loaded via prisma/seed.ts from structured JSON fixtures in prisma/fixtures/. Ongoing authoring via /admin/questions CRUD UI. (AD-12)
 
+- **v1 Skill Enumeration (Epics 3, 7 — all content stories)**: The canonical v1 Skill list is formally defined in the PRD Addendum (`prds/prd-toantuduy-2026-07-08/addendum.md` — "v1 Skill Enumeration" section). Four Skills, seeded via `code` as the upsert key:
+
+  | `code` | `name` (vi) | Category |
+  |---|---|---|
+  | `pattern-recognition` | Nhận diện quy luật | Logic puzzle |
+  | `spatial-reasoning` | Suy luận không gian | Logic puzzle |
+  | `classification` | Phân loại | Logic puzzle |
+  | `word-problem` | Đọc hiểu bài toán | Word problem |
+
+  Rules: (1) Every Question has exactly one `skillId` — never null. (2) Skill `name` values are stored in `src/locales/vi/skills.ts` — never inline in component code. (3) `prisma/seed.ts` upserts all four Skill records by `code` before seeding Questions. (4) Story 7.5 seed fixtures must cover all four Skills across all three Grade Bands and all five Difficulty Levels (min 5 Questions per cell = 60 seed Questions minimum).
+
 - **Question images (Epic 9)**: Upload via src/infrastructure/storage/supabase-storage.ts. Images stored in Supabase Storage public bucket. CDN URL stored in Question.imageUrl. No proxying through Next.js server. (AD-13)
 
 - **Transactional email (Epics 2, 6, 7)**: All outbound email through src/infrastructure/email/resend.ts. No surface code imports from Resend SDK directly. Three trigger events in v1: subscription activated (parent), teacher approved (teacher), teacher rejected (teacher). (AD-14)

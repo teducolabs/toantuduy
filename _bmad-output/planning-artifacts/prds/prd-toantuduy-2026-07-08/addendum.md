@@ -65,6 +65,32 @@ These are architecture-layer decisions; the PRD treats platform and payment as p
 
 ---
 
+## v1 Skill Enumeration (Canonical List)
+
+*This section defines the complete, canonical list of Skills for ToanTuDuy v1. Required by the `Skill` table in the Prisma schema, the adaptive difficulty domain model, the question seed fixtures (Story 7.5), and the Parent Dashboard Skill breakdown (FR-14). The PRD Glossary (§3) lists these as examples — this addendum formalizes them as the definitive v1 set.*
+
+### Rationale for 4 Skills
+
+The Brief defines two content types: **câu đố logic** (logic puzzles) and **bài toán có ngữ cảnh** (word problems). The four Skills below decompose logic puzzles into three distinct cognitive dimensions (pattern, spatial, classification) plus one word-problem Skill. Four Skills is the minimum viable set for meaningful per-Skill accuracy breakdown on the Parent Dashboard (FR-14) and for the adaptive difficulty sliding window to have differentiation signal (FR-8, FR-9).
+
+### Skill Definitions
+
+| `code` (DB / seed key) | `name` (Vietnamese — UI display) | Category | Description |
+|---|---|---|---|
+| `pattern-recognition` | Nhận diện quy luật | Logic puzzle | Identify, continue, or complete number sequences, shape patterns, and color/symbol patterns. The most fundamental systematic-reasoning skill for Grades 1–3. |
+| `spatial-reasoning` | Suy luận không gian | Logic puzzle | Reason about 2D shapes, orientations, rotations, reflections, and spatial relationships. Aligns with the geometry strand in the Vietnamese Grade 1–3 curriculum. |
+| `classification` | Phân loại | Logic puzzle | Group or categorize objects, numbers, or concepts by shared attributes; identify the item that does not belong. Trains attribute-based logical analysis. |
+| `word-problem` | Đọc hiểu bài toán | Word problem | Read, understand, and reason through contextualized word problems requiring multi-step reasoning. The skill most predictive of later math performance (per SM-4 success metric). |
+
+### Usage Rules
+
+- **All four Skills are seeded in every environment** via `prisma/seed.ts` using `code` as the upsert key. IDs are cuid2-generated at seed time — never hard-coded.
+- **Every Question is tagged to exactly one Skill** (per the PRD Glossary definition). No Question may have a null `skillId`.
+- **The Skill `name` field is the Vietnamese display string** used in the Parent Dashboard Skill breakdown, Teacher Portal Class Report column headers, and Assignment Set builder filter. All four names are stored in `src/locales/vi/skills.ts` — never inline in component code.
+- **v2 expansion note:** Additional Skills (e.g., Logical Deduction, Number Sense) may be added in v2 without breaking the adaptive difficulty algorithm — the sliding window is Skill-agnostic. Adding a new Skill requires only a new seed record and corresponding Questions.
+
+---
+
 ## Parked Ideas (not v1)
 
 - **Gamification (streaks, badges, leaderboards):** Increases retention signal but adds design complexity and may shift student motivation from intrinsic (reasoning) to extrinsic (points). Deferred to v2 pending retention data.
