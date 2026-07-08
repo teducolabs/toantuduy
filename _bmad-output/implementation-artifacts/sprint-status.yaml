@@ -1,0 +1,114 @@
+# generated: 2026-07-08
+# last_updated: 2026-07-08
+# project: ToanTuDuy
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# Action Item Status:
+#   - open: Committed during a retrospective, not yet addressed
+#   - in-progress: Actively being worked on
+#   - done: Completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - Developer typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+# - Retrospective appends its action items to action_items; sprint-status surfaces open ones
+
+generated: 2026-07-08
+last_updated: 2026-07-08
+project: ToanTuDuy
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # ── Epic 1: Project Foundation & Parent Authentication ──────────────────────
+  epic-1: backlog
+  1-1-initialize-nextjs-monorepo-design-system-foundation: backlog
+  1-2-complete-prisma-schema-database-infrastructure: backlog
+  1-3-nextauth-v5-authentication-infrastructure: backlog
+  1-4-parent-account-registration-email-verification: backlog
+  1-5-parent-login-post-auth-parent-shell: backlog
+  epic-1-retrospective: optional
+
+  # ── Epic 2: Child Profile Management ────────────────────────────────────────
+  epic-2: backlog
+  2-1-create-manage-child-profiles: backlog
+  2-2-child-profile-switch-student-surface-entry: backlog
+  2-3-student-home-screen-shell: backlog
+  epic-2-retrospective: optional
+
+  # ── Epic 3: Student Practice Interface & Adaptive Difficulty ────────────────
+  epic-3: backlog
+  3-1-adaptive-difficulty-domain-use-case: backlog
+  3-2-question-session-repository-infrastructure: backlog
+  3-3-session-start-free-tier-daily-gate: backlog
+  3-4-question-display-answer-submission: backlog
+  3-5-immediate-feedback-mascot-reactions: backlog
+  3-6-session-completion-summary-accuracy-update: backlog
+  3-7-session-state-preservation-offline-resilience: backlog
+  3-8-audio-button-accessibility-floor-interaction-constraints: backlog
+  epic-3-retrospective: optional
+
+  # ── Epic 4: Parent Dashboard ─────────────────────────────────────────────────
+  epic-4: backlog
+  4-1-weekly-activity-strip-streak: backlog
+  4-2-skill-breakdown-view-skill-detail: backlog
+  4-3-grade-progress-indicator-session-history: backlog
+  4-4-free-tier-upsell-prompt-on-dashboard: backlog
+  4-5-parent-dashboard-performance-all-state-patterns: backlog
+  epic-4-retrospective: optional
+
+  # ── Epic 5: Teacher Portal & Class Reports ───────────────────────────────────
+  epic-5: backlog
+  5-1-teacher-registration-pending-state: backlog
+  5-2-resend-email-adapter-teacher-notification-emails: backlog
+  5-3-teacher-portal-shell-class-management: backlog
+  5-4-assignment-set-builder: backlog
+  5-5-assign-to-class-student-assignment-card: backlog
+  5-6-class-report: backlog
+  5-7-teacher-portal-state-patterns-approval-gate-hardening: backlog
+  epic-5-retrospective: optional
+
+  # ── Epic 6: Subscription & Payments ─────────────────────────────────────────
+  epic-6: backlog
+  6-1-payos-payment-infrastructure-webhook-handler: backlog
+  6-2-subscription-plans-page: backlog
+  6-3-subscribe-via-momo-subscription-activation: backlog
+  6-4-subscription-management: backlog
+  epic-6-retrospective: optional
+
+  # ── Epic 7: Admin Panel & Question Library ───────────────────────────────────
+  epic-7: backlog
+  7-1-admin-panel-foundation-role-gate: backlog
+  7-2-teacher-account-approval-queue: backlog
+  7-3-session-configuration-panel: backlog
+  7-4-question-library-crud-image-upload: backlog
+  7-5-initial-question-corpus-seed: backlog
+  epic-7-retrospective: optional
