@@ -3,5 +3,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(_req: NextRequest): Promise<NextResponse> {
-  throw new Error('Not yet implemented — Story 6.1')
+  return NextResponse.json({ error: 'Not yet implemented — Story 6.1' }, { status: 501 })
 }

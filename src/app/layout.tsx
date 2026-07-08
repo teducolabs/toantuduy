@@ -27,8 +27,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="vi" className={`${baloo2.variable} ${beVietnamPro.variable}`}>
-      <body>{children}</body>
+    <html lang="vi" suppressHydrationWarning className={`${baloo2.variable} ${beVietnamPro.variable}`}>
+      <body className="font-sans">{children}</body>
     </html>
   )
 }

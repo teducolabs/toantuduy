@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate 2>/dev/null || echo 'prisma generate skipped (no models yet)'"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -29,6 +30,10 @@
     "eslint-config-next": "15.3.9",
     "prisma": "^5.22.0",
     "tailwindcss": "^4",
+    "tsx": "^4",
     "typescript": "^5"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   }
 }

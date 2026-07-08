@@ -4,7 +4,7 @@ baseline_commit: 2c4fd806f5e189b2399c3dba492958d5d25bfa5e
 
 # Story 1.1: Initialize Next.js Monorepo & Design System Foundation
 
-Status: review
+Status: done
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 
@@ -532,3 +532,30 @@ Claude Sonnet 4.6
 ## Change Log
 
 - 2026-07-08: Story 1.1 implemented — Next.js 15.3.9 monorepo scaffolded, full directory structure created, Tailwind v4 + shadcn/ui installed, brand design tokens configured, env.ts with Zod validation created, stub lib/infra files created, Prisma 5 stub schema validated, build passes zero errors
+
+## Review Findings
+
+<!-- Code review: 2026-07-09 | Layers: Blind Hunter, Edge Case Hunter, Acceptance Auditor | Mode: full -->
+
+### Patch (fix required)
+
+- [x] [Review][Patch] Root redirect targets route-group URL — `redirect('/(parent)/dashboard')` should be `redirect('/dashboard')`; route groups are filesystem-only and never appear in URLs, causing a 404 on every root visit [src/app/page.tsx:4]
+- [x] [Review][Patch] shadcn `--primary` not overridden with brand orange — `@layer base :root` keeps `--primary: oklch(0.205 0 0)` (neutral), while brand orange is in `--color-primary`. shadcn/ui components (Button default, Badge, etc.) consume `var(--primary)`, rendering neutral grey instead of #F97316. Add `--primary: #F97316` to `:root` and `--primary: #FB923C` to `.dark` [src/app/globals.css:14]
+- [x] [Review][Patch] `src/components/ui/` directory missing from repo — AC2 requires it; no `.gitkeep` was committed, so the directory won't exist on a clean clone. shadcn component generation will fail. Add `src/components/ui/.gitkeep` [src/components/ui/]
+- [x] [Review][Patch] PayOS webhook stub throws instead of returning 501 — unhandled throw produces HTTP 500, causing PayOS to auto-retry the webhook on Story 6.1 delivery; use `NextResponse.json(...)` with status 501 to match the auth stub pattern [src/app/api/payments/payos/webhook/route.ts:5]
+- [x] [Review][Patch] `<body>` has no default font class — CSS variables are injected on `<html>`, but `<body>` has no `className="font-sans"`, so unstyled text falls back to browser default until an explicit utility class is applied [src/app/layout.tsx:29]
+- [x] [Review][Patch] `@prisma/client` postinstall suppressed with no compensating script — `pnpm-workspace.yaml` ignores the Prisma build hook; a fresh `pnpm install` on a cloned repo will produce missing/stale Prisma types. Add `"postinstall": "prisma generate"` to `package.json` scripts [package.json, pnpm-workspace.yaml]
+- [x] [Review][Patch] No Prisma seed config in `package.json` — `prisma db seed` will error without a `"prisma": { "seed": "tsx prisma/seed.ts" }` entry, and `tsx` is not in devDependencies [package.json]
+- [x] [Review][Patch] Unstable internal Next.js type import — `import { type ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension/adapters/request-cookies'` uses a private path that can break silently on any Next.js patch update [src/lib/child-profile-cookie.ts:2]
+- [x] [Review][Patch] `<html>` missing `suppressHydrationWarning` — browser extensions (LastPass, Grammarly) and OS dark-mode injectors modify `<html>` attributes before React hydrates, causing hydration mismatch warnings in production [src/app/layout.tsx:28]
+- [x] [Review][Patch] `.env.example` `SUPABASE_SERVICE_ROLE_KEY` lacks RLS-bypass warning — this key bypasses Supabase Row Level Security entirely; add a one-line comment warning so future contributors never expose it client-side [.env.example]
+
+### Defer (pre-existing or out of scope)
+
+- [x] [Review][Defer] `next-auth` package not in `package.json` [package.json] — deferred, pre-existing; intentionally deferred to Story 1.3 which implements NextAuth
+- [x] [Review][Defer] Supabase, Resend, PayOS SDK packages absent from `package.json` [package.json] — deferred, pre-existing; intentionally deferred to respective implementation stories
+- [x] [Review][Defer] Prisma schema missing `directUrl` for PgBouncer pooling pattern [prisma/schema.prisma] — deferred, pre-existing; the full schema and `db.ts` singleton with `DATABASE_URL_POOLED` are Story 1.2 scope
+- [x] [Review][Defer] No HTTP security headers in `next.config.ts` [next.config.ts] — deferred, pre-existing; no real route implementations yet, address in a dedicated security hardening task before first production deploy
+- [x] [Review][Defer] Route group layouts absent — `(parent)`, `(student)`, `(teacher)` have no `layout.tsx` [src/app/] — deferred, pre-existing; per-role layouts are added in per-role stories, not this foundation story
+- [x] [Review][Defer] Stub pages render inline English strings instead of `src/locales/vi/` keys [src/app/(student)/session/page.tsx etc.] — deferred, pre-existing; stubs only, strings moved to locale in each feature story
+- [x] [Review][Defer] `NEXTAUTH_SECRET` Zod validator checks character count not entropy [src/lib/env.ts:9] — deferred, pre-existing; low operational risk, enforce strong secret generation in deployment runbook
