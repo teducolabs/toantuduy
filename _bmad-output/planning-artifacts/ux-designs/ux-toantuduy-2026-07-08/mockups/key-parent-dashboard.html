@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToanTuDuy — Parent Dashboard (Mock)</title>
+<style>
+/*
+  Spine sections governing this screen:
+  - EXPERIENCE.md § Parent Mode Components: Child profile switcher, Weekly activity strip,
+    Skill summary section, Grade progress indicator, Upsell banner, Session history list
+  - EXPERIENCE.md § State Patterns: Parent Mode states (upsell active, loading)
+  - EXPERIENCE.md § Responsive & Platform: md (768px, bottom tab bar)
+  - DESIGN.md § Colors: primary, skill-strong-*, skill-weak-*
+  - DESIGN.md § Typography: heading, body
+  - EXPERIENCE.md § Key Flows: Flow 2 (Lan checks Khôi's progress), Flow 4 (upsell banner)
+  
+  Two states shown:
+  Left: Subscribed parent — no upsell, full data
+  Right: Free Tier parent — upsell banner active
+*/
+
+:root {
+  --primary: #F97316;
+  --primary-light: #FFF7ED;
+  --primary-foreground: #FFFFFF;
+  --skill-strong-bg: #DCFCE7;
+  --skill-strong-fg: #15803D;
+  --skill-weak-bg: #FEF9C3;
+  --skill-weak-fg: #854D0E;
+  --card-bg: #FFFFFF;
+  --bg: #F8FAFC;
+  --border: #E4E4E7;
+  --muted: #F4F4F5;
+  --muted-fg: #71717A;
+  --text: #18181B;
+  --text-secondary: #52525B;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --rounded-sm: 8px;
+  --rounded-md: 12px;
+  --font-body: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #E8E8E8;
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+  gap: 32px;
+  min-height: 100vh;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.screens-row {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Phone frame (primary device for parent) */
+.device {
+  width: 390px;
+  min-height: 780px;
+  background: var(--bg);
+  border-radius: 40px;
+  border: 2px solid #D4D4D8;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ----- Top header ----- */
+.top-header {
+  background: var(--card-bg);
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app-logo {
+  font-weight: 800;
+  font-size: 16px;
+  color: var(--primary);
+  letter-spacing: -0.01em;
+}
+
+.profile-switcher {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--muted);
+  border: 1px solid var(--border);
+  border-radius: var(--rounded-sm);
+  padding: 6px 12px;
+  cursor: pointer;
+}
+
+.profile-avatar {
+  width: 24px;
+  height: 24px;
+  background: var(--primary);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.profile-chevron {
+  font-size: 11px;
+  color: var(--muted-fg);
+}
+
+/* ----- Upsell banner ----- */
+.upsell-banner {
+  background: #FFF7ED;
+  border-bottom: 1px solid #FDBA74;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.upsell-text {
+  font-size: 13px;
+  color: #9A3412;
+  font-weight: 500;
+  flex: 1;
+}
+
+.upsell-link {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+/* ----- Content scroll area ----- */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: var(--rounded-md);
+  box-shadow: var(--shadow-sm);
+  padding: 16px;
+}
+
+.card-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+  margin-bottom: 12px;
+}
+
+/* ----- Weekly activity strip ----- */
+.activity-strip {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+}
+
+.day-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.day-dot {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: var(--muted);
+  border: 2px solid var(--border);
+}
+
+.day-dot.done {
+  background: var(--primary);
+  border-color: var(--primary);
+}
+
+.day-dot.today {
+  background: var(--primary-light);
+  border: 2px solid var(--primary);
+}
+
+.day-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted-fg);
+}
+
+.day-label.today { color: var(--primary); }
+
+.activity-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.sessions-count {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.streak-badge {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+/* ----- Skill summary ----- */
+.skill-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.badge {
+  padding: 5px 12px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.badge.weak {
+  background: var(--skill-weak-bg);
+  color: var(--skill-weak-fg);
+}
+
+.badge.strong {
+  background: var(--skill-strong-bg);
+  color: var(--skill-strong-fg);
+}
+
+.badge-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted-fg);
+  margin-bottom: 6px;
+}
+
+/* ----- Grade progress ----- */
+.grade-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.grade-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.grade-subtext {
+  font-size: 12px;
+  color: var(--muted-fg);
+  margin-top: 2px;
+}
+
+.grade-info-icon {
+  width: 20px;
+  height: 20px;
+  border-radius: 999px;
+  background: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: var(--muted-fg);
+  cursor: pointer;
+}
+
+/* ----- Session history preview ----- */
+.history-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.history-row:last-of-type { border-bottom: none; }
+
+.history-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.history-day {
+  font-size: 11px;
+  color: var(--muted-fg);
+  margin-top: 1px;
+}
+
+.history-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.score-chip {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.skill-tags {
+  display: flex;
+  gap: 4px;
+}
+
+.skill-tag {
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--muted);
+  color: var(--muted-fg);
+  padding: 2px 7px;
+  border-radius: var(--rounded-sm);
+}
+
+.view-more {
+  text-align: center;
+  padding-top: 4px;
+}
+
+.view-more a {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-decoration: none;
+}
+
+/* ----- Bottom tab bar ----- */
+.tab-bar {
+  background: var(--card-bg);
+  border-top: 1px solid var(--border);
+  display: flex;
+  padding: 8px 0 12px;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+}
+
+.tab-icon { font-size: 20px; }
+.tab-label { font-size: 10px; font-weight: 600; color: var(--muted-fg); }
+.tab-item.active .tab-label { color: var(--primary); }
+.tab-item.active .tab-icon-bar {
+  width: 20px;
+  height: 3px;
+  background: var(--primary);
+  border-radius: 2px;
+  margin-top: 2px;
+}
+</style>
+</head>
+<body>
+
+<div class="section-label">ToanTuDuy · Parent Dashboard · Phone (390px) · Two states</div>
+
+<div class="screens-row">
+
+  <!-- STATE 1: Subscribed — no upsell banner -->
+  <div>
+    <div class="section-label">State A — Subscribed (Lan / Khôi)</div>
+    <div class="device">
+      <div class="top-header">
+        <span class="app-logo">ToanTuDuy</span>
+        <div class="profile-switcher">
+          <div class="profile-avatar">K</div>
+          <span class="profile-name">Khôi · Lớp 1</span>
+          <span class="profile-chevron">▾</span>
+        </div>
+      </div>
+
+      <div class="content">
+        <!-- Weekly activity -->
+        <div class="card">
+          <div class="card-label">Tuần này</div>
+          <div class="activity-strip">
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T2</div></div>
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T3</div></div>
+            <div class="day-col"><div class="day-dot"></div><div class="day-label">T4</div></div>
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T5</div></div>
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T6</div></div>
+            <div class="day-col"><div class="day-dot today"></div><div class="day-label today">T7</div></div>
+            <div class="day-col"><div class="day-dot"></div><div class="day-label">CN</div></div>
+          </div>
+          <div class="activity-meta">
+            <span class="sessions-count">4 buổi tuần này</span>
+            <span class="streak-badge">🔥 4 ngày</span>
+          </div>
+        </div>
+
+        <!-- Skill summary -->
+        <div class="card">
+          <div class="card-label">Kỹ năng</div>
+          <div class="badge-section-title">Cần luyện thêm</div>
+          <div class="skill-badges" style="margin-bottom: 10px;">
+            <span class="badge weak">Đọc hiểu bài toán ↗</span>
+            <span class="badge weak">Phân loại ↗</span>
+          </div>
+          <div class="badge-section-title">Tốt</div>
+          <div class="skill-badges">
+            <span class="badge strong">Nhận diện quy luật ✓</span>
+            <span class="badge strong">Suy luận không gian ✓</span>
+            <span class="badge strong">Tư duy số ✓</span>
+          </div>
+        </div>
+
+        <!-- Grade progress -->
+        <div class="card">
+          <div class="card-label">Tiến độ lớp</div>
+          <div class="grade-progress">
+            <div>
+              <div class="grade-text">Lớp 1 — giữa kỳ</div>
+              <div class="grade-subtext">Dựa trên độ khó trung bình các kỹ năng</div>
+            </div>
+            <div class="grade-info-icon">?</div>
+          </div>
+        </div>
+
+        <!-- Session history preview -->
+        <div class="card">
+          <div class="card-label">Lịch sử buổi luyện</div>
+          <div class="history-row">
+            <div><div class="history-date">7 tháng 7</div><div class="history-day">Thứ Hai</div></div>
+            <div class="history-right">
+              <span class="score-chip">8/10</span>
+              <div class="skill-tags"><span class="skill-tag">Quy luật</span><span class="skill-tag">Phân loại</span></div>
+            </div>
+          </div>
+          <div class="history-row">
+            <div><div class="history-date">8 tháng 7</div><div class="history-day">Thứ Ba</div></div>
+            <div class="history-right">
+              <span class="score-chip">6/10</span>
+              <div class="skill-tags"><span class="skill-tag">Đọc hiểu</span><span class="skill-tag">Số</span></div>
+            </div>
+          </div>
+          <div class="history-row">
+            <div><div class="history-date">9 tháng 7</div><div class="history-day">Thứ Năm</div></div>
+            <div class="history-right">
+              <span class="score-chip">9/10</span>
+              <div class="skill-tags"><span class="skill-tag">Không gian</span></div>
+            </div>
+          </div>
+          <div class="view-more"><a href="#">Xem thêm →</a></div>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label" style="color: var(--primary);">Tổng quan</span>
+          <div class="tab-item active" style="all:unset;width:20px;height:3px;background:var(--primary);border-radius:2px;margin:0 auto;"></div>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">📈</span>
+          <span class="tab-label">Kỹ năng</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">📋</span>
+          <span class="tab-label">Lịch sử</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-label">Tài khoản</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 2: Free Tier — upsell banner active -->
+  <div>
+    <div class="section-label">State B — Free Tier, allotment exhausted (upsell banner)</div>
+    <div class="device">
+      <div class="top-header">
+        <span class="app-logo">ToanTuDuy</span>
+        <div class="profile-switcher">
+          <div class="profile-avatar">K</div>
+          <span class="profile-name">Khôi · Lớp 1</span>
+          <span class="profile-chevron">▾</span>
+        </div>
+      </div>
+
+      <!-- Upsell banner -->
+      <div class="upsell-banner">
+        <span class="upsell-text">Khôi đã dùng hết lượt miễn phí hôm nay 🌟</span>
+        <a class="upsell-link" href="#">Xem gói →</a>
+      </div>
+
+      <div class="content">
+        <div class="card">
+          <div class="card-label">Tuần này</div>
+          <div class="activity-strip">
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T2</div></div>
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T3</div></div>
+            <div class="day-col"><div class="day-dot"></div><div class="day-label">T4</div></div>
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T5</div></div>
+            <div class="day-col"><div class="day-dot done"></div><div class="day-label">T6</div></div>
+            <div class="day-col"><div class="day-dot today"></div><div class="day-label today">T7</div></div>
+            <div class="day-col"><div class="day-dot"></div><div class="day-label">CN</div></div>
+          </div>
+          <div class="activity-meta">
+            <span class="sessions-count">4 buổi tuần này</span>
+            <span class="streak-badge">🔥 4 ngày</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Kỹ năng</div>
+          <div class="badge-section-title">Cần luyện thêm</div>
+          <div class="skill-badges" style="margin-bottom: 10px;">
+            <span class="badge weak">Đọc hiểu bài toán ↗</span>
+          </div>
+          <div class="badge-section-title">Tốt</div>
+          <div class="skill-badges">
+            <span class="badge strong">Nhận diện quy luật ✓</span>
+            <span class="badge strong">Suy luận không gian ✓</span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-label">Tiến độ lớp</div>
+          <div class="grade-progress">
+            <div>
+              <div class="grade-text">Lớp 1 — đầu kỳ</div>
+              <div class="grade-subtext">Dựa trên độ khó trung bình các kỹ năng</div>
+            </div>
+            <div class="grade-info-icon">?</div>
+          </div>
+        </div>
+
+        <!-- Subscription plan card (linked from upsell) -->
+        <div class="card" style="border: 2px solid var(--primary);">
+          <div class="card-label" style="color: var(--primary);">Gói đăng ký</div>
+          <div style="font-size: 22px; font-weight: 800; color: var(--text); margin-bottom: 4px;">79.000 đ<span style="font-size: 14px; font-weight: 400; color: var(--muted-fg);"> / tháng</span></div>
+          <ul style="font-size: 13px; color: var(--text-secondary); list-style: none; margin-bottom: 14px; display: flex; flex-direction: column; gap: 5px;">
+            <li>✓ Luyện tập không giới hạn mỗi ngày</li>
+            <li>✓ Tất cả hồ sơ con trong tài khoản</li>
+            <li>✓ Báo cáo chi tiết theo kỹ năng</li>
+          </ul>
+          <button style="width:100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; font-family: inherit; cursor: pointer;">Đăng ký ngay</button>
+        </div>
+      </div>
+
+      <div class="tab-bar">
+        <div class="tab-item active">
+          <span class="tab-icon">📊</span>
+          <span class="tab-label" style="color: var(--primary);">Tổng quan</span>
+          <div style="width:20px;height:3px;background:var(--primary);border-radius:2px;margin:0 auto;margin-top:2px;"></div>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">📈</span>
+          <span class="tab-label">Kỹ năng</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">📋</span>
+          <span class="tab-label">Lịch sử</span>
+        </div>
+        <div class="tab-item">
+          <span class="tab-icon">⚙️</span>
+          <span class="tab-label">Tài khoản</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="font-size: 11px; color: #999; margin-top: 8px; text-align: center;">
+  Mock · Spine governs · DESIGN.md + EXPERIENCE.md § Parent Mode
+</p>
+</body>
+</html>

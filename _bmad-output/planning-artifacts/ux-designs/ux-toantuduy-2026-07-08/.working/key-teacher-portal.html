@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToanTuDuy — Teacher Portal (Mock)</title>
+<style>
+/*
+  Spine sections governing this screen:
+  - EXPERIENCE.md § Teacher Mode Components: Class card, Assignment set card,
+    Class report table, Join code display
+  - EXPERIENCE.md § State Patterns: Teacher Mode (approved-empty, no students)
+  - EXPERIENCE.md § Responsive & Platform: ≥ lg (1024px+, sidebar + content)
+  - DESIGN.md § Colors: primary, border, muted
+  - DESIGN.md § Typography: heading, body
+  - EXPERIENCE.md § Key Flows: Flow 3 — Cô Hương assigns and reviews
+
+  Two states shown:
+  Left: Teacher portal home — classes + assignment sets
+  Right: Class report — "Ôn tập tuần 3" assignment
+*/
+
+:root {
+  --primary: #F97316;
+  --primary-light: #FFF7ED;
+  --primary-foreground: #FFFFFF;
+  --feedback-correct: #16A34A;
+  --feedback-correct-light: #DCFCE7;
+  --card-bg: #FFFFFF;
+  --bg: #F8FAFC;
+  --border: #E4E4E7;
+  --muted: #F4F4F5;
+  --muted-fg: #71717A;
+  --text: #18181B;
+  --text-secondary: #52525B;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.05);
+  --rounded-sm: 8px;
+  --rounded-md: 12px;
+  --font-body: 'Be Vietnam Pro', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #E8E8E8;
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+  gap: 32px;
+  min-height: 100vh;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.screens-row {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Desktop browser chrome */
+.device {
+  width: 820px;
+  min-height: 640px;
+  background: var(--bg);
+  border-radius: 12px;
+  border: 2px solid #D4D4D8;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.10);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.browser-bar {
+  background: #F0F0F0;
+  padding: 8px 16px;
+  border-bottom: 1px solid #D4D4D8;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.browser-dot { width: 10px; height: 10px; border-radius: 50%; }
+.browser-dot.red { background: #FF5F57; }
+.browser-dot.yellow { background: #FEBC2E; }
+.browser-dot.green { background: #28C840; }
+
+.browser-url {
+  background: white;
+  border: 1px solid #D4D4D8;
+  border-radius: 6px;
+  padding: 3px 12px;
+  font-size: 11px;
+  color: #777;
+  flex: 1;
+  max-width: 320px;
+  margin-left: 8px;
+}
+
+.app-shell {
+  display: flex;
+  flex: 1;
+  min-height: 600px;
+}
+
+/* ----- Sidebar ----- */
+.sidebar {
+  width: 220px;
+  background: var(--card-bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+  flex-shrink: 0;
+}
+
+.sidebar-logo {
+  padding: 0 20px 20px;
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+.sidebar-user {
+  padding: 0 16px 16px;
+  font-size: 12px;
+  color: var(--muted-fg);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.sidebar-user strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  border-radius: 0;
+}
+
+.nav-item.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  border-left: 3px solid var(--primary);
+  padding-left: 17px;
+}
+
+.nav-icon { font-size: 16px; }
+
+/* ----- Main content ----- */
+.main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.page-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--rounded-sm);
+  padding: 9px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  cursor: pointer;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-fg);
+  margin-bottom: 10px;
+}
+
+/* ----- Class card grid ----- */
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.class-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--rounded-md);
+  padding: 16px;
+  cursor: pointer;
+  transition: box-shadow 0.15s;
+}
+
+.class-card:hover { box-shadow: var(--shadow-sm); }
+
+.class-card-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.class-card-meta {
+  font-size: 12px;
+  color: var(--muted-fg);
+  margin-bottom: 10px;
+}
+
+.assignment-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.assignment-status.active {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.assignment-status.none {
+  background: var(--muted);
+  color: var(--muted-fg);
+}
+
+/* Assignment set list */
+.assignment-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.assignment-row {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: var(--rounded-sm);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+
+.assignment-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.assignment-meta {
+  font-size: 12px;
+  color: var(--muted-fg);
+  margin-top: 2px;
+}
+
+.status-pill {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 999px;
+}
+
+.status-pill.draft { background: var(--muted); color: var(--muted-fg); }
+.status-pill.assigned { background: #EFF6FF; color: #1D4ED8; }
+.status-pill.done { background: var(--feedback-correct-light); color: var(--feedback-correct); }
+
+/* ----- Class report table ----- */
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.report-table th {
+  text-align: left;
+  padding: 8px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted-fg);
+  border-bottom: 2px solid var(--border);
+  background: var(--muted);
+}
+
+.report-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+}
+
+.report-table tr:last-child td { border-bottom: none; }
+
+.report-table tr.avg-row td {
+  font-weight: 700;
+  background: #F8FAFC;
+  border-top: 2px solid var(--border);
+}
+
+.check { color: var(--feedback-correct); font-weight: 700; }
+.pending { color: var(--muted-fg); }
+
+.accuracy-chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.accuracy-chip.ok { background: var(--feedback-correct-light); color: var(--feedback-correct); }
+.accuracy-chip.warn { background: #FEF9C3; color: #854D0E; }
+.accuracy-chip.na { background: var(--muted); color: var(--muted-fg); }
+</style>
+</head>
+<body>
+
+<div class="section-label">ToanTuDuy · Teacher Portal · Desktop (820px) · Two states</div>
+
+<div class="screens-row">
+
+  <!-- STATE 1: Portal home -->
+  <div>
+    <div class="section-label">State A — Portal Home (Cô Hương)</div>
+    <div class="device">
+      <div class="browser-bar">
+        <div class="browser-dot red"></div>
+        <div class="browser-dot yellow"></div>
+        <div class="browser-dot green"></div>
+        <span class="browser-url">toantuduy.vn/giao-vien</span>
+      </div>
+
+      <div class="app-shell">
+        <div class="sidebar">
+          <div class="sidebar-logo">ToanTuDuy</div>
+          <div class="sidebar-user">
+            <strong>Cô Nguyễn Thị Hương</strong>
+            Trường TH Nguyễn Trãi · Lớp 2
+          </div>
+          <div class="nav-item active"><span class="nav-icon">🏫</span> Lớp học</div>
+          <div class="nav-item"><span class="nav-icon">📚</span> Bộ bài tập</div>
+          <div class="nav-item"><span class="nav-icon">📊</span> Báo cáo</div>
+          <div class="nav-item" style="margin-top: auto;"><span class="nav-icon">⚙️</span> Tài khoản</div>
+        </div>
+
+        <div class="main">
+          <div class="page-header">
+            <span class="page-title">Lớp học</span>
+            <button class="btn-primary">+ Tạo lớp mới</button>
+          </div>
+
+          <div>
+            <div class="section-title">Lớp của tôi</div>
+            <div class="cards-grid">
+              <div class="class-card">
+                <div class="class-card-name">Lớp 2A</div>
+                <div class="class-card-meta">Lớp 2 · 28 học sinh · Mã: HUG-2A</div>
+                <span class="assignment-status active">📝 Ôn tập tuần 3 · Hạn 9/7</span>
+              </div>
+              <div class="class-card">
+                <div class="class-card-name">Lớp 2B</div>
+                <div class="class-card-meta">Lớp 2 · 24 học sinh · Mã: HUG-2B</div>
+                <span class="assignment-status none">Chưa có bài tập</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="section-title">Bộ bài tập gần đây</div>
+            <div class="assignment-list">
+              <div class="assignment-row">
+                <div>
+                  <div class="assignment-name">Ôn tập tuần 3</div>
+                  <div class="assignment-meta">Lớp 2 · 8 câu · Đọc hiểu + Quy luật · Hạn 9/7</div>
+                </div>
+                <span class="status-pill assigned">Đã giao</span>
+              </div>
+              <div class="assignment-row">
+                <div>
+                  <div class="assignment-name">Bài kiểm tra giữa kỳ</div>
+                  <div class="assignment-meta">Lớp 2 · 10 câu · Tất cả kỹ năng</div>
+                </div>
+                <span class="status-pill draft">Nháp</span>
+              </div>
+              <div class="assignment-row">
+                <div>
+                  <div class="assignment-name">Ôn tập tuần 2</div>
+                  <div class="assignment-meta">Lớp 2 · 8 câu · Không gian · Đã hoàn thành 9/7</div>
+                </div>
+                <span class="status-pill done">Hoàn thành</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 2: Class report -->
+  <div>
+    <div class="section-label">State B — Class Report: "Ôn tập tuần 3" · Lớp 2A</div>
+    <div class="device">
+      <div class="browser-bar">
+        <div class="browser-dot red"></div>
+        <div class="browser-dot yellow"></div>
+        <div class="browser-dot green"></div>
+        <span class="browser-url">toantuduy.vn/giao-vien/lop/2A/bao-cao/on-tap-tuan-3</span>
+      </div>
+
+      <div class="app-shell">
+        <div class="sidebar">
+          <div class="sidebar-logo">ToanTuDuy</div>
+          <div class="sidebar-user">
+            <strong>Cô Nguyễn Thị Hương</strong>
+            Trường TH Nguyễn Trãi · Lớp 2
+          </div>
+          <div class="nav-item"><span class="nav-icon">🏫</span> Lớp học</div>
+          <div class="nav-item"><span class="nav-icon">📚</span> Bộ bài tập</div>
+          <div class="nav-item active"><span class="nav-icon">📊</span> Báo cáo</div>
+          <div class="nav-item" style="margin-top: auto;"><span class="nav-icon">⚙️</span> Tài khoản</div>
+        </div>
+
+        <div class="main">
+          <div class="page-header">
+            <div>
+              <div class="page-title">Ôn tập tuần 3 — Lớp 2A</div>
+              <div style="font-size: 13px; color: var(--muted-fg); margin-top: 4px;">22 / 28 học sinh hoàn thành · Đã cập nhật lúc 7:42 sáng</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 22px; font-weight: 800; color: var(--text);">78%</div>
+              <div style="font-size: 11px; color: var(--muted-fg);">hoàn thành</div>
+            </div>
+          </div>
+
+          <div style="background: var(--card-bg); border-radius: var(--rounded-md); border: 1px solid var(--border); overflow: hidden;">
+            <table class="report-table">
+              <thead>
+                <tr>
+                  <th>Học sinh</th>
+                  <th>Hoàn thành</th>
+                  <th>Đọc hiểu bài toán</th>
+                  <th>Nhận diện quy luật</th>
+                  <th>Phân loại</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Học sinh 1</td>
+                  <td><span class="check">✓ Xong</span></td>
+                  <td><span class="accuracy-chip warn">58%</span></td>
+                  <td><span class="accuracy-chip ok">83%</span></td>
+                  <td><span class="accuracy-chip ok">75%</span></td>
+                </tr>
+                <tr>
+                  <td>Học sinh 2</td>
+                  <td><span class="check">✓ Xong</span></td>
+                  <td><span class="accuracy-chip ok">75%</span></td>
+                  <td><span class="accuracy-chip ok">100%</span></td>
+                  <td><span class="accuracy-chip warn">50%</span></td>
+                </tr>
+                <tr>
+                  <td>Học sinh 3</td>
+                  <td><span class="check">✓ Xong</span></td>
+                  <td><span class="accuracy-chip warn">50%</span></td>
+                  <td><span class="accuracy-chip warn">67%</span></td>
+                  <td><span class="accuracy-chip ok">100%</span></td>
+                </tr>
+                <tr>
+                  <td>Học sinh 4</td>
+                  <td><span class="check">✓ Xong</span></td>
+                  <td><span class="accuracy-chip ok">83%</span></td>
+                  <td><span class="accuracy-chip ok">83%</span></td>
+                  <td><span class="accuracy-chip ok">75%</span></td>
+                </tr>
+                <tr>
+                  <td>Học sinh 5</td>
+                  <td><span class="pending">— Chưa làm</span></td>
+                  <td><span class="accuracy-chip na">—</span></td>
+                  <td><span class="accuracy-chip na">—</span></td>
+                  <td><span class="accuracy-chip na">—</span></td>
+                </tr>
+                <tr>
+                  <td>Học sinh 6</td>
+                  <td><span class="pending">— Chưa làm</span></td>
+                  <td><span class="accuracy-chip na">—</span></td>
+                  <td><span class="accuracy-chip na">—</span></td>
+                  <td><span class="accuracy-chip na">—</span></td>
+                </tr>
+                <tr style="font-style: italic; color: var(--muted-fg);">
+                  <td colspan="6" style="padding: 6px 12px; font-size: 11px;">... 22 học sinh còn lại ...</td>
+                </tr>
+                <tr class="avg-row">
+                  <td>Trung bình lớp</td>
+                  <td style="color: var(--feedback-correct);">22 / 28</td>
+                  <td><span class="accuracy-chip warn">65%</span></td>
+                  <td><span class="accuracy-chip ok">82%</span></td>
+                  <td><span class="accuracy-chip warn">71%</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="font-size: 12px; color: var(--muted-fg); background: var(--muted); border-radius: var(--rounded-sm); padding: 10px 14px;">
+            Điểm số cá nhân chỉ hiển thị ở đây. Phụ huynh không thấy điểm của học sinh khác.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<p style="font-size: 11px; color: #999; margin-top: 8px; text-align: center;">
+  Mock · Spine governs · DESIGN.md + EXPERIENCE.md § Teacher Mode
+</p>
+</body>
+</html>

@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ToanTuDuy — Session: Question Screen (Mock)</title>
+<style>
+/*
+  Spine sections governing this screen:
+  - EXPERIENCE.md § Student Mode Components: Question card, Answer button, Feedback transition,
+    Session progress chip, Audio button, Feedback overlay
+  - EXPERIENCE.md § Interaction Primitives: Student Mode
+  - EXPERIENCE.md § Responsive & Platform: md-lg (768-1023px) — primary target
+  - DESIGN.md § Components: answer-button, question-card, feedback-overlay, mascot, audio-button
+  - DESIGN.md § Colors: primary, student-bg, feedback-correct, feedback-incorrect
+  - DESIGN.md § Typography: question, label-student
+  - DESIGN.md § Shapes: rounded.lg (answer button), rounded.xl (question card)
+  - EXPERIENCE.md § Key Flows: Flow 1 — steps 3–7 (Minh's session)
+
+  Two states shown side by side:
+  Left: Question at rest (unanswered)
+  Right: Feedback state — incorrect answer selected ("wrong-state"),
+         correct answer revealed
+*/
+
+/* --- Design tokens (DESIGN.md) --- */
+:root {
+  --primary: #F97316;
+  --primary-light: #FFF7ED;
+  --primary-foreground: #FFFFFF;
+  --student-bg: #FFF7ED;
+  --feedback-correct: #16A34A;
+  --feedback-correct-light: #DCFCE7;
+  --feedback-incorrect: #F87171;
+  --feedback-incorrect-light: #FFF1F2;
+  --card-bg: #FFFFFF;
+  --muted: #F4F4F5;
+  --muted-fg: #71717A;
+  --border: #E4E4E7;
+  --text: #18181B;
+  --text-secondary: #52525B;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.10), 0 1px 2px rgba(0,0,0,0.06);
+  --rounded-sm: 8px;
+  --rounded-md: 12px;
+  --rounded-lg: 20px;
+  --rounded-xl: 28px;
+  --font-body: 'Be Vietnam Pro', 'Nunito', system-ui, -apple-system, sans-serif;
+  --font-display: 'Baloo 2', 'Nunito', system-ui, -apple-system, sans-serif;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #E8E8E8;
+  font-family: var(--font-body);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px;
+  gap: 32px;
+  min-height: 100vh;
+}
+
+.section-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.screens-row {
+  display: flex;
+  gap: 40px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+/* Tablet device frame */
+.device {
+  width: 680px;
+  min-height: 820px;
+  background: var(--student-bg);
+  border-radius: 24px;
+  border: 2px solid #D4D4D8;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+/* ----- Top bar ----- */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 8px;
+}
+
+.progress-chip {
+  background: rgba(249,115,22,0.12);
+  color: var(--primary);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 999px;
+}
+
+.mascot-corner {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Simple SVG owl "Cú" neutral state */
+.cu-neutral { font-size: 40px; line-height: 1; }
+.cu-happy   { font-size: 40px; line-height: 1; }
+.cu-gentle  { font-size: 40px; line-height: 1; }
+
+/* ----- Question card ----- */
+.question-card {
+  background: var(--card-bg);
+  border-radius: var(--rounded-xl);
+  box-shadow: var(--shadow-sm);
+  margin: 0 16px;
+  padding: 0;
+  overflow: hidden;
+  flex: 0 0 auto;
+}
+
+.illustration-slot {
+  background: #F0F9FF;
+  height: 180px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.shape-seq {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.shape {
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.shape-question {
+  width: 46px;
+  height: 46px;
+  border: 3px dashed var(--primary);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.question-body {
+  padding: 20px 20px 16px;
+  position: relative;
+}
+
+.audio-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--muted);
+  border: none;
+  border-radius: var(--rounded-sm);
+  padding: 7px 12px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+}
+.audio-btn svg { width: 16px; height: 16px; }
+
+.question-text {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--text);
+  padding-right: 100px;
+}
+
+/* ----- Answer grid ----- */
+.answer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 16px 16px 20px;
+}
+
+.answer-btn {
+  min-height: 72px;
+  border-radius: var(--rounded-lg);
+  border: 2.5px solid var(--border);
+  background: var(--card-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.2s ease;
+}
+
+.answer-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary-light);
+}
+
+/* Feedback states */
+.answer-btn.correct-ans {
+  border-color: var(--feedback-correct);
+  background: var(--feedback-correct-light);
+  color: var(--feedback-correct);
+}
+.answer-btn.correct-ans::after {
+  content: "✓";
+  font-size: 18px;
+  margin-left: 4px;
+}
+
+.answer-btn.incorrect-ans {
+  border-color: var(--feedback-incorrect);
+  background: var(--feedback-incorrect-light);
+  color: var(--feedback-incorrect);
+}
+.answer-btn.incorrect-ans::after {
+  content: "✗";
+  font-size: 18px;
+  margin-left: 4px;
+}
+
+.answer-btn.faded {
+  opacity: 0.38;
+  pointer-events: none;
+}
+
+/* ----- Correct answer reveal text ----- */
+.correct-reveal {
+  margin: 0 16px 4px;
+  padding: 10px 16px;
+  background: var(--feedback-correct-light);
+  border-radius: var(--rounded-md);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--feedback-correct);
+  display: none;
+}
+.correct-reveal.visible { display: block; }
+
+/* ----- Next button ----- */
+.next-btn {
+  display: none;
+  margin: 0 16px 20px;
+  padding: 14px;
+  background: var(--primary);
+  color: var(--primary-foreground);
+  border: none;
+  border-radius: var(--rounded-lg);
+  font-size: 16px;
+  font-weight: 700;
+  font-family: var(--font-body);
+  cursor: pointer;
+  text-align: center;
+}
+.next-btn.visible { display: block; }
+
+/* ----- Mascot on question card ----- */
+.mascot-card-corner {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  font-size: 44px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.spacer { flex: 1; }
+</style>
+</head>
+<body>
+
+<div class="section-label">ToanTuDuy · Session: Question Screen · Tablet (680px) · Two states</div>
+
+<div class="screens-row">
+
+  <!-- STATE 1: Question at rest -->
+  <div>
+    <div class="section-label">State A — Unanswered</div>
+    <div class="device">
+      <!-- Top bar -->
+      <div class="topbar">
+        <span class="progress-chip">3 / 10</span>
+        <div class="mascot-corner"><span class="cu-neutral">🦉</span></div>
+      </div>
+
+      <!-- Question card -->
+      <div class="question-card">
+        <!-- Illustration: shape sequence -->
+        <div class="illustration-slot">
+          <div class="shape-seq">
+            <div class="shape">🔵</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔺</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔺</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔵</div>
+            <div class="shape-question">?</div>
+          </div>
+        </div>
+
+        <!-- Question text + audio -->
+        <div class="question-body" style="padding-bottom: 8px;">
+          <button class="audio-btn" aria-label="Nghe lại câu hỏi">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            Nghe lại
+          </button>
+          <p class="question-text">Hình nào sẽ xuất hiện tiếp theo trong dãy?</p>
+        </div>
+
+        <!-- Answer grid -->
+        <div class="answer-grid">
+          <button class="answer-btn">🔺 Tam giác</button>
+          <button class="answer-btn">⬟ Thoi</button>
+          <button class="answer-btn">⬡ Lục giác</button>
+          <button class="answer-btn">⬛ Vuông</button>
+        </div>
+      </div>
+
+      <div class="spacer"></div>
+    </div>
+  </div>
+
+  <!-- STATE 2: Feedback — wrong answer selected (Thoi), correct answer revealed (Tam giác) -->
+  <div>
+    <div class="section-label">State B — Incorrect feedback (Cú gentle)</div>
+    <div class="device">
+      <!-- Top bar -->
+      <div class="topbar">
+        <span class="progress-chip">3 / 10</span>
+        <div class="mascot-corner"><span class="cu-gentle">🦉</span></div>
+      </div>
+
+      <!-- Question card -->
+      <div class="question-card">
+        <div class="illustration-slot">
+          <div class="shape-seq">
+            <div class="shape">🔵</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔺</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔺</div>
+            <div class="shape">🔵</div>
+            <div class="shape">🔵</div>
+            <div class="shape-question" style="border-color: #16A34A; color: #16A34A; background: #DCFCE7;">🔺</div>
+          </div>
+        </div>
+
+        <div class="question-body" style="padding-bottom: 8px;">
+          <button class="audio-btn" aria-label="Nghe lại câu hỏi" style="opacity: 0.5;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+            Nghe lại
+          </button>
+          <p class="question-text">Hình nào sẽ xuất hiện tiếp theo trong dãy?</p>
+        </div>
+
+        <div class="answer-grid">
+          <!-- Correct answer revealed green -->
+          <button class="answer-btn correct-ans">🔺 Tam giác</button>
+          <!-- Selected incorrect answer -->
+          <button class="answer-btn incorrect-ans">⬟ Thoi</button>
+          <!-- Others faded -->
+          <button class="answer-btn faded">⬡ Lục giác</button>
+          <button class="answer-btn faded">⬛ Vuông</button>
+        </div>
+      </div>
+
+      <!-- Correct answer reveal -->
+      <div class="correct-reveal visible">
+        Đáp án đúng là Tam giác 🔺 — quy luật lặp: xanh, xanh, tam giác.
+      </div>
+
+      <!-- Next button -->
+      <button class="next-btn visible">Tiếp theo →</button>
+
+      <div class="spacer"></div>
+    </div>
+  </div>
+
+</div>
+
+<p style="font-size: 11px; color: #999; margin-top: 8px; text-align: center;">
+  Mock · Spine governs · DESIGN.md + EXPERIENCE.md § Student Mode
+</p>
+</body>
+</html>
