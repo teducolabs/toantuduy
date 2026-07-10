@@ -1,13 +1,214 @@
-// This is the stub Prisma schema for Story 1.1.
-// Full schema with all 13 entities is added in Story 1.2.
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  // DATABASE_URL is used for CLI migrations only (prisma migrate / prisma db seed).
-  // At runtime, src/lib/db.ts (Story 1.2) uses DATABASE_URL_POOLED (Supabase PgBouncer).
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL_POOLED")
+  directUrl = env("DATABASE_URL")
+}
+
+enum Role {
+  PARENT
+  TEACHER
+  ADMIN
+}
+
+enum GradeBand {
+  GRADE_1
+  GRADE_2
+  GRADE_3
+}
+
+enum TeacherStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum SubscriptionStatus {
+  PENDING_PAYMENT
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String? // null for Google-OAuth-only Parent accounts
+  role          Role
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  parentAccount  ParentAccount?
+  teacherAccount TeacherAccount?
+}
+
+model ParentAccount {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  childProfiles ChildProfile[]
+  subscription  Subscription?
+}
+
+model ChildProfile {
+  id              String        @id @default(cuid())
+  parentAccountId String
+  parentAccount   ParentAccount @relation(fields: [parentAccountId], references: [id], onDelete: Cascade)
+  name            String
+  gradeBand       GradeBand
+  deletedAt       DateTime? // soft delete — 30-day retention per FR-11; hard-delete via scheduled job, out of scope here
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  sessions         Session[]
+  classMemberships ClassMembership[]
+}
+
+model Subscription {
+  id              String             @id @default(cuid())
+  parentAccountId String             @unique // one Subscription per ParentAccount, applies to all its ChildProfiles (FR-24)
+  parentAccount   ParentAccount      @relation(fields: [parentAccountId], references: [id], onDelete: Cascade)
+  status          SubscriptionStatus
+  renewsAt        DateTime?
+  cancelledAt     DateTime?
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+}
+
+model TeacherAccount {
+  id             String        @id @default(cuid())
+  userId         String        @unique
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  schoolName     String
+  gradeTaught    GradeBand
+  status         TeacherStatus @default(PENDING)
+  rejectedReason String?
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  classes          Class[]
+  assignmentSets   AssignmentSet[]
+  classMemberships ClassMembership[]
+}
+
+model Class {
+  id               String         @id @default(cuid())
+  teacherAccountId String
+  teacherAccount   TeacherAccount @relation(fields: [teacherAccountId], references: [id], onDelete: Cascade)
+  name             String
+  gradeBand        GradeBand
+  joinCode         String         @unique // system-generated, short, human-enterable (FR-19)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  memberships    ClassMembership[]
+  assignmentSets AssignmentSet[]
+}
+
+model ClassMembership {
+  id               String         @id @default(cuid())
+  classId          String
+  class            Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  childProfileId   String
+  childProfile     ChildProfile   @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  teacherAccountId String // denormalized from class.teacherAccountId so the DB can enforce "one Class per Teacher Account" (FR-19) directly
+  teacherAccount   TeacherAccount @relation(fields: [teacherAccountId], references: [id], onDelete: Cascade)
+  createdAt        DateTime       @default(now())
+
+  // If product intent is actually "one Class, period" (not per-teacher), simplify to @@unique([childProfileId]) instead — confirm before building the join-code redemption flow in Epic 5.
+  @@unique([teacherAccountId, childProfileId])
+}
+
+model Skill {
+  id        String   @id @default(cuid())
+  code      String   @unique // upsert key — see epics.md "v1 Skill Enumeration"; seeded in Story 7.5, not this story
+  name      String // Vietnamese display name — duplicated into src/locales/vi/skills.ts per epics.md, DB copy is for joins/admin only
+  createdAt DateTime @default(now())
+
+  questions Question[]
+}
+
+model Question {
+  id              String    @id @default(cuid())
+  prompt          String
+  imageUrl        String? // fully-qualified Supabase CDN URL or null — never a relative path (AD-13)
+  choices         Json // array of 2-4 choice strings/objects
+  correctAnswer   String
+  skillId         String
+  skill           Skill     @relation(fields: [skillId], references: [id], onDelete: Restrict)
+  gradeBand       GradeBand
+  difficultyLevel Int // 1-5, enforce range in application layer (domain), not DB constraint
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  sessionAnswers         SessionAnswer[]
+  assignmentSetQuestions AssignmentSetQuestion[]
+
+  @@index([gradeBand, skillId, difficultyLevel]) // hot path for getQuestionsForSession (Story 3.2)
+}
+
+model Session {
+  id             String       @id @default(cuid())
+  childProfileId String
+  childProfile   ChildProfile @relation(fields: [childProfileId], references: [id], onDelete: Cascade)
+  questionCount  Int
+  correctCount   Int          @default(0)
+  startedAt      DateTime     @default(now())
+  completedAt    DateTime? // null = in-progress/abandoned; only completed Sessions count toward accuracy (FR-7)
+
+  answers SessionAnswer[]
+
+  @@index([childProfileId, completedAt])
+}
+
+model SessionAnswer {
+  id                      String    @id @default(cuid())
+  sessionId               String
+  session                 Session   @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionId              String
+  question                Question  @relation(fields: [questionId], references: [id], onDelete: Restrict)
+  answeredCorrectly       Boolean? // null = stub row not yet answered (createSession pre-creates stubs per Story 3.2 AC)
+  difficultyLevelAtAnswer Int?
+  answeredAt              DateTime?
+
+  @@index([questionId])
+}
+
+model AssignmentSet {
+  id               String         @id @default(cuid())
+  teacherAccountId String
+  teacherAccount   TeacherAccount @relation(fields: [teacherAccountId], references: [id], onDelete: Cascade)
+  classId          String
+  class            Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  title            String
+  dueAt            DateTime?
+  assignedAt       DateTime? // null = draft (per FR-20 "saved as draft until explicitly assigned")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  questions AssignmentSetQuestion[]
+}
+
+model AssignmentSetQuestion {
+  id              String        @id @default(cuid())
+  assignmentSetId String
+  assignmentSet   AssignmentSet @relation(fields: [assignmentSetId], references: [id], onDelete: Cascade)
+  questionId      String
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Restrict)
+
+  @@unique([assignmentSetId, questionId])
+}
+
+model GlobalConfig {
+  id        String   @id @default(cuid())
+  key       String   @unique // e.g. "FREE_TIER_DAILY_ALLOTMENT", "SESSION_QUESTION_COUNT", "SESSION_TIME_LIMIT_MINUTES"
+  value     String // stored as string, parsed by consumer (Int/bool as needed) — keeps GlobalConfig schema-agnostic across FR-5/FR-27 keys
+  updatedAt DateTime @updatedAt
 }
