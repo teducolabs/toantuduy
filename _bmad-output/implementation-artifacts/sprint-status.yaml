@@ -49,13 +49,13 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # ── Epic 1: Project Foundation & Parent Authentication ──────────────────────
-  epic-1: in-progress
+  epic-1: done
   1-1-initialize-nextjs-monorepo-design-system-foundation: done
   1-2-complete-prisma-schema-database-infrastructure: done
   1-3-nextauth-v5-authentication-infrastructure: done
   1-4-parent-account-registration-email-verification: done
   1-5-parent-login-post-auth-parent-shell: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   # ── Epic 2: Child Profile Management ────────────────────────────────────────
   epic-2: backlog
@@ -112,3 +112,29 @@ development_status:
   7-4-question-library-crud-image-upload: backlog
   7-5-initial-question-corpus-seed: backlog
   epic-7-retrospective: optional
+
+action_items:
+  - epic: 1
+    action: "Keep writing a 'Previous Story Intelligence' section in every new story file"
+    owner: "Amelia (Developer)"
+    status: open
+  - epic: 1
+    action: "Select and install a test framework (e.g. Vitest) before Epic 3 starts, so Story 3.1's 10+ unit-test AC has somewhere to land"
+    owner: "Dev team"
+    status: open
+  - epic: 1
+    action: "Add a unique constraint on SessionAnswer(sessionId, questionId) when implementing Story 3.2"
+    owner: "Story 3.2 implementer"
+    status: open
+  - epic: 1
+    action: "Own GlobalConfig seed/bootstrap step (FREE_TIER_DAILY_ALLOTMENT, SESSION_QUESTION_COUNT, etc.) when implementing Story 3.2/7.5"
+    owner: "Story 3.2/7.5 implementer"
+    status: open
+  - epic: 1
+    action: "Add rate limiting to registration and credentials login paths"
+    owner: "Unassigned"
+    status: open
+  - epic: 1
+    action: "Reconcile the PRD's stale 'SSO out of scope for v1' note against the shipped reality (Google OAuth for Parents is in scope and working)"
+    owner: "Alice (Product Owner)"
+    status: open
