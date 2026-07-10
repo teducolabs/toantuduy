@@ -1,5 +1,12 @@
 # Deferred Work
 
+## Deferred from: code review of 1-4-parent-account-registration-email-verification (2026-07-10)
+
+- `/verify-email` (`src/app/verify-email/page.tsx`) mutates `emailVerified` on a bare GET request with no confirmation step — corporate email link-scanners (Outlook Safe Links, Gmail prefetch) could silently auto-verify accounts before the real user clicks. Accepted as-is for MVP: low risk for this app's audience (Vietnamese consumer/education app targeting parents; enterprise email security gateways unlikely). Revisit if real-world scanning issues surface.
+- Verification tokens have no single-use/revocation enforcement (`src/lib/email-verification-token.ts`) — inherent to the deliberate stateless-token architecture (no `VerificationToken` table, per Story 1.2); replayable within the 24h window with no way to invalidate a token early if the user requests a new one.
+- No rate limiting on registration/email-send (`src/app/register/actions.ts`) — no server action in the project has rate limiting yet; a project-wide gap, not specific to this story.
+- Email uniqueness is case-sensitive at the DB level (`prisma/schema.prisma`) — `User.email @unique` has no citext/case-insensitive collation; this story's diff only normalizes at the application layer (registration write, Credentials `authorize()`, Google `signIn` callback), a Story 1.2 schema decision.
+
 ## Deferred from: code review of 1-3-nextauth-v5-authentication-infrastructure (2026-07-10)
 
 - No rate limiting / brute-force protection on the credentials login path (`src/lib/auth.ts`) — not required by this story's ACs, but a real gap on a platform serving minors; revisit when middleware/infra-level throttling is introduced.

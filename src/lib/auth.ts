@@ -1,4 +1,4 @@
-import NextAuth from 'next-auth'
+import NextAuth, { CredentialsSignin } from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
 import bcrypt from 'bcryptjs'
@@ -8,6 +8,12 @@ import { env } from '@/lib/env'
 // Fixed-cost dummy hash so a lookup miss still pays the bcrypt.compare cost —
 // otherwise response timing reveals whether an email is registered.
 const DUMMY_HASH = bcrypt.hashSync('dummy-password-for-timing-safety', 10)
+
+// Distinguishable error code for AC #5's specific message — see next-auth's
+// CredentialsSignin subclassing mechanism.
+class EmailNotVerifiedError extends CredentialsSignin {
+  code = 'email_not_verified'
+}
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: env.NEXTAUTH_SECRET,
@@ -19,9 +25,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         if (typeof credentials?.email !== 'string' || typeof credentials?.password !== 'string') {
           return null
         }
-        const user = await db.user.findUnique({ where: { email: credentials.email } })
+        const email = credentials.email.trim().toLowerCase()
+        const user = await db.user.findUnique({ where: { email } })
         const valid = await bcrypt.compare(credentials.password, user?.passwordHash ?? DUMMY_HASH)
         if (!user?.passwordHash || !valid) return null
+        if (!user.emailVerified) throw new EmailNotVerifiedError()
         return { id: user.id, email: user.email, role: user.role }
       },
     }),
@@ -33,10 +41,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       if (account?.provider === 'google' && (profile as { email_verified?: boolean } | undefined)?.email_verified !== true) {
         return false
       }
+      const email = user.email.trim().toLowerCase()
       // Single lookup serves both the Google-Parent-only check (AC #3) and the
       // Teacher-approval check (AC #4) — status re-checked here regardless of provider.
       const dbUser = await db.user.findUnique({
-        where: { email: user.email },
+        where: { email },
         include: { teacherAccount: true },
       })
       if (!dbUser) return false

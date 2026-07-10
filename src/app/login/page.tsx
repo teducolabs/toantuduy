@@ -1,10 +1,30 @@
 'use client'
 
-import { useState, type FormEvent } from 'react'
+import { Suspense, useState, type FormEvent } from 'react'
 import { signIn } from 'next-auth/react'
+import { useSearchParams } from 'next/navigation'
 import { auth } from '@/locales/vi/auth'
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<LoginFormSkeleton />}>
+      <LoginForm />
+    </Suspense>
+  )
+}
+
+function LoginFormSkeleton() {
+  return (
+    <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4">
+      <h1 className="text-heading">{auth.title}</h1>
+    </main>
+  )
+}
+
+function LoginForm() {
+  const searchParams = useSearchParams()
+  const verified = searchParams.get('verified') === 'true'
+
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -19,7 +39,13 @@ export default function LoginPage() {
       const result = await signIn('credentials', { email, password, redirect: false })
 
       if (!result || result.error) {
-        setError(result?.error === 'CredentialsSignin' ? auth.invalidCredentials : auth.signInFailed)
+        if (result?.code === 'email_not_verified') {
+          setError(auth.emailNotVerified)
+        } else if (result?.error === 'CredentialsSignin') {
+          setError(auth.invalidCredentials)
+        } else {
+          setError(auth.signInFailed)
+        }
         return
       }
 
@@ -48,6 +74,12 @@ export default function LoginPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-sm flex-col justify-center gap-6 px-4">
       <h1 className="text-heading">{auth.title}</h1>
+
+      {verified && (
+        <p role="status" className="text-sm text-feedback-correct">
+          {auth.emailVerifiedSuccess}
+        </p>
+      )}
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-1">

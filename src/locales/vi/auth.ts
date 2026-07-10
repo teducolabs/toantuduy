@@ -1,4 +1,4 @@
-// Vietnamese locale strings — /login page
+// Vietnamese locale strings — /login and /register pages
 export const auth = {
   title: 'Đăng nhập',
   emailLabel: 'Email',
@@ -9,4 +9,25 @@ export const auth = {
   or: 'hoặc',
   invalidCredentials: 'Email hoặc mật khẩu không đúng.',
   signInFailed: 'Đăng nhập không thành công.',
+  emailNotVerified: 'Vui lòng xác thực email trước khi đăng nhập.',
+  emailVerifiedSuccess: 'Email đã được xác thực — vui lòng đăng nhập.',
+
+  registerTitle: 'Đăng ký',
+  confirmPasswordLabel: 'Xác nhận mật khẩu',
+  registerSubmit: 'Đăng ký',
+  registerSubmitting: 'Đang đăng ký...',
+  passwordMismatch: 'Mật khẩu xác nhận không khớp.',
+  passwordTooShort: 'Mật khẩu phải có ít nhất 8 ký tự.',
+  invalidEmail: 'Email không hợp lệ.',
+  emailInUse: 'Email đã được đăng ký.',
+  registrationFailed: 'Đăng ký không thành công.',
+  registrationSuccess: 'Kiểm tra email để xác thực tài khoản.',
+  verifyLinkInvalid: 'Liên kết xác thực không hợp lệ hoặc đã hết hạn.',
+  verificationEmailSubject: 'Xác thực email của bạn',
+  verificationEmailBody: 'Nhấn vào liên kết sau để xác thực email của bạn',
+
+  resendLink: 'Không nhận được email? Gửi lại',
+  resendSubmitting: 'Đang gửi lại...',
+  resendSuccess: 'Đã gửi lại email xác thực.',
+  resendFailed: 'Không thể gửi lại email xác thực. Vui lòng thử lại sau.',
 }
