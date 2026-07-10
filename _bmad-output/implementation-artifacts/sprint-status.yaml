@@ -54,7 +54,7 @@ development_status:
   1-2-complete-prisma-schema-database-infrastructure: done
   1-3-nextauth-v5-authentication-infrastructure: done
   1-4-parent-account-registration-email-verification: done
-  1-5-parent-login-post-auth-parent-shell: backlog
+  1-5-parent-login-post-auth-parent-shell: done
   epic-1-retrospective: optional
 
   # ── Epic 2: Child Profile Management ────────────────────────────────────────

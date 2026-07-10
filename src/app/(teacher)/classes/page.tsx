@@ -1,3 +1,3 @@
 export default function TeacherClassesPage() {
-  return <main>Teacher classes — coming soon</main>
+  return <main>Teacher Portal — coming soon</main>
 }
