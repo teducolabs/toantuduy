@@ -1,21 +1,50 @@
-// TODO: Implemented in Story 1.3 — child profile cookie management
 // childProfileId is stored in a signed, httpOnly session cookie — NOT in the NextAuth JWT
-import type { cookies } from 'next/headers'
+import crypto from 'crypto'
+import type { NextResponse } from 'next/server'
+import type { headers } from 'next/headers'
+import { env } from '@/lib/env'
 
-// Derive type from the public next/headers API to avoid unstable internal paths
-type CookieStore = Awaited<ReturnType<typeof cookies>>
+// Derive from the public next/headers API — avoid unstable Next.js internal types.
+type HeadersLike = Awaited<ReturnType<typeof headers>>
 
-const _COOKIE_NAME = 'child-profile-id'
+const COOKIE_NAME = 'child-profile-id'
 
-export function setChildProfileCookie(
-  _cookies: CookieStore,
-  _childProfileId: string
-): void {
-  throw new Error('Not yet implemented — Story 1.3')
+function sign(profileId: string): string {
+  return crypto.createHmac('sha256', env.NEXTAUTH_SECRET).update(profileId).digest('hex')
 }
 
-export function getChildProfileId(
-  _cookies: CookieStore
-): string | null {
-  throw new Error('Not yet implemented — Story 1.3')
+export function setChildProfileCookie(profileId: string, response: NextResponse): void {
+  const signature = sign(profileId)
+  response.cookies.set(COOKIE_NAME, `${profileId}.${signature}`, {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+    path: '/',
+  })
+}
+
+export function getChildProfileId(requestHeaders: HeadersLike): string | null {
+  const cookieHeader = requestHeaders.get('cookie')
+  if (!cookieHeader) return null
+
+  const match = cookieHeader
+    .split(';')
+    .map((entry) => entry.trim())
+    .find((entry) => entry.startsWith(`${COOKIE_NAME}=`))
+  if (!match) return null
+
+  const value = match.slice(COOKIE_NAME.length + 1)
+  const separatorIndex = value.lastIndexOf('.')
+  if (separatorIndex === -1) return null
+
+  const profileId = value.slice(0, separatorIndex)
+  const signature = value.slice(separatorIndex + 1)
+  const expectedSignature = sign(profileId)
+
+  const signatureBuffer = Buffer.from(signature)
+  const expectedBuffer = Buffer.from(expectedSignature)
+  if (signatureBuffer.length !== expectedBuffer.length) return null
+  if (!crypto.timingSafeEqual(signatureBuffer, expectedBuffer)) return null
+
+  return profileId
 }

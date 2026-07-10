@@ -1,5 +1,10 @@
 # Deferred Work
 
+## Deferred from: code review of 1-3-nextauth-v5-authentication-infrastructure (2026-07-10)
+
+- No rate limiting / brute-force protection on the credentials login path (`src/lib/auth.ts`) — not required by this story's ACs, but a real gap on a platform serving minors; revisit when middleware/infra-level throttling is introduced.
+- Google-provider email lookup (`db.user.findUnique({ where: { email: user.email } })` in `src/lib/auth.ts`) is case-sensitive with no normalization visible in this diff — depends on how Story 1.4's registration flow stores/normalizes email; revisit once 1.4 lands.
+
 ## Deferred from: code review of 1-2-complete-prisma-schema-database-infrastructure (2026-07-10)
 
 - `DATABASE_URL` (direct) resolves to a shared Supavisor session-mode pooler rather than a true direct connection — accepted as a documented workaround for now (real direct host is IPv6-only, unreachable from the dev network); revisit if the Supabase IPv4 add-on is purchased before scaling production traffic
