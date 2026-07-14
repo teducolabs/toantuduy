@@ -11,6 +11,8 @@ export const auth = {
   signInFailed: 'Đăng nhập không thành công.',
   emailNotVerified: 'Vui lòng xác thực email trước khi đăng nhập.',
   emailVerifiedSuccess: 'Email đã được xác thực — vui lòng đăng nhập.',
+  showPassword: 'Hiện mật khẩu',
+  hidePassword: 'Ẩn mật khẩu',
 
   registerTitle: 'Đăng ký',
   confirmPasswordLabel: 'Xác nhận mật khẩu',

@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
+import { Eye, EyeOff } from 'lucide-react'
 import { auth } from '@/locales/vi/auth'
 
 export function LoginFormSkeleton() {
@@ -21,6 +22,7 @@ export function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -94,16 +96,27 @@ export function LoginForm() {
           <label htmlFor="password" className="text-body">
             {auth.passwordLabel}
           </label>
-          <input
-            id="password"
-            name="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            className="rounded-brand-sm border border-gray-300 px-3 py-2"
-          />
+          <div className="relative">
+            <input
+              id="password"
+              name="password"
+              type={isPasswordVisible ? 'text' : 'password'}
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              className="w-full rounded-brand-sm border border-gray-300 px-3 py-2 pr-10"
+            />
+            <button
+              type="button"
+              onClick={() => setIsPasswordVisible((visible) => !visible)}
+              aria-label={isPasswordVisible ? auth.hidePassword : auth.showPassword}
+              aria-pressed={isPasswordVisible}
+              className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+            >
+              {isPasswordVisible ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         {error && (

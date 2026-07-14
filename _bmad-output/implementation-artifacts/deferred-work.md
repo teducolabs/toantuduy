@@ -36,3 +36,9 @@
 - Route group layouts absent for `(parent)`, `(student)`, `(teacher)` — per-role layouts (including auth guards) added in per-role stories, not this foundation story
 - Stub pages render inline English strings instead of `src/locales/vi/` keys — stubs only; locale keys added in each feature story when actual content is implemented
 - `NEXTAUTH_SECRET` Zod validator checks character count not entropy — low operational risk; enforce strong secret generation (e.g., `openssl rand -base64 32`) in deployment runbook
+
+## Deferred from: code review of spec-login-password-visibility-toggle (2026-07-14)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-login-password-visibility-toggle.md`
+  summary: `src/app/register/page.tsx`'s two password fields (`password`, `confirmPassword`) have no show/hide toggle, unlike the login form.
+  evidence: Pre-existing gap not touched by this change; adding parity would be a separate UI change to a different page/form.
