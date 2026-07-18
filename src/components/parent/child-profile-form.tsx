@@ -19,7 +19,7 @@ type ChildProfileFormProps =
 export function ChildProfileForm(props: ChildProfileFormProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState(props.mode === 'edit' ? props.initialName : '')
-  const [gradeBand, setGradeBand] = useState<GradeBand | null>(props.mode === 'edit' ? props.initialGradeBand : null)
+  const [gradeBand, setGradeBand] = useState<GradeBand | ''>(props.mode === 'edit' ? props.initialGradeBand : '')
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -31,7 +31,7 @@ export function ChildProfileForm(props: ChildProfileFormProps) {
     if (!nextOpen) {
       if (props.mode === 'create') {
         setName('')
-        setGradeBand(null)
+        setGradeBand('')
       } else {
         setName(props.initialName)
         setGradeBand(props.initialGradeBand)
@@ -101,7 +101,7 @@ export function ChildProfileForm(props: ChildProfileFormProps) {
 
           <div className="flex flex-col gap-1">
             <Label htmlFor="child-profile-grade-band">{profiles.gradeBandLabel}</Label>
-            <Select value={gradeBand ?? undefined} onValueChange={(value) => setGradeBand(value as GradeBand)}>
+            <Select value={gradeBand} onValueChange={(value) => setGradeBand(value as GradeBand)}>
               <SelectTrigger id="child-profile-grade-band" className="w-full" aria-describedby={error ? errorId : undefined}>
                 <SelectValue placeholder={profiles.gradeBandPlaceholder} />
               </SelectTrigger>

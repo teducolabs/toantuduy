@@ -61,7 +61,7 @@ development_status:
   epic-2: in-progress
   2-1-create-manage-child-profiles: done
   2-2-child-profile-switch-student-surface-entry: done
-  2-3-student-home-screen-shell: backlog
+  2-3-student-home-screen-shell: done
   epic-2-retrospective: optional
 
   # ── Epic 3: Student Practice Interface & Adaptive Difficulty ────────────────

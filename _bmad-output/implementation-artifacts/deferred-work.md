@@ -1,5 +1,12 @@
 # Deferred Work
 
+## Deferred from: code review of 2-3-student-home-screen-shell (2026-07-18)
+
+- `rounded-brand-xl` applied via `className` may not reliably override `Card`'s hardcoded `rounded-xl` — default `tailwind-merge` config doesn't recognize the custom `rounded-brand-*` tokens as conflicting with `rounded-xl`, so final visual precedence depends on compiled CSS rule order, not class order. Same pattern already exists pre-existing in `src/components/parent/child-profile-switcher.tsx:48` (`rounded-brand-sm` on a `Button` with hardcoded `rounded-lg`) — systemic, not introduced by this story.
+- `student.greeting` has no guard for an empty or unbounded `name` (pre-existing behavior, unchanged by this diff beyond adding "! 👋").
+- No automated test coverage exists for any acceptance criteria in this story (pre-existing, repo-wide — no test framework set up yet).
+- `next build` fails in-sandbox on the Prisma-CLI `DATABASE_URL` step for the third story in a row, with `next build` used as a workaround each time instead of fixing the root cause.
+
 ## Deferred from: code review of 2-2-child-profile-switch-student-surface-entry (2026-07-18)
 
 - No test coverage added for the new `switchActiveChildProfileAction` ownership check, cookie-signing (`src/lib/child-profile-cookie.ts`), or the `(student)` route group's cookie-gating logic — no test framework exists in this repo yet; the Epic 1 retrospective action item already tracks adding one before Epic 3, not this story.
