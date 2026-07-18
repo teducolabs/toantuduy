@@ -1,5 +1,11 @@
 # Deferred Work
 
+## Deferred from: code review of 3-1-adaptive-difficulty-domain-use-case (2026-07-18)
+
+- Difficulty target in `selectNextQuestion` is anchored to `DEFAULT_DIFFICULTY_LEVEL ± 1`, never relative to a Skill's last-presented level — Questions can never reach Difficulty Level 4 or 5, and `MIN_DIFFICULTY_LEVEL`/`MAX_DIFFICULTY_LEVEL` are effectively dead code for this reason. Accepted: the [1,3] range is the intended scope for this story; full 1–5 progression (tracking each Skill's last-presented level, likely via `SkillAccuracyWindow` or an added parameter) is deferred to a later story/architecture change.
+- `skillAccuracyHistory` entries for Skills entirely absent from `availableQuestions` can still be selected by the weighted pick in `selectNextQuestion`, forcing an untargeted fallback pick — untested; best verified once Story 3.2's repository actually supplies this data end-to-end.
+- `SkillAccuracyWindow`'s "oldest first" ordering is a documented convention with no structural enforcement; `SessionAnswer` has no timestamp/sequence field to derive true order from — best addressed once Story 3.2 builds the actual construction path from DB rows.
+
 ## Deferred from: code review of 2-3-student-home-screen-shell (2026-07-18)
 
 - `rounded-brand-xl` applied via `className` may not reliably override `Card`'s hardcoded `rounded-xl` — default `tailwind-merge` config doesn't recognize the custom `rounded-brand-*` tokens as conflicting with `rounded-xl`, so final visual precedence depends on compiled CSS rule order, not class order. Same pattern already exists pre-existing in `src/components/parent/child-profile-switcher.tsx:48` (`rounded-brand-sm` on a `Button` with hardcoded `rounded-lg`) — systemic, not introduced by this story.
