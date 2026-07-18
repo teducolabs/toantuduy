@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Baloo_2, Be_Vietnam_Pro } from 'next/font/google'
+import { Toaster } from '@/components/ui/sonner'
 import './globals.css'
 
 const baloo2 = Baloo_2({
@@ -28,7 +29,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi" suppressHydrationWarning className={`${baloo2.variable} ${beVietnamPro.variable}`}>
-      <body className="font-sans">{children}</body>
+      <body className="font-sans">
+        {children}
+        <Toaster />
+      </body>
     </html>
   )
 }
