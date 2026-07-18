@@ -9,7 +9,7 @@
     "lint": "next lint",
     "test": "vitest run",
     "postinstall": "prisma generate",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "dotenv -e .env.local -- tsx prisma/seed.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
@@ -34,6 +34,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv-cli": "^11.0.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.9",
     "prisma": "^5.22.0",
@@ -43,6 +44,6 @@
     "vitest": "^4.1.10"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "dotenv -e .env.local -- tsx prisma/seed.ts"
   }
 }
