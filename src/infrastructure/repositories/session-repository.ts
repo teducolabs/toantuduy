@@ -57,6 +57,38 @@ export async function completeSession(sessionId: string): Promise<Session> {
   return toDomainSession(session)
 }
 
+// Asia/Ho_Chi_Minh is a fixed UTC+7 offset (no DST) — plain millisecond
+// arithmetic, no Intl.DateTimeFormat timezone conversion needed.
+const VN_OFFSET_MS = 7 * 3600_000
+
+export function computeVnDayBoundaryUtc(now: Date): { todayStartUtc: Date; todayEndUtc: Date } {
+  const nowVn = new Date(now.getTime() + VN_OFFSET_MS)
+  const vnMidnightUtcMs = Date.UTC(nowVn.getUTCFullYear(), nowVn.getUTCMonth(), nowVn.getUTCDate()) - VN_OFFSET_MS
+  const todayStartUtc = new Date(vnMidnightUtcMs)
+  const todayEndUtc = new Date(vnMidnightUtcMs + 24 * 3600_000)
+  return { todayStartUtc, todayEndUtc }
+}
+
+// Formats a UTC instant that represents a VN calendar-day boundary (e.g.
+// `todayEndUtc` from computeVnDayBoundaryUtc) as a `dd/MM/yyyy` VN date label.
+export function formatVnDateLabel(instantUtc: Date): string {
+  const vnInstant = new Date(instantUtc.getTime() + VN_OFFSET_MS)
+  const day = String(vnInstant.getUTCDate()).padStart(2, '0')
+  const month = String(vnInstant.getUTCMonth() + 1).padStart(2, '0')
+  const year = vnInstant.getUTCFullYear()
+  return `${day}/${month}/${year}`
+}
+
+export async function countQuestionsAnsweredToday(childProfileId: string): Promise<number> {
+  const { todayStartUtc, todayEndUtc } = computeVnDayBoundaryUtc(new Date())
+  return db.sessionAnswer.count({
+    where: {
+      session: { childProfileId },
+      answeredAt: { gte: todayStartUtc, lt: todayEndUtc },
+    },
+  })
+}
+
 export async function getSkillAccuracyHistory(childProfileId: string, skillId: string): Promise<SkillAccuracyWindow> {
   const rows = await db.sessionAnswer.findMany({
     where: {

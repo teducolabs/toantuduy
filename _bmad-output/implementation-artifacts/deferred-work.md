@@ -1,5 +1,11 @@
 # Deferred Work
 
+## Deferred from: code review of 3-3-session-start-free-tier-daily-gate (2026-07-18)
+
+- `hasActiveSubscription` (`src/infrastructure/repositories/subscription-repository.ts`) checks only `status === 'ACTIVE'` with no expiry/grace-period awareness — matches Task 2's spec exactly for this story; correctness depends on Epic 6's billing webhook keeping `status` current, which doesn't exist yet.
+- Per-Skill `getSkillAccuracyHistory` fan-out in `selectSessionQuestionIds` (`src/app/(student)/session-question-selection.ts`) fires one query per distinct `skillId` via `Promise.all` — N+1-shaped, but mandated by Task 4's spec instructions verbatim; a batching pass is a future perf concern, not this story's bug.
+- Zero test coverage on `startSessionAction`/`getSessionStartGateState` (the free-tier gate itself) in `src/app/(student)/actions.ts` — the story's Dev Notes only mandated testing the VN timezone-boundary math, which was done; the gate composition logic (subscription bypass, allotment check, error paths) has no unit tests.
+
 ## Deferred from: code review of 3-2-question-session-repository-infrastructure (2026-07-18)
 
 - `createSession` doesn't expose per-question `SessionAnswer` ids that `recordAnswer` requires — deferred, pre-existing spec design (AC #2 signatures are locked as specified); Story 3.3 will need a way to look up a `SessionAnswer.id` by `(sessionId, questionId)` before it can call `recordAnswer` — no such lookup exists yet in either repository.
