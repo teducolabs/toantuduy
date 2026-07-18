@@ -128,7 +128,7 @@ model ClassMembership {
 
 model Skill {
   id        String   @id @default(cuid())
-  code      String   @unique // upsert key — see epics.md "v1 Skill Enumeration"; seeded in Story 7.5, not this story
+  code      String   @unique // upsert key — see epics.md "v1 Skill Enumeration"; seeded in Story 3.2 (full Question corpus follows in Story 7.5)
   name      String // Vietnamese display name — duplicated into src/locales/vi/skills.ts per epics.md, DB copy is for joins/admin only
   createdAt DateTime @default(now())
 
@@ -178,6 +178,7 @@ model SessionAnswer {
   difficultyLevelAtAnswer Int?
   answeredAt              DateTime?
 
+  @@unique([sessionId, questionId])
   @@index([questionId])
 }
 

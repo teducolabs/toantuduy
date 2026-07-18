@@ -68,7 +68,7 @@ development_status:
   # ── Epic 3: Student Practice Interface & Adaptive Difficulty ────────────────
   epic-3: in-progress
   3-1-adaptive-difficulty-domain-use-case: done
-  3-2-question-session-repository-infrastructure: backlog
+  3-2-question-session-repository-infrastructure: done
   3-3-session-start-free-tier-daily-gate: backlog
   3-4-question-display-answer-submission: backlog
   3-5-immediate-feedback-mascot-reactions: backlog

@@ -1,0 +1,2522 @@
+[
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 2, 4, 6, ?, 10",
+    "imageUrl": null,
+    "choices": [
+      "8",
+      "9",
+      "10",
+      "7"
+    ],
+    "correctAnswer": "8"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 3, 5, 7, ?, 11",
+    "imageUrl": null,
+    "choices": [
+      "9",
+      "10",
+      "11",
+      "8"
+    ],
+    "correctAnswer": "9"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 4, 6, 8, ?, 12",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 4, 6, 8, ?, 12",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 5, 7, 9, ?, 13",
+    "imageUrl": null,
+    "choices": [
+      "11",
+      "12",
+      "13",
+      "10"
+    ],
+    "correctAnswer": "11"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 6, 8, 10, ?, 14",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 6, 8, 10, ?, 14",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 7, 9, 11, ?, 15",
+    "imageUrl": null,
+    "choices": [
+      "13",
+      "14",
+      "15",
+      "12"
+    ],
+    "correctAnswer": "13"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 8, 10, 12, ?, 16",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 8, 10, 12, ?, 16",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 9, 11, 13, ?, 17",
+    "imageUrl": null,
+    "choices": [
+      "15",
+      "16",
+      "17",
+      "14"
+    ],
+    "correctAnswer": "15"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 10, 12, 14, ?, 18",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 10, 12, 14, ?, 18",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 11, 13, 15, ?, 19",
+    "imageUrl": null,
+    "choices": [
+      "17",
+      "18",
+      "19",
+      "16"
+    ],
+    "correctAnswer": "17"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 12, 14, 16, ?, 20",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 90 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "8",
+      "9",
+      "10",
+      "7"
+    ],
+    "correctAnswer": "8"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 135 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "9",
+      "10",
+      "11",
+      "8"
+    ],
+    "correctAnswer": "9"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 180 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 180 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 225 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "11",
+      "12",
+      "13",
+      "10"
+    ],
+    "correctAnswer": "11"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 270 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 270 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 315 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "13",
+      "14",
+      "15",
+      "12"
+    ],
+    "correctAnswer": "13"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 360 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 360 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 405 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "15",
+      "16",
+      "17",
+      "14"
+    ],
+    "correctAnswer": "15"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 450 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 450 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 495 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "17",
+      "18",
+      "19",
+      "16"
+    ],
+    "correctAnswer": "17"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 540 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 2 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "8",
+      "9",
+      "10",
+      "7"
+    ],
+    "correctAnswer": "8"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 3 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "9",
+      "10",
+      "11",
+      "8"
+    ],
+    "correctAnswer": "9"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 4 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 4 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 5 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "11",
+      "12",
+      "13",
+      "10"
+    ],
+    "correctAnswer": "11"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 6 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 6 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 7 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "13",
+      "14",
+      "15",
+      "12"
+    ],
+    "correctAnswer": "13"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 8 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 8 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 9 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "15",
+      "16",
+      "17",
+      "14"
+    ],
+    "correctAnswer": "15"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 10 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 10 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 11 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "17",
+      "18",
+      "19",
+      "16"
+    ],
+    "correctAnswer": "17"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 12 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "An có 2 viên bi, cho bạn 1 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "8",
+      "9",
+      "10",
+      "7"
+    ],
+    "correctAnswer": "8"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "An có 3 viên bi, cho bạn 1 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "9",
+      "10",
+      "11",
+      "8"
+    ],
+    "correctAnswer": "9"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 1,
+    "prompt": "An có 4 viên bi, cho bạn 2 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "An có 4 viên bi, cho bạn 2 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "10",
+      "11",
+      "12",
+      "9"
+    ],
+    "correctAnswer": "10"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "An có 5 viên bi, cho bạn 3 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "11",
+      "12",
+      "13",
+      "10"
+    ],
+    "correctAnswer": "11"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 2,
+    "prompt": "An có 6 viên bi, cho bạn 4 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "An có 6 viên bi, cho bạn 4 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "12",
+      "13",
+      "14",
+      "11"
+    ],
+    "correctAnswer": "12"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "An có 7 viên bi, cho bạn 5 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "13",
+      "14",
+      "15",
+      "12"
+    ],
+    "correctAnswer": "13"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 3,
+    "prompt": "An có 8 viên bi, cho bạn 6 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "An có 8 viên bi, cho bạn 6 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "14",
+      "15",
+      "16",
+      "13"
+    ],
+    "correctAnswer": "14"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "An có 9 viên bi, cho bạn 7 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "15",
+      "16",
+      "17",
+      "14"
+    ],
+    "correctAnswer": "15"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 4,
+    "prompt": "An có 10 viên bi, cho bạn 8 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "An có 10 viên bi, cho bạn 8 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "16",
+      "17",
+      "18",
+      "15"
+    ],
+    "correctAnswer": "16"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "An có 11 viên bi, cho bạn 9 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "17",
+      "18",
+      "19",
+      "16"
+    ],
+    "correctAnswer": "17"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_1",
+    "difficultyLevel": 5,
+    "prompt": "An có 12 viên bi, cho bạn 10 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 12, 14, 16, ?, 20",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 13, 15, 17, ?, 21",
+    "imageUrl": null,
+    "choices": [
+      "19",
+      "20",
+      "21",
+      "18"
+    ],
+    "correctAnswer": "19"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 14, 16, 18, ?, 22",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 14, 16, 18, ?, 22",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 15, 17, 19, ?, 23",
+    "imageUrl": null,
+    "choices": [
+      "21",
+      "22",
+      "23",
+      "20"
+    ],
+    "correctAnswer": "21"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 16, 18, 20, ?, 24",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 16, 18, 20, ?, 24",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 17, 19, 21, ?, 25",
+    "imageUrl": null,
+    "choices": [
+      "23",
+      "24",
+      "25",
+      "22"
+    ],
+    "correctAnswer": "23"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 18, 20, 22, ?, 26",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 18, 20, 22, ?, 26",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 19, 21, 23, ?, 27",
+    "imageUrl": null,
+    "choices": [
+      "25",
+      "26",
+      "27",
+      "24"
+    ],
+    "correctAnswer": "25"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 20, 22, 24, ?, 28",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 20, 22, 24, ?, 28",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 21, 23, 25, ?, 29",
+    "imageUrl": null,
+    "choices": [
+      "27",
+      "28",
+      "29",
+      "26"
+    ],
+    "correctAnswer": "27"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 22, 24, 26, ?, 30",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 540 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 585 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "19",
+      "20",
+      "21",
+      "18"
+    ],
+    "correctAnswer": "19"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 630 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 630 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 675 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "21",
+      "22",
+      "23",
+      "20"
+    ],
+    "correctAnswer": "21"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 720 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 720 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 765 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "23",
+      "24",
+      "25",
+      "22"
+    ],
+    "correctAnswer": "23"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 810 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 810 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 855 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "25",
+      "26",
+      "27",
+      "24"
+    ],
+    "correctAnswer": "25"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 900 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 900 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 945 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "27",
+      "28",
+      "29",
+      "26"
+    ],
+    "correctAnswer": "27"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 990 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 12 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 13 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "19",
+      "20",
+      "21",
+      "18"
+    ],
+    "correctAnswer": "19"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 14 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 14 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 15 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "21",
+      "22",
+      "23",
+      "20"
+    ],
+    "correctAnswer": "21"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 16 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 16 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 17 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "23",
+      "24",
+      "25",
+      "22"
+    ],
+    "correctAnswer": "23"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 18 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 18 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 19 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "25",
+      "26",
+      "27",
+      "24"
+    ],
+    "correctAnswer": "25"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 20 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 20 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 21 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "27",
+      "28",
+      "29",
+      "26"
+    ],
+    "correctAnswer": "27"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 22 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "An có 12 viên bi, cho bạn 10 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "18",
+      "19",
+      "20",
+      "17"
+    ],
+    "correctAnswer": "18"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "An có 13 viên bi, cho bạn 11 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "19",
+      "20",
+      "21",
+      "18"
+    ],
+    "correctAnswer": "19"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 1,
+    "prompt": "An có 14 viên bi, cho bạn 12 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "An có 14 viên bi, cho bạn 12 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "20",
+      "21",
+      "22",
+      "19"
+    ],
+    "correctAnswer": "20"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "An có 15 viên bi, cho bạn 13 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "21",
+      "22",
+      "23",
+      "20"
+    ],
+    "correctAnswer": "21"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 2,
+    "prompt": "An có 16 viên bi, cho bạn 14 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "An có 16 viên bi, cho bạn 14 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "22",
+      "23",
+      "24",
+      "21"
+    ],
+    "correctAnswer": "22"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "An có 17 viên bi, cho bạn 15 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "23",
+      "24",
+      "25",
+      "22"
+    ],
+    "correctAnswer": "23"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 3,
+    "prompt": "An có 18 viên bi, cho bạn 16 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "An có 18 viên bi, cho bạn 16 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "24",
+      "25",
+      "26",
+      "23"
+    ],
+    "correctAnswer": "24"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "An có 19 viên bi, cho bạn 17 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "25",
+      "26",
+      "27",
+      "24"
+    ],
+    "correctAnswer": "25"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 4,
+    "prompt": "An có 20 viên bi, cho bạn 18 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "An có 20 viên bi, cho bạn 18 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "26",
+      "27",
+      "28",
+      "25"
+    ],
+    "correctAnswer": "26"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "An có 21 viên bi, cho bạn 19 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "27",
+      "28",
+      "29",
+      "26"
+    ],
+    "correctAnswer": "27"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_2",
+    "difficultyLevel": 5,
+    "prompt": "An có 22 viên bi, cho bạn 20 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 22, 24, 26, ?, 30",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 23, 25, 27, ?, 31",
+    "imageUrl": null,
+    "choices": [
+      "29",
+      "30",
+      "31",
+      "28"
+    ],
+    "correctAnswer": "29"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Điền số còn thiếu vào dãy: 24, 26, 28, ?, 32",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 24, 26, 28, ?, 32",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 25, 27, 29, ?, 33",
+    "imageUrl": null,
+    "choices": [
+      "31",
+      "32",
+      "33",
+      "30"
+    ],
+    "correctAnswer": "31"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Điền số còn thiếu vào dãy: 26, 28, 30, ?, 34",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 26, 28, 30, ?, 34",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 27, 29, 31, ?, 35",
+    "imageUrl": null,
+    "choices": [
+      "33",
+      "34",
+      "35",
+      "32"
+    ],
+    "correctAnswer": "33"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Điền số còn thiếu vào dãy: 28, 30, 32, ?, 36",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 28, 30, 32, ?, 36",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 29, 31, 33, ?, 37",
+    "imageUrl": null,
+    "choices": [
+      "35",
+      "36",
+      "37",
+      "34"
+    ],
+    "correctAnswer": "35"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Điền số còn thiếu vào dãy: 30, 32, 34, ?, 38",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 30, 32, 34, ?, 38",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 31, 33, 35, ?, 39",
+    "imageUrl": null,
+    "choices": [
+      "37",
+      "38",
+      "39",
+      "36"
+    ],
+    "correctAnswer": "37"
+  },
+  {
+    "skillCode": "pattern-recognition",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Điền số còn thiếu vào dãy: 32, 34, 36, ?, 40",
+    "imageUrl": null,
+    "choices": [
+      "38",
+      "39",
+      "40",
+      "37"
+    ],
+    "correctAnswer": "38"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 990 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 1035 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "29",
+      "30",
+      "31",
+      "28"
+    ],
+    "correctAnswer": "29"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Hình nào sau đây xoay 1080 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 1080 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 1125 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "31",
+      "32",
+      "33",
+      "30"
+    ],
+    "correctAnswer": "31"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Hình nào sau đây xoay 1170 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 1170 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 1215 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "33",
+      "34",
+      "35",
+      "32"
+    ],
+    "correctAnswer": "33"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Hình nào sau đây xoay 1260 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 1260 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 1305 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "35",
+      "36",
+      "37",
+      "34"
+    ],
+    "correctAnswer": "35"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Hình nào sau đây xoay 1350 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 1350 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 1395 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "37",
+      "38",
+      "39",
+      "36"
+    ],
+    "correctAnswer": "37"
+  },
+  {
+    "skillCode": "spatial-reasoning",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Hình nào sau đây xoay 1440 độ khớp với hình mẫu?",
+    "imageUrl": null,
+    "choices": [
+      "38",
+      "39",
+      "40",
+      "37"
+    ],
+    "correctAnswer": "38"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 22 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 23 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "29",
+      "30",
+      "31",
+      "28"
+    ],
+    "correctAnswer": "29"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "Vật nào không cùng nhóm với 24 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 24 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 25 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "31",
+      "32",
+      "33",
+      "30"
+    ],
+    "correctAnswer": "31"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "Vật nào không cùng nhóm với 26 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 26 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 27 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "33",
+      "34",
+      "35",
+      "32"
+    ],
+    "correctAnswer": "33"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "Vật nào không cùng nhóm với 28 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 28 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 29 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "35",
+      "36",
+      "37",
+      "34"
+    ],
+    "correctAnswer": "35"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "Vật nào không cùng nhóm với 30 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 30 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 31 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "37",
+      "38",
+      "39",
+      "36"
+    ],
+    "correctAnswer": "37"
+  },
+  {
+    "skillCode": "classification",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "Vật nào không cùng nhóm với 32 vật còn lại?",
+    "imageUrl": null,
+    "choices": [
+      "38",
+      "39",
+      "40",
+      "37"
+    ],
+    "correctAnswer": "38"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "An có 22 viên bi, cho bạn 20 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "28",
+      "29",
+      "30",
+      "27"
+    ],
+    "correctAnswer": "28"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "An có 23 viên bi, cho bạn 21 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "29",
+      "30",
+      "31",
+      "28"
+    ],
+    "correctAnswer": "29"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 1,
+    "prompt": "An có 24 viên bi, cho bạn 22 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "An có 24 viên bi, cho bạn 22 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "30",
+      "31",
+      "32",
+      "29"
+    ],
+    "correctAnswer": "30"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "An có 25 viên bi, cho bạn 23 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "31",
+      "32",
+      "33",
+      "30"
+    ],
+    "correctAnswer": "31"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 2,
+    "prompt": "An có 26 viên bi, cho bạn 24 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "An có 26 viên bi, cho bạn 24 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "32",
+      "33",
+      "34",
+      "31"
+    ],
+    "correctAnswer": "32"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "An có 27 viên bi, cho bạn 25 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "33",
+      "34",
+      "35",
+      "32"
+    ],
+    "correctAnswer": "33"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 3,
+    "prompt": "An có 28 viên bi, cho bạn 26 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "An có 28 viên bi, cho bạn 26 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "34",
+      "35",
+      "36",
+      "33"
+    ],
+    "correctAnswer": "34"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "An có 29 viên bi, cho bạn 27 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "35",
+      "36",
+      "37",
+      "34"
+    ],
+    "correctAnswer": "35"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 4,
+    "prompt": "An có 30 viên bi, cho bạn 28 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "An có 30 viên bi, cho bạn 28 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "36",
+      "37",
+      "38",
+      "35"
+    ],
+    "correctAnswer": "36"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "An có 31 viên bi, cho bạn 29 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "37",
+      "38",
+      "39",
+      "36"
+    ],
+    "correctAnswer": "37"
+  },
+  {
+    "skillCode": "word-problem",
+    "gradeBand": "GRADE_3",
+    "difficultyLevel": 5,
+    "prompt": "An có 32 viên bi, cho bạn 30 viên. Hỏi An còn lại bao nhiêu viên bi?",
+    "imageUrl": null,
+    "choices": [
+      "38",
+      "39",
+      "40",
+      "37"
+    ],
+    "correctAnswer": "38"
+  }
+]

@@ -1,5 +1,10 @@
 # Deferred Work
 
+## Deferred from: code review of 3-2-question-session-repository-infrastructure (2026-07-18)
+
+- `createSession` doesn't expose per-question `SessionAnswer` ids that `recordAnswer` requires — deferred, pre-existing spec design (AC #2 signatures are locked as specified); Story 3.3 will need a way to look up a `SessionAnswer.id` by `(sessionId, questionId)` before it can call `recordAnswer` — no such lookup exists yet in either repository.
+- `completeSession` doesn't verify all stub answers are filled before marking `completedAt` — deferred, pre-existing; whether early/partial completion is allowed is a business-policy decision that belongs in a future use-case/server-action layer (AD-2), not this story's repository.
+
 ## Deferred from: code review of 3-1-adaptive-difficulty-domain-use-case (2026-07-18)
 
 - Difficulty target in `selectNextQuestion` is anchored to `DEFAULT_DIFFICULTY_LEVEL ± 1`, never relative to a Skill's last-presented level — Questions can never reach Difficulty Level 4 or 5, and `MIN_DIFFICULTY_LEVEL`/`MAX_DIFFICULTY_LEVEL` are effectively dead code for this reason. Accepted: the [1,3] range is the intended scope for this story; full 1–5 progression (tracking each Skill's last-presented level, likely via `SkillAccuracyWindow` or an added parameter) is deferred to a later story/architecture change.
