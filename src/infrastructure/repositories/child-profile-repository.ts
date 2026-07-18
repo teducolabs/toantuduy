@@ -8,6 +8,18 @@ export function listChildProfiles(parentAccountId: string): Promise<ChildProfile
   })
 }
 
+export function findChildProfileById(id: string): Promise<ChildProfile | null> {
+  return db.childProfile.findFirst({
+    where: { id, deletedAt: null },
+  })
+}
+
+export function findChildProfileByIdForParent(id: string, parentAccountId: string): Promise<ChildProfile | null> {
+  return db.childProfile.findFirst({
+    where: { id, parentAccountId, deletedAt: null },
+  })
+}
+
 export function createChildProfile(parentAccountId: string, name: string, gradeBand: GradeBand): Promise<ChildProfile> {
   return db.childProfile.create({
     data: { parentAccountId, name, gradeBand },

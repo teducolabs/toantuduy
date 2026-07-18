@@ -2,6 +2,7 @@
 
 import { z } from 'zod'
 import { revalidatePath } from 'next/cache'
+import { cookies } from 'next/headers'
 import { auth } from '@/lib/auth'
 import { db } from '@/lib/db'
 import {
@@ -9,12 +10,14 @@ import {
   createChildProfile,
   updateChildProfile,
   softDeleteChildProfile,
+  findChildProfileById,
 } from '@/infrastructure/repositories/child-profile-repository'
+import { setChildProfileCookie } from '@/lib/child-profile-cookie'
 import type { ChildProfile, GradeBand } from '@prisma/client'
 
 type ActionResult<T> = { data: T } | { error: { code: string; message: string } }
 
-async function requireParentAccountId(): Promise<{ parentAccountId: string } | { error: { code: string; message: string } }> {
+export async function requireParentAccountId(): Promise<{ parentAccountId: string } | { error: { code: string; message: string } }> {
   const session = await auth()
   if (!session?.user || session.user.role !== 'PARENT') {
     return { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
@@ -115,4 +118,26 @@ export async function deleteChildProfileAction(input: { id: string }): Promise<A
   revalidatePath('/profiles', 'layout')
 
   return { data: { childProfile } }
+}
+
+const switchSchema = z.object({ id: z.string().min(1) })
+
+export async function switchActiveChildProfileAction(input: { id: string }): Promise<ActionResult<{ childProfileId: string }>> {
+  const resolved = await requireParentAccountId()
+  if ('error' in resolved) return resolved
+
+  const parsed = switchSchema.safeParse(input)
+  if (!parsed.success) {
+    return { error: { code: 'VALIDATION_ERROR', message: parsed.error.issues[0]?.message ?? 'Invalid input' } }
+  }
+
+  const childProfile = await findChildProfileById(parsed.data.id)
+  if (!childProfile || childProfile.parentAccountId !== resolved.parentAccountId) {
+    return { error: { code: 'NOT_FOUND', message: 'Child profile not found' } }
+  }
+
+  const cookieStore = await cookies()
+  await setChildProfileCookie(childProfile.id, cookieStore)
+
+  return { data: { childProfileId: childProfile.id } }
 }

@@ -1,5 +1,9 @@
 # Deferred Work
 
+## Deferred from: code review of 2-2-child-profile-switch-student-surface-entry (2026-07-18)
+
+- No test coverage added for the new `switchActiveChildProfileAction` ownership check, cookie-signing (`src/lib/child-profile-cookie.ts`), or the `(student)` route group's cookie-gating logic — no test framework exists in this repo yet; the Epic 1 retrospective action item already tracks adding one before Epic 3, not this story.
+
 ## Deferred from: code review of 1-4-parent-account-registration-email-verification (2026-07-10)
 
 - `/verify-email` (`src/app/verify-email/page.tsx`) mutates `emailVerified` on a bare GET request with no confirmation step — corporate email link-scanners (Outlook Safe Links, Gmail prefetch) could silently auto-verify accounts before the real user clicks. Accepted as-is for MVP: low risk for this app's audience (Vietnamese consumer/education app targeting parents; enterprise email security gateways unlikely). Revisit if real-world scanning issues surface.

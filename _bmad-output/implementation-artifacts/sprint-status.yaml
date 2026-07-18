@@ -60,7 +60,7 @@ development_status:
   # ── Epic 2: Child Profile Management ────────────────────────────────────────
   epic-2: in-progress
   2-1-create-manage-child-profiles: done
-  2-2-child-profile-switch-student-surface-entry: backlog
+  2-2-child-profile-switch-student-surface-entry: done
   2-3-student-home-screen-shell: backlog
   epic-2-retrospective: optional
 

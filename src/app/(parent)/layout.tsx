@@ -1,8 +1,11 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { headers } from 'next/headers'
 import type { ReactNode } from 'react'
 import { auth } from '@/lib/auth'
 import { listChildProfilesAction } from '@/app/(parent)/profiles/actions'
+import { getChildProfileId } from '@/lib/child-profile-cookie'
+import { signOutAction } from '@/lib/auth-actions'
 import { ChildProfileSwitcher } from '@/components/parent/child-profile-switcher'
 import { common } from '@/locales/vi/common'
 
@@ -24,6 +27,7 @@ export default async function ParentLayout({ children }: { children: ReactNode }
     redirect('/login')
   }
   const childProfiles = result.data.childProfiles
+  const activeProfileId = await getChildProfileId(await headers())
 
   return (
     <div className="min-h-screen pb-16 lg:flex lg:pb-0">
@@ -36,8 +40,13 @@ export default async function ParentLayout({ children }: { children: ReactNode }
       </nav>
 
       <div className="flex flex-1 flex-col">
-        <div className="flex justify-end border-b border-gray-200 px-4 py-3">
-          <ChildProfileSwitcher childProfiles={childProfiles} />
+        <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3">
+          <form action={signOutAction}>
+            <button type="submit" className="text-body text-muted-foreground">
+              {common.signOut}
+            </button>
+          </form>
+          <ChildProfileSwitcher childProfiles={childProfiles} activeProfileId={activeProfileId} />
         </div>
 
         <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6">{children}</main>

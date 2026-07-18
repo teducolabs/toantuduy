@@ -4,6 +4,7 @@ export const common = {
   parentNavProfiles: 'Hồ sơ',
   parentNavSubscription: 'Gói cước',
   parentNavAccount: 'Tài khoản',
+  signOut: 'Đăng xuất',
 
   teacherPendingApproval: 'Tài khoản đang chờ xét duyệt. Chúng tôi sẽ thông báo qua email.',
 }
