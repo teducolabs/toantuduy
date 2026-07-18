@@ -35,6 +35,7 @@ export function ChildProfileSwitcher({
         return
       }
       setOpen(false)
+      router.push('/')
       router.refresh()
     } catch {
       toast.error(profiles.switchFailed)

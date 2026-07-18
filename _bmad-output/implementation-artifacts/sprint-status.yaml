@@ -58,11 +58,11 @@ development_status:
   epic-1-retrospective: done
 
   # ── Epic 2: Child Profile Management ────────────────────────────────────────
-  epic-2: in-progress
+  epic-2: done
   2-1-create-manage-child-profiles: done
   2-2-child-profile-switch-student-surface-entry: done
   2-3-student-home-screen-shell: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
   # ── Epic 3: Student Practice Interface & Adaptive Difficulty ────────────────
   epic-3: backlog
@@ -117,11 +117,7 @@ action_items:
   - epic: 1
     action: "Keep writing a 'Previous Story Intelligence' section in every new story file"
     owner: "Amelia (Developer)"
-    status: open
-  - epic: 1
-    action: "Select and install a test framework (e.g. Vitest) before Epic 3 starts, so Story 3.1's 10+ unit-test AC has somewhere to land"
-    owner: "Dev team"
-    status: open
+    status: done
   - epic: 1
     action: "Add a unique constraint on SessionAnswer(sessionId, questionId) when implementing Story 3.2"
     owner: "Story 3.2 implementer"
@@ -137,4 +133,20 @@ action_items:
   - epic: 1
     action: "Reconcile the PRD's stale 'SSO out of scope for v1' note against the shipped reality (Google OAuth for Parents is in scope and working)"
     owner: "Alice (Product Owner)"
+    status: open
+  - epic: 2
+    action: "Install a test framework (e.g. Vitest) so Story 3.1's 10+ unit-test AC has somewhere to land"
+    owner: "Toan (Project Lead)"
+    status: open
+  - epic: 2
+    action: "Establish a live/manual browser verification pass before marking any Epic 3 story done (sandbox cannot do live QA; this gap let two UI bugs ship as done in Epic 2)"
+    owner: "Dev team"
+    status: open
+  - epic: 2
+    action: "Fix the epic-level status transition so it doesn't require manual retro-time correction (recurred from Epic 1 to Epic 2)"
+    owner: "Unassigned"
+    status: open
+  - epic: 2
+    action: "Resolve the rounded-brand-xl vs. tailwind-merge override risk (deferred in Story 2.2 and Story 2.3)"
+    owner: "Unassigned"
     status: open

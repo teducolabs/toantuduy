@@ -19,7 +19,7 @@ type ChildProfileFormProps =
 export function ChildProfileForm(props: ChildProfileFormProps) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState(props.mode === 'edit' ? props.initialName : '')
-  const [gradeBand, setGradeBand] = useState<GradeBand | ''>(props.mode === 'edit' ? props.initialGradeBand : '')
+  const [gradeBand, setGradeBand] = useState<GradeBand | null>(props.mode === 'edit' ? props.initialGradeBand : null)
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -31,7 +31,7 @@ export function ChildProfileForm(props: ChildProfileFormProps) {
     if (!nextOpen) {
       if (props.mode === 'create') {
         setName('')
-        setGradeBand('')
+        setGradeBand(null)
       } else {
         setName(props.initialName)
         setGradeBand(props.initialGradeBand)
