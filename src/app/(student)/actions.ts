@@ -10,8 +10,10 @@ import {
   createSession,
   computeVnDayBoundaryUtc,
   formatVnDateLabel,
+  recordAnswer,
 } from '@/infrastructure/repositories/session-repository'
 import { selectSessionQuestionIds } from '@/app/(student)/session-question-selection'
+import { db } from '@/lib/db'
 import { student } from '@/locales/vi/student'
 
 type ActionResult<T> = { data: T } | { error: { code: string; message: string } }
@@ -69,4 +71,38 @@ export async function getSessionStartGateState(
 
   const { todayEndUtc } = computeVnDayBoundaryUtc(new Date())
   return { blocked: true, tomorrowLabel: formatVnDateLabel(todayEndUtc) }
+}
+
+export async function submitAnswerAction(
+  sessionAnswerId: string,
+  selectedChoice: string,
+): Promise<ActionResult<{ correct: boolean }>> {
+  try {
+    const childProfileId = await getChildProfileId(await headers())
+    if (!childProfileId) {
+      return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
+    }
+
+    const sessionAnswer = await db.sessionAnswer.findUnique({
+      where: { id: sessionAnswerId },
+      include: { session: true, question: true },
+    })
+    if (!sessionAnswer || sessionAnswer.session.childProfileId !== childProfileId) {
+      return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
+    }
+
+    if (sessionAnswer.answeredAt !== null) {
+      return { error: { code: 'ALREADY_ANSWERED', message: student.alreadyAnsweredError } }
+    }
+
+    const answeredCorrectly = selectedChoice === sessionAnswer.question.correctAnswer
+    const recorded = await recordAnswer(sessionAnswerId, answeredCorrectly, sessionAnswer.question.difficultyLevel)
+    if (!recorded) {
+      return { error: { code: 'ALREADY_ANSWERED', message: student.alreadyAnsweredError } }
+    }
+
+    return { data: { correct: answeredCorrectly } }
+  } catch {
+    return { error: { code: 'INTERNAL_ERROR', message: student.genericSubmitAnswerError } }
+  }
 }

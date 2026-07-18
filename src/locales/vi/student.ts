@@ -10,4 +10,7 @@ export const student = {
   freeTierGateSubtitle: (tomorrowLabel: string) => `Quay lại luyện tiếp vào ngày ${tomorrowLabel} nhé!`,
   sessionProgressLabel: (current: number, total: number) => `${current} / ${total}`,
   noQuestionsAvailableError: 'Chưa có câu hỏi phù hợp cho buổi luyện này, vui lòng quay lại sau nhé.',
+  listenAgain: 'Nghe lại',
+  alreadyAnsweredError: 'Câu hỏi này đã được trả lời rồi.',
+  genericSubmitAnswerError: 'Không thể gửi câu trả lời, vui lòng thử lại.',
 }

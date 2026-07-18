@@ -1,5 +1,10 @@
 # Deferred Work
 
+## Deferred from: code review of 3-4-question-display-answer-submission (2026-07-18)
+
+- Session completion (`completeSession`) is never invoked from `submitAnswerAction` or anywhere in this diff — pre-existing scope boundary; story `3-6-session-completion-summary-accuracy-update` (currently `backlog` in sprint-status.yaml) owns session-completion behavior, this story only implements question display/answer submission.
+- No server-side validation that `selectedChoice` is a member of the question's actual choices (`src/app/(student)/actions.ts:99`) — low risk once the recommended atomic-update fix for the double-tap race lands (only the first successful write for a `sessionAnswerId` can ever record an answer); worth hardening later but not required by this story's spec.
+
 ## Deferred from: code review of 3-3-session-start-free-tier-daily-gate (2026-07-18)
 
 - `hasActiveSubscription` (`src/infrastructure/repositories/subscription-repository.ts`) checks only `status === 'ACTIVE'` with no expiry/grace-period awareness — matches Task 2's spec exactly for this story; correctness depends on Epic 6's billing webhook keeping `status` current, which doesn't exist yet.

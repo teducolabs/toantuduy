@@ -33,15 +33,18 @@ export async function createSession(childProfileId: string, questionIds: string[
   return toDomainSession(session)
 }
 
+// Conditioned on answeredAt: null so a concurrent double-tap/retry can only
+// ever record the answer once — the second racing write is a no-op.
 export async function recordAnswer(
   sessionAnswerId: string,
   answeredCorrectly: boolean,
   difficultyLevelAtAnswer: number,
-): Promise<void> {
-  await db.sessionAnswer.update({
-    where: { id: sessionAnswerId },
+): Promise<boolean> {
+  const { count } = await db.sessionAnswer.updateMany({
+    where: { id: sessionAnswerId, answeredAt: null },
     data: { answeredCorrectly, difficultyLevelAtAnswer, answeredAt: new Date() },
   })
+  return count > 0
 }
 
 export async function completeSession(sessionId: string): Promise<Session> {

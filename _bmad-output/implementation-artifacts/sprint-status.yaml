@@ -70,7 +70,7 @@ development_status:
   3-1-adaptive-difficulty-domain-use-case: done
   3-2-question-session-repository-infrastructure: done
   3-3-session-start-free-tier-daily-gate: done
-  3-4-question-display-answer-submission: backlog
+  3-4-question-display-answer-submission: done
   3-5-immediate-feedback-mascot-reactions: backlog
   3-6-session-completion-summary-accuracy-update: backlog
   3-7-session-state-preservation-offline-resilience: backlog
