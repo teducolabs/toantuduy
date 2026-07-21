@@ -76,7 +76,7 @@ export async function getSessionStartGateState(
 export async function submitAnswerAction(
   sessionAnswerId: string,
   selectedChoice: string,
-): Promise<ActionResult<{ correct: boolean }>> {
+): Promise<ActionResult<{ correct: boolean; correctAnswer: string }>> {
   try {
     const childProfileId = await getChildProfileId(await headers())
     if (!childProfileId) {
@@ -101,7 +101,10 @@ export async function submitAnswerAction(
       return { error: { code: 'ALREADY_ANSWERED', message: student.alreadyAnsweredError } }
     }
 
-    return { data: { correct: answeredCorrectly } }
+    // Safe to reveal: recordAnswer has already atomically committed this
+    // answer (updateMany where answeredAt: null), so the value cannot be
+    // used to answer. Error paths above return no answer data.
+    return { data: { correct: answeredCorrectly, correctAnswer: sessionAnswer.question.correctAnswer } }
   } catch {
     return { error: { code: 'INTERNAL_ERROR', message: student.genericSubmitAnswerError } }
   }

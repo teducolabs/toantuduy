@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72">
+  <!-- Cú (owl) mascot — gentle: soft eyes, small encouraging smile (soft smile, not sad). Flat placeholder, 3 colors. -->
+  <path d="M14 18 L22 6 L28 16 Z" fill="#F97316"/>
+  <path d="M58 18 L50 6 L44 16 Z" fill="#F97316"/>
+  <ellipse cx="36" cy="40" rx="26" ry="28" fill="#F97316"/>
+  <ellipse cx="36" cy="50" rx="15" ry="13" fill="#FFF7ED"/>
+  <circle cx="26" cy="30" r="9" fill="#FFF7ED"/>
+  <circle cx="46" cy="30" r="9" fill="#FFF7ED"/>
+  <ellipse cx="26" cy="31" rx="4" ry="3" fill="#431407"/>
+  <ellipse cx="46" cy="31" rx="4" ry="3" fill="#431407"/>
+  <path d="M33 40 L39 40 L36 45 Z" fill="#431407"/>
+  <path d="M31 50 Q36 54 41 50" stroke="#431407" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+</svg>

@@ -1,5 +1,11 @@
 # Deferred Work
 
+## Deferred from: code review of 3-5-immediate-feedback-mascot-reactions (2026-07-21)
+
+- Keyboard focus is dropped to `<body>` when feedback disables all answer buttons (`src/components/student/answer-button-grid.tsx`); the "Tiếp theo" button appears 500ms later but never receives focus — deferred to Story 3.8, which owns the accessibility floor sweep for the student surface.
+- The feedback flow's timer/race behavior (500ms next-button delay, 1.5s auto-advance, double-advance guard, final-question manual gate, `alreadyAnswered`-wins display rule in `src/components/student/question-card.tsx`) has no automated coverage; only the pure `computeAnswerButtonState` classifier is unit-tested. This story's accepted gate was a manual Playwright browser pass that cannot re-run in CI — revisit when component/timer testing is introduced.
+- `correctAnswer` in `submitAnswerAction`'s success payload composes with the still-deferred `selectedChoice` membership validation (from the 3-4 review): any garbage string submits, is scored incorrect, and harvests `correctAnswer` in one call. The answer is atomically burned before the reveal, so integrity holds — but the original deferral's risk assessment predates this reveal.
+
 ## Deferred from: code review of 3-4-question-display-answer-submission (2026-07-18)
 
 - Session completion (`completeSession`) is never invoked from `submitAnswerAction` or anywhere in this diff — pre-existing scope boundary; story `3-6-session-completion-summary-accuracy-update` (currently `backlog` in sprint-status.yaml) owns session-completion behavior, this story only implements question display/answer submission.

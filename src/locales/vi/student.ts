@@ -13,4 +13,10 @@ export const student = {
   listenAgain: 'Nghe lại',
   alreadyAnsweredError: 'Câu hỏi này đã được trả lời rồi.',
   genericSubmitAnswerError: 'Không thể gửi câu trả lời, vui lòng thử lại.',
+  nextCta: 'Tiếp theo',
+  correctAnswerReveal: (answer: string) => `Đáp án đúng là ${answer}`,
+  correctFeedbackSr: 'Đúng rồi!',
+  mascotNeutralAlt: 'Cú đang chờ',
+  mascotHappyAlt: 'Cú vui mừng',
+  mascotGentleAlt: 'Cú động viên',
 }

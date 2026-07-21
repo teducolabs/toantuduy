@@ -44,12 +44,14 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
       <SessionProgressChip current={currentIndex + 1} total={session.answers.length} />
       {currentQuestion && currentAnswer ? (
         <QuestionCard
+          key={currentAnswer.id}
           sessionAnswerId={currentAnswer.id}
           prompt={currentQuestion.prompt}
           imageUrl={currentQuestion.imageUrl}
           choices={choices}
           audioAutoPlay={childProfile.gradeBand === 'GRADE_1'}
           alreadyAnswered={currentAnswer.answeredAt !== null}
+          isFinalQuestion={currentIndex === session.answers.length - 1}
         />
       ) : null}
     </main>

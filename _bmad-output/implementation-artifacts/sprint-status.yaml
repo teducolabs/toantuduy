@@ -41,7 +41,7 @@
 # - Retrospective appends its action items to action_items; sprint-status surfaces open ones
 
 generated: 2026-07-08
-last_updated: 2026-07-18
+last_updated: 2026-07-21
 
 project: ToanTuDuy
 project_key: NOKEY
@@ -71,7 +71,7 @@ development_status:
   3-2-question-session-repository-infrastructure: done
   3-3-session-start-free-tier-daily-gate: done
   3-4-question-display-answer-submission: done
-  3-5-immediate-feedback-mascot-reactions: backlog
+  3-5-immediate-feedback-mascot-reactions: done
   3-6-session-completion-summary-accuracy-update: backlog
   3-7-session-state-preservation-offline-resilience: backlog
   3-8-audio-button-accessibility-floor-interaction-constraints: backlog
