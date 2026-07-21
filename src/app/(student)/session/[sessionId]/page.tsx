@@ -27,6 +27,10 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
   // on the summary instead of the quiet already-answered state.
   if (session.completedAt !== null) redirect(`/summary/${sessionId}`)
 
+  // A stale tab/bookmark pointing at a superseded session must never render
+  // a question card for it — send the student home to the current session.
+  if (session.abandonedAt !== null) redirect('/')
+
   if (session.answers.length === 0) {
     return (
       <main>

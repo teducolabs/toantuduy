@@ -9,6 +9,8 @@ import { AudioButton } from '@/components/student/audio-button'
 import { AnswerButtonGrid } from '@/components/student/answer-button-grid'
 import { Mascot, MASCOT_CLEARANCE_CLASS, type MascotState } from '@/components/student/mascot'
 import { type AnswerFeedback } from '@/components/student/answer-button-state'
+import { OfflineBanner } from '@/components/student/offline-banner'
+import { useOnlineStatus } from '@/components/student/use-online-status'
 import { completeSessionAction, submitAnswerAction } from '@/app/(student)/actions'
 import { student } from '@/locales/vi/student'
 
@@ -36,6 +38,7 @@ export function QuestionCard(props: {
   const hasAdvancedRef = useRef(false)
   const submitLockRef = useRef(false)
   const isMountedRef = useRef(true)
+  const isOffline = !useOnlineStatus()
 
   useEffect(() => {
     isMountedRef.current = true
@@ -134,10 +137,11 @@ export function QuestionCard(props: {
         <AnswerButtonGrid
           sessionAnswerId={sessionAnswerId}
           choices={choices}
-          disabled={alreadyAnswered || isSubmitting}
+          disabled={alreadyAnswered || isSubmitting || isOffline}
           feedback={displayFeedback}
           onSelect={handleSelect}
         />
+        {isOffline ? <OfflineBanner /> : null}
         {/* Persistent live region: it must exist before its text changes,
             or screen readers won't announce the feedback. */}
         <p

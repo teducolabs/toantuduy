@@ -6,10 +6,12 @@ import { findChildProfileById } from '@/infrastructure/repositories/child-profil
 import { hasActiveSubscription } from '@/infrastructure/repositories/subscription-repository'
 import { getFreeTierDailyAllotment } from '@/infrastructure/repositories/global-config-repository'
 import {
+  abandonPreviousSessions,
   completeSession,
   countQuestionsAnsweredToday,
   createSession,
   computeVnDayBoundaryUtc,
+  findActiveSession,
   formatVnDateLabel,
   recordAnswer,
 } from '@/infrastructure/repositories/session-repository'
@@ -49,6 +51,8 @@ export async function startSessionAction(): Promise<ActionResult<{ sessionId: st
       return { error: { code: 'ALLOTMENT_EXHAUSTED', message: student.allotmentExhaustedError } }
     }
 
+    await abandonPreviousSessions(childProfile.id)
+
     const questionIds = await selectSessionQuestionIds(childProfile.id, childProfile.gradeBand)
     const session = await createSession(childProfile.id, questionIds)
 
@@ -74,6 +78,20 @@ export async function getSessionStartGateState(
   return { blocked: true, tomorrowLabel: formatVnDateLabel(todayEndUtc) }
 }
 
+// Read-only pre-check used by the student-home render (RootPage) to decide
+// whether to show the resume CTA. Must be checked before getSessionStartGateState
+// so an in-progress session is always resumable regardless of the free-tier gate.
+export async function getActiveSessionState(
+  childProfileId: string,
+): Promise<{ sessionId: string; progressLabel: string } | null> {
+  const session = await findActiveSession(childProfileId)
+  if (!session) return null
+  return {
+    sessionId: session.id,
+    progressLabel: student.resumeProgressLabel(session.answeredCount, session.questionCount),
+  }
+}
+
 export async function submitAnswerAction(
   sessionAnswerId: string,
   selectedChoice: string,
@@ -88,7 +106,11 @@ export async function submitAnswerAction(
       where: { id: sessionAnswerId },
       include: { session: true, question: true },
     })
-    if (!sessionAnswer || sessionAnswer.session.childProfileId !== childProfileId) {
+    if (
+      !sessionAnswer ||
+      sessionAnswer.session.childProfileId !== childProfileId ||
+      sessionAnswer.session.abandonedAt !== null
+    ) {
       return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
     }
 
@@ -122,7 +144,7 @@ export async function completeSessionAction(sessionId: string): Promise<ActionRe
       where: { id: sessionId },
       include: { answers: { select: { answeredAt: true } } },
     })
-    if (!session || session.childProfileId !== childProfileId) {
+    if (!session || session.childProfileId !== childProfileId || session.abandonedAt !== null) {
       return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
     }
 

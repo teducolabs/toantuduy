@@ -162,6 +162,7 @@ model Session {
   correctCount   Int          @default(0)
   startedAt      DateTime     @default(now())
   completedAt    DateTime? // null = in-progress/abandoned; only completed Sessions count toward accuracy (FR-7)
+  abandonedAt    DateTime? // non-null = superseded by a newer Session for this Child Profile; never counts toward accuracy (completedAt stays null)
 
   answers SessionAnswer[]
 

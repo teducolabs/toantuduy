@@ -47,6 +47,29 @@ export async function recordAnswer(
   return count > 0
 }
 
+export async function findActiveSession(
+  childProfileId: string,
+): Promise<{ id: string; answeredCount: number; questionCount: number } | null> {
+  const session = await db.session.findFirst({
+    where: { childProfileId, completedAt: null, abandonedAt: null },
+    include: { answers: { select: { answeredAt: true } } },
+    orderBy: { startedAt: 'desc' },
+  })
+  if (!session) return null
+  return {
+    id: session.id,
+    answeredCount: session.answers.filter((a) => a.answeredAt !== null).length,
+    questionCount: session.questionCount,
+  }
+}
+
+export async function abandonPreviousSessions(childProfileId: string): Promise<void> {
+  await db.session.updateMany({
+    where: { childProfileId, completedAt: null, abandonedAt: null },
+    data: { abandonedAt: new Date() },
+  })
+}
+
 export async function completeSession(sessionId: string): Promise<Session> {
   const session = await db.$transaction(async (tx) => {
     const correctCount = await tx.sessionAnswer.count({

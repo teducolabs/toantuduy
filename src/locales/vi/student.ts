@@ -9,6 +9,8 @@ export const student = {
   freeTierGateTitle: (name: string) => `Hôm nay ${name} đã luyện đủ rồi 🌟`,
   freeTierGateSubtitle: (tomorrowLabel: string) => `Quay lại luyện tiếp vào ngày ${tomorrowLabel} nhé!`,
   sessionProgressLabel: (current: number, total: number) => `${current} / ${total}`,
+  resumeProgressLabel: (current: number, total: number) => `${current} / ${total} câu`,
+  offlineBanner: 'Mất kết nối — kiểm tra lại',
   noQuestionsAvailableError: 'Chưa có câu hỏi phù hợp cho buổi luyện này, vui lòng quay lại sau nhé.',
   listenAgain: 'Nghe lại',
   alreadyAnsweredError: 'Câu hỏi này đã được trả lời rồi.',
