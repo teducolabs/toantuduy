@@ -1,10 +1,11 @@
 import { headers } from 'next/headers'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
 import { getChildProfileId } from '@/lib/child-profile-cookie'
 import { db } from '@/lib/db'
 import { findChildProfileById } from '@/infrastructure/repositories/child-profile-repository'
 import { SessionProgressChip } from '@/components/student/session-progress-chip'
 import { QuestionCard } from '@/components/student/question-card'
+import { CompleteSessionButton } from '@/components/student/complete-session-button'
 import { student } from '@/locales/vi/student'
 
 export default async function StudentSessionPage({ params }: { params: Promise<{ sessionId: string }> }) {
@@ -21,6 +22,10 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
   ])
   if (!session || session.childProfileId !== childProfileId) notFound()
   if (!childProfile) notFound()
+
+  // A finished session has no question view — back-button/deep-link lands
+  // on the summary instead of the quiet already-answered state.
+  if (session.completedAt !== null) redirect(`/summary/${sessionId}`)
 
   if (session.answers.length === 0) {
     return (
@@ -45,6 +50,7 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
       {currentQuestion && currentAnswer ? (
         <QuestionCard
           key={currentAnswer.id}
+          sessionId={session.id}
           sessionAnswerId={currentAnswer.id}
           prompt={currentQuestion.prompt}
           imageUrl={currentQuestion.imageUrl}
@@ -54,6 +60,10 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
           isFinalQuestion={currentIndex === session.answers.length - 1}
         />
       ) : null}
+      {/* Dead-end fix: every answer is in but completedAt is still null
+          (tab closed before "Tiếp theo →") — give the summary an
+          affordance, or this session could never complete. */}
+      {!firstUnanswered && session.completedAt === null ? <CompleteSessionButton sessionId={session.id} /> : null}
     </main>
   )
 }

@@ -19,4 +19,12 @@ export const student = {
   mascotNeutralAlt: 'Cú đang chờ',
   mascotHappyAlt: 'Cú vui mừng',
   mascotGentleAlt: 'Cú động viên',
+  sessionNotFinishedError: 'Buổi luyện chưa xong, hãy trả lời hết các câu hỏi nhé.',
+  genericCompleteSessionError: 'Không thể hoàn thành buổi luyện, vui lòng thử lại.',
+  summaryHeadline: 'Tuyệt vời!',
+  summaryScoreLabel: (correct: number, total: number) => `${correct} / ${total}`,
+  skillRowLabel: (name: string, correct: number, total: number) => `${name}: ${correct}/${total}`,
+  backToHomeCta: 'Về trang chủ',
+  doneForTodayCta: 'Xong cho hôm nay',
+  viewResultsCta: 'Xem kết quả',
 }

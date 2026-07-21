@@ -9,13 +9,14 @@ import { AudioButton } from '@/components/student/audio-button'
 import { AnswerButtonGrid } from '@/components/student/answer-button-grid'
 import { Mascot, MASCOT_CLEARANCE_CLASS, type MascotState } from '@/components/student/mascot'
 import { type AnswerFeedback } from '@/components/student/answer-button-state'
-import { submitAnswerAction } from '@/app/(student)/actions'
+import { completeSessionAction, submitAnswerAction } from '@/app/(student)/actions'
 import { student } from '@/locales/vi/student'
 
 const NEXT_BUTTON_DELAY_MS = 500 // UX-DR6: "Tiếp theo →" appears 500ms after feedback
 const AUTO_ADVANCE_DELAY_MS = 1500 // UX-DR13: auto-advance on non-final questions
 
 export function QuestionCard(props: {
+  sessionId: string
   sessionAnswerId: string
   prompt: string
   imageUrl: string | null
@@ -24,7 +25,7 @@ export function QuestionCard(props: {
   alreadyAnswered?: boolean
   isFinalQuestion: boolean
 }) {
-  const { sessionAnswerId, prompt, imageUrl, choices, audioAutoPlay, alreadyAnswered = false, isFinalQuestion } = props
+  const { sessionId, sessionAnswerId, prompt, imageUrl, choices, audioAutoPlay, alreadyAnswered = false, isFinalQuestion } = props
   const router = useRouter()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [feedback, setFeedback] = useState<AnswerFeedback | null>(null)
@@ -56,11 +57,29 @@ export function QuestionCard(props: {
     if (hasAdvancedRef.current) return
     hasAdvancedRef.current = true
     if (autoAdvanceTimerRef.current) clearTimeout(autoAdvanceTimerRef.current)
-    // Final question: router.refresh() lands on the already-answered guard
-    // state — deliberate seam; Story 3.6 rewires this call site to
-    // complete-and-redirect to the summary route.
-    startAdvancing(() => {
-      router.refresh()
+    if (!isFinalQuestion) {
+      startAdvancing(() => {
+        router.refresh()
+      })
+      return
+    }
+    // Final question: complete the session and land on the summary. The
+    // async work stays inside the transition so the isAdvancing-settles
+    // effect re-arms hasAdvancedRef on failure — the error path keeps a
+    // free retry.
+    startAdvancing(async () => {
+      const result = await completeSessionAction(sessionId)
+      if (!isMountedRef.current) return
+      if ('error' in result) {
+        toast.error(result.error.message)
+        if (result.error.code === 'SESSION_NOT_FINISHED') {
+          // Server truth says answers are missing (stale tab) — resync,
+          // mirroring the ALREADY_ANSWERED pattern.
+          router.refresh()
+        }
+        return
+      }
+      router.push(`/summary/${sessionId}`)
     })
   }
 

@@ -72,7 +72,7 @@ development_status:
   3-3-session-start-free-tier-daily-gate: done
   3-4-question-display-answer-submission: done
   3-5-immediate-feedback-mascot-reactions: done
-  3-6-session-completion-summary-accuracy-update: backlog
+  3-6-session-completion-summary-accuracy-update: review
   3-7-session-state-preservation-offline-resilience: backlog
   3-8-audio-button-accessibility-floor-interaction-constraints: backlog
   epic-3-retrospective: optional

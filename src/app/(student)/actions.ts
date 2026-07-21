@@ -6,6 +6,7 @@ import { findChildProfileById } from '@/infrastructure/repositories/child-profil
 import { hasActiveSubscription } from '@/infrastructure/repositories/subscription-repository'
 import { getFreeTierDailyAllotment } from '@/infrastructure/repositories/global-config-repository'
 import {
+  completeSession,
   countQuestionsAnsweredToday,
   createSession,
   computeVnDayBoundaryUtc,
@@ -107,5 +108,42 @@ export async function submitAnswerAction(
     return { data: { correct: answeredCorrectly, correctAnswer: sessionAnswer.question.correctAnswer } }
   } catch {
     return { error: { code: 'INTERNAL_ERROR', message: student.genericSubmitAnswerError } }
+  }
+}
+
+export async function completeSessionAction(sessionId: string): Promise<ActionResult<{ sessionId: string }>> {
+  try {
+    const childProfileId = await getChildProfileId(await headers())
+    if (!childProfileId) {
+      return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
+    }
+
+    const session = await db.session.findUnique({
+      where: { id: sessionId },
+      include: { answers: { select: { answeredAt: true } } },
+    })
+    if (!session || session.childProfileId !== childProfileId) {
+      return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
+    }
+
+    // Idempotent success: a double-tap, refresh, or stale tab must still
+    // land on the summary — there is nothing left to protect here.
+    if (session.completedAt !== null) {
+      return { data: { sessionId } }
+    }
+
+    // Application-layer completion policy (closes the Story 3.2 deferral):
+    // a session with unanswered stubs cannot be completed. Only reachable
+    // via manipulated/stale clients — the UI gates "Tiếp theo →" on the
+    // final answer.
+    if (session.answers.some((answer) => answer.answeredAt === null)) {
+      return { error: { code: 'SESSION_NOT_FINISHED', message: student.sessionNotFinishedError } }
+    }
+
+    await completeSession(sessionId)
+
+    return { data: { sessionId } }
+  } catch {
+    return { error: { code: 'INTERNAL_ERROR', message: student.genericCompleteSessionError } }
   }
 }
