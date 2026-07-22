@@ -33,6 +33,7 @@ export function QuestionCard(props: {
   const [feedback, setFeedback] = useState<AnswerFeedback | null>(null)
   const [showNextButton, setShowNextButton] = useState(false)
   const [isAdvancing, startAdvancing] = useTransition()
+  const nextButtonRef = useRef<HTMLButtonElement>(null)
   const nextButtonTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const autoAdvanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const hasAdvancedRef = useRef(false)
@@ -55,6 +56,12 @@ export function QuestionCard(props: {
   useEffect(() => {
     if (!isAdvancing) hasAdvancedRef.current = false
   }, [isAdvancing])
+
+  // Keyboard focus drops to <body> when feedback disables the answer grid;
+  // move it to the "Tiếp theo" button once it appears (deferred from 3.5 review).
+  useEffect(() => {
+    if (showNextButton) nextButtonRef.current?.focus()
+  }, [showNextButton])
 
   function advance() {
     if (hasAdvancedRef.current) return
@@ -129,7 +136,7 @@ export function QuestionCard(props: {
       </div>
       {imageUrl ? (
         <div className="px-(--card-spacing)">
-          <img src={imageUrl} alt="" loading="lazy" className="h-40 w-full object-contain" />
+          <img src={imageUrl} alt={prompt} loading="lazy" className="h-40 w-full object-contain" />
         </div>
       ) : null}
       <p className="text-question px-(--card-spacing)">{prompt}</p>
@@ -163,6 +170,7 @@ export function QuestionCard(props: {
         <div className="px-(--card-spacing) pb-2">
           <div className={`flex min-h-11 justify-end ${MASCOT_CLEARANCE_CLASS}`}>
             <button
+              ref={nextButtonRef}
               type="button"
               className={`bg-primary text-primary-foreground rounded-brand-lg text-label-student min-h-11 min-w-11 px-5 py-2 inline-flex items-center justify-center gap-2 ${showNextButton ? 'visible' : 'invisible'}`}
               onClick={advance}

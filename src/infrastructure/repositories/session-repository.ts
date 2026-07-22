@@ -87,9 +87,9 @@ export async function completeSession(sessionId: string): Promise<Session> {
 // arithmetic, no Intl.DateTimeFormat timezone conversion needed.
 const VN_OFFSET_MS = 7 * 3600_000
 
-export function computeVnDayBoundaryUtc(now: Date): { todayStartUtc: Date; todayEndUtc: Date } {
+export function computeVnDayBoundaryUtc(now: Date, dayOffset = 0): { todayStartUtc: Date; todayEndUtc: Date } {
   const nowVn = new Date(now.getTime() + VN_OFFSET_MS)
-  const vnMidnightUtcMs = Date.UTC(nowVn.getUTCFullYear(), nowVn.getUTCMonth(), nowVn.getUTCDate()) - VN_OFFSET_MS
+  const vnMidnightUtcMs = Date.UTC(nowVn.getUTCFullYear(), nowVn.getUTCMonth(), nowVn.getUTCDate() + dayOffset) - VN_OFFSET_MS
   const todayStartUtc = new Date(vnMidnightUtcMs)
   const todayEndUtc = new Date(vnMidnightUtcMs + 24 * 3600_000)
   return { todayStartUtc, todayEndUtc }

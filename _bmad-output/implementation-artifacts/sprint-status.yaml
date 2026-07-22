@@ -41,7 +41,7 @@
 # - Retrospective appends its action items to action_items; sprint-status surfaces open ones
 
 generated: 2026-07-08
-last_updated: 2026-07-21
+last_updated: 2026-07-23
 
 
 project: ToanTuDuy
@@ -67,7 +67,7 @@ development_status:
   epic-2-retrospective: done
 
   # ── Epic 3: Student Practice Interface & Adaptive Difficulty ────────────────
-  epic-3: in-progress
+  epic-3: done
   3-1-adaptive-difficulty-domain-use-case: done
   3-2-question-session-repository-infrastructure: done
   3-3-session-start-free-tier-daily-gate: done
@@ -75,12 +75,12 @@ development_status:
   3-5-immediate-feedback-mascot-reactions: done
   3-6-session-completion-summary-accuracy-update: done
   3-7-session-state-preservation-offline-resilience: done
-  3-8-audio-button-accessibility-floor-interaction-constraints: backlog
-  epic-3-retrospective: optional
+  3-8-audio-button-accessibility-floor-interaction-constraints: done
+  epic-3-retrospective: done
 
   # ── Epic 4: Parent Dashboard ─────────────────────────────────────────────────
-  epic-4: backlog
-  4-1-weekly-activity-strip-streak: backlog
+  epic-4: in-progress
+  4-1-weekly-activity-strip-streak: done
   4-2-skill-breakdown-view-skill-detail: backlog
   4-3-grade-progress-indicator-session-history: backlog
   4-4-free-tier-upsell-prompt-on-dashboard: backlog

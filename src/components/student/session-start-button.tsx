@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from 'react'
 import { useRouter } from 'next/navigation'
+import { Play } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { startSessionAction } from '@/app/(student)/actions'
@@ -26,6 +27,7 @@ export function SessionStartButton() {
 
   return (
     <Button className="min-h-16" onClick={handleClick} disabled={isPending || isNavigating}>
+      <Play aria-hidden="true" className="size-5 shrink-0" />
       {student.startSessionCta}
     </Button>
   )
