@@ -1,5 +1,17 @@
 # Deferred Work
 
+## Deferred from: code review of spec-profile-management-quick-switch (2026-07-23)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-profile-management-quick-switch.md`
+  summary: `switchActiveChildProfileAction` (`src/app/(parent)/profiles/actions.ts`) never calls `revalidatePath`, unlike every sibling action in the same file — it relies entirely on the caller's client-side `router.refresh()`.
+  evidence: Pre-existing behavior of an unchanged action, reused as-is by both `ChildProfileSwitcher` (existing) and the new `SelectChildProfileButton`/`ChildProfileList` select flow; not introduced by this change.
+
+## Deferred from: scope split during quick-dev intent clarification (2026-07-23)
+
+- source_spec: none
+  summary: Once inside a Child Profile's practice/session surface, the student has no way to navigate back to the Parent Dashboard.
+  evidence: User raised this alongside the Profile Management "quick select" gap in the same message; both are independently shippable navigation fixes touching different surfaces (parent `/profiles` list vs. the student practice UI), so the user chose to split and tackle the profile-select button first.
+
 ## Deferred from: code review of 3-5-immediate-feedback-mascot-reactions (2026-07-21)
 
 - Keyboard focus is dropped to `<body>` when feedback disables all answer buttons (`src/components/student/answer-button-grid.tsx`); the "Tiếp theo" button appears 500ms later but never receives focus — deferred to Story 3.8, which owns the accessibility floor sweep for the student surface.

@@ -37,4 +37,7 @@ export const profiles = {
   switcherEmptyLabel: 'Chưa có hồ sơ',
   switcherSheetTitle: 'Hồ sơ của bé',
   switchFailed: 'Không thể chuyển hồ sơ. Vui lòng thử lại.',
+
+  selectCta: 'Chọn',
+  activeProfileLabel: 'Đang chọn',
 }

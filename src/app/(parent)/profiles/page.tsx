@@ -1,6 +1,8 @@
 import { redirect } from 'next/navigation'
+import { headers } from 'next/headers'
 import { auth } from '@/lib/auth'
 import { listChildProfilesAction } from '@/app/(parent)/profiles/actions'
+import { getChildProfileId } from '@/lib/child-profile-cookie'
 import { ChildProfileForm } from '@/components/parent/child-profile-form'
 import { ChildProfileList } from '@/components/parent/child-profile-list'
 import { profiles } from '@/locales/vi/profiles'
@@ -17,6 +19,7 @@ export default async function ParentProfilesPage() {
   }
 
   const { childProfiles } = result.data
+  const activeProfileId = await getChildProfileId(await headers())
 
   return (
     <main className="flex flex-col gap-6">
@@ -25,7 +28,7 @@ export default async function ParentProfilesPage() {
         <ChildProfileForm mode="create" trigger={profiles.addProfileCta} />
       </div>
 
-      <ChildProfileList childProfiles={childProfiles} />
+      <ChildProfileList childProfiles={childProfiles} activeProfileId={activeProfileId} />
     </main>
   )
 }
