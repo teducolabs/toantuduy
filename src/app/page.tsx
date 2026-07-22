@@ -7,6 +7,7 @@ import { getActiveSessionState, getSessionStartGateState } from '@/app/(student)
 import { student } from '@/locales/vi/student'
 import { StudentHomeCard } from '@/components/student/student-home-card'
 import { FreeTierGateCard } from '@/components/student/free-tier-gate-card'
+import { ExitToDashboardLink } from '@/components/student/exit-to-dashboard-link'
 
 export default async function RootPage() {
   const session = await auth()
@@ -23,6 +24,7 @@ export default async function RootPage() {
         if (activeSession) {
           return (
             <div data-mode="student" className="bg-student-bg min-h-screen">
+              <ExitToDashboardLink />
               <h1 className="text-display">{student.greeting(childProfile.name)}</h1>
               <StudentHomeCard childName={childProfile.name} activeSession={activeSession} />
             </div>
@@ -32,6 +34,7 @@ export default async function RootPage() {
         const gateState = await getSessionStartGateState(childProfile.id, resolved.parentAccountId)
         return (
           <div data-mode="student" className="bg-student-bg min-h-screen">
+            <ExitToDashboardLink />
             <h1 className="text-display">{student.greeting(childProfile.name)}</h1>
             {gateState.blocked ? (
               <FreeTierGateCard childName={childProfile.name} tomorrowLabel={gateState.tomorrowLabel} />

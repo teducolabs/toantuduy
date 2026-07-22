@@ -1,5 +1,29 @@
 # Deferred Work
 
+## Deferred from: code review of spec-student-home-exit-to-dashboard (2026-07-23)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: `sprint-status.yaml` marks `4-1-weekly-activity-strip-streak` as `done` and `epic-4` as `in-progress`, but that story's own dev notes say the mandatory manual/live-browser verification pass (Task 7) was never performed and recommend leaving it at `in-progress`.
+  evidence: Pre-existing dirty-tree state from Story 4.1's work, not touched by this change; the sprint-status entry contradicts the story record it's derived from.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: `sprint-status.yaml` flips `epic-3-retrospective` from `optional` to `done` with no corresponding `epic-3-retro-*.md` artifact ever produced (unlike Epics 1 and 2, which each have one).
+  evidence: Pre-existing dirty-tree state, unrelated to this change.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: `verify-grade3-tmp.mjs` is a throwaway Playwright debug script committed at the repo root with hardcoded test credentials and a hardcoded absolute Windows temp path; `playwright` was added as a dependency with no config/script/CI wiring to support it.
+  evidence: Pre-existing dirty-tree artifact from other in-progress work, not introduced by this change.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: `getCurrentStreak` (`src/infrastructure/repositories/dashboard-repository.ts`) queries every completed Session for a child with no date bound, duplicates a query `getWeeklyActivity` already makes, has no transactional consistency with it, and its walk-back loop has no upper bound/cap.
+  evidence: Pre-existing dashboard-repository work from Story 4.1, not touched by this change.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: `ParentDashboardPage` renders `result.error.message` directly into the UI on the FORBIDDEN branch, bypassing the `src/locales/vi/*` localization convention.
+  evidence: Pre-existing dashboard-page work from Story 4.1, not touched by this change.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: `loading.tsx` hardcodes 7 `Skeleton` circles to mirror `WeeklyActivityStrip`'s 7 day-dots with no shared constant; `WeeklyActivityStrip` conveys activity purely via fill color with no per-dot text alternative, and shows no streak text at all (leaving a fully color-only indicator) when `hasAnyCompletedSession` is false.
+  evidence: Pre-existing dashboard UI work from Story 4.1, not touched by this change.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-home-exit-to-dashboard.md`
+  summary: No test coverage exists for `getDashboardDataAction`'s auth/ownership-check branch or for `ParentDashboardPage`/`WeeklyActivityStrip` rendering — only the two pure repository functions are unit-tested.
+  evidence: Pre-existing gap in Story 4.1's work, not touched by this change.
+
 ## Deferred from: code review of spec-student-session-exit-to-dashboard (2026-07-23)
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-student-session-exit-to-dashboard.md`
