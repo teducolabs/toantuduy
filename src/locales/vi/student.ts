@@ -27,6 +27,7 @@ export const student = {
   summaryScoreLabel: (correct: number, total: number) => `${correct} / ${total}`,
   skillRowLabel: (name: string, correct: number, total: number) => `${name}: ${correct}/${total}`,
   backToHomeCta: 'Về trang chủ',
+  exitToDashboardCta: 'Về trang phụ huynh',
   doneForTodayCta: 'Xong cho hôm nay',
   viewResultsCta: 'Xem kết quả',
 }

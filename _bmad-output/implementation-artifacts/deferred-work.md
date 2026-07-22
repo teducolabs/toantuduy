@@ -1,5 +1,14 @@
 # Deferred Work
 
+## Deferred from: code review of spec-student-session-exit-to-dashboard (2026-07-23)
+
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-session-exit-to-dashboard.md`
+  summary: `ExitToDashboardLink`'s safety (navigating away from an active student session cookie is harmless) rests entirely on `(parent)/layout.tsx` only checking `session.user.role`, asserted as a code comment with no test tying the two together.
+  evidence: Pre-existing behavior of `src/app/(parent)/layout.tsx` (AD-5), not changed by this diff; if a future story adds child-profile gating to the parent route group, this link silently breaks with nothing to flag it.
+- source_spec: `_bmad-output/implementation-artifacts/spec-student-session-exit-to-dashboard.md`
+  summary: The new `ExitToDashboardLink` has no visible focus-ring styling for keyboard/switch-device users.
+  evidence: No `focus-visible`/`focus:` utility classes exist anywhere in the student component tree today — a repo-wide gap, not introduced by this change.
+
 ## Deferred from: code review of spec-profile-management-quick-switch (2026-07-23)
 
 - source_spec: `_bmad-output/implementation-artifacts/spec-profile-management-quick-switch.md`

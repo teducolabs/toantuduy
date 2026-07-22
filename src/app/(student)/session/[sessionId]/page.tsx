@@ -6,6 +6,7 @@ import { findChildProfileById } from '@/infrastructure/repositories/child-profil
 import { SessionProgressChip } from '@/components/student/session-progress-chip'
 import { QuestionCard } from '@/components/student/question-card'
 import { CompleteSessionButton } from '@/components/student/complete-session-button'
+import { ExitToDashboardLink } from '@/components/student/exit-to-dashboard-link'
 import { student } from '@/locales/vi/student'
 
 export default async function StudentSessionPage({ params }: { params: Promise<{ sessionId: string }> }) {
@@ -34,6 +35,7 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
   if (session.answers.length === 0) {
     return (
       <main>
+        <ExitToDashboardLink />
         <p>{student.noQuestionsAvailableError}</p>
       </main>
     )
@@ -50,6 +52,7 @@ export default async function StudentSessionPage({ params }: { params: Promise<{
 
   return (
     <main>
+      <ExitToDashboardLink />
       <SessionProgressChip current={currentIndex + 1} total={session.answers.length} />
       {currentQuestion && currentAnswer ? (
         <QuestionCard
