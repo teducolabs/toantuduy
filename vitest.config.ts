@@ -7,6 +7,12 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  // Next.js sets tsconfig `jsx: preserve`; vitest (rolldown-vite/oxc) needs the JSX actually compiled.
+  oxc: {
+    jsx: {
+      runtime: 'automatic',
+    },
+  },
   test: {
     environment: 'node',
   },

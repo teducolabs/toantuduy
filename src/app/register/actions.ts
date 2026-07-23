@@ -67,14 +67,13 @@ export async function registerParent(input: { email: string; password: string; c
 async function sendVerificationEmail(userId: string, email: string): Promise<void> {
   const token = generateVerificationToken(userId)
   const verificationLink = `${env.NEXTAUTH_URL}/verify-email?token=${token}`
-  try {
-    await sendEmail({
-      to: email,
-      subject: auth.verificationEmailSubject,
-      html: `<p>${auth.verificationEmailBody}: <a href="${verificationLink}">${verificationLink}</a></p>`,
-    })
-  } catch (err) {
-    console.error('Failed to send verification email', err)
+  const result = await sendEmail({
+    to: email,
+    subject: auth.verificationEmailSubject,
+    html: `<p>${auth.verificationEmailBody}: <a href="${verificationLink}">${verificationLink}</a></p>`,
+  })
+  if ('error' in result) {
+    console.error('Failed to send verification email', result.error)
   }
 }
 
