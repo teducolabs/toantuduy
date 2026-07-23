@@ -1,20 +1,35 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('@/lib/db', () => ({
-  db: { session: { findMany: vi.fn() } },
+  db: {
+    session: { findMany: vi.fn() },
+    skill: { findMany: vi.fn() },
+    sessionAnswer: { findMany: vi.fn() },
+  },
 }))
 
 import { db } from '@/lib/db'
-import { getWeeklyActivity, getCurrentStreak } from './dashboard-repository'
+import { getWeeklyActivity, getCurrentStreak, getSkillBreakdown, getSkillSessionDetail } from './dashboard-repository'
 
 const findMany = db.session.findMany as unknown as ReturnType<typeof vi.fn>
+const skillFindMany = db.skill.findMany as unknown as ReturnType<typeof vi.fn>
+const answerFindMany = db.sessionAnswer.findMany as unknown as ReturnType<typeof vi.fn>
 
 function row(iso: string) {
   return { completedAt: new Date(iso) }
 }
 
+const SKILLS = [
+  { id: 'skill-1', code: 'pattern-recognition', name: 'Nhận diện quy luật' },
+  { id: 'skill-2', code: 'spatial-reasoning', name: 'Suy luận không gian' },
+  { id: 'skill-3', code: 'classification', name: 'Phân loại' },
+  { id: 'skill-4', code: 'word-problem', name: 'Đọc hiểu bài toán' },
+]
+
 beforeEach(() => {
   findMany.mockReset()
+  skillFindMany.mockReset()
+  answerFindMany.mockReset()
 })
 
 describe('getWeeklyActivity', () => {
@@ -108,5 +123,111 @@ describe('getCurrentStreak', () => {
     const result = await getCurrentStreak('child-1', now)
 
     expect(result).toEqual({ streak: 0, hasAnyCompletedSession: true })
+  })
+})
+
+function answer(skillId: string, correct: boolean) {
+  return { answeredCorrectly: correct, question: { skillId } }
+}
+
+describe('getSkillBreakdown', () => {
+  it('marks a Skill with 0 attempts as insufficient', async () => {
+    skillFindMany.mockResolvedValueOnce(SKILLS)
+    answerFindMany.mockResolvedValueOnce([])
+
+    const result = await getSkillBreakdown('child-1')
+
+    expect(result).toEqual(SKILLS.map((s) => ({ skillId: s.id, code: s.code, name: s.name, attempts: 0, correct: 0, status: 'insufficient' })))
+  })
+
+  it('marks exactly 4 attempts as insufficient (boundary)', async () => {
+    skillFindMany.mockResolvedValueOnce(SKILLS)
+    answerFindMany.mockResolvedValueOnce([
+      answer('skill-1', true),
+      answer('skill-1', true),
+      answer('skill-1', true),
+      answer('skill-1', false),
+    ])
+
+    const result = await getSkillBreakdown('child-1')
+
+    expect(result.find((r) => r.skillId === 'skill-1')).toEqual({
+      skillId: 'skill-1',
+      code: 'pattern-recognition',
+      name: 'Nhận diện quy luật',
+      attempts: 4,
+      correct: 3,
+      status: 'insufficient',
+    })
+  })
+
+  it('crosses out of insufficient at exactly 5 attempts (boundary)', async () => {
+    skillFindMany.mockResolvedValueOnce(SKILLS)
+    answerFindMany.mockResolvedValueOnce([
+      answer('skill-1', true),
+      answer('skill-1', true),
+      answer('skill-1', true),
+      answer('skill-1', false),
+      answer('skill-1', false),
+    ])
+
+    const result = await getSkillBreakdown('child-1')
+
+    expect(result.find((r) => r.skillId === 'skill-1')?.status).toBe('weak')
+  })
+
+  it('treats exactly 70% accuracy as strong (>= boundary)', async () => {
+    skillFindMany.mockResolvedValueOnce(SKILLS)
+    answerFindMany.mockResolvedValueOnce([
+      ...Array.from({ length: 7 }, () => answer('skill-1', true)),
+      ...Array.from({ length: 3 }, () => answer('skill-1', false)),
+    ])
+
+    const result = await getSkillBreakdown('child-1')
+
+    expect(result.find((r) => r.skillId === 'skill-1')?.status).toBe('strong')
+  })
+
+  it('treats accuracy just under 70% as weak', async () => {
+    skillFindMany.mockResolvedValueOnce(SKILLS)
+    answerFindMany.mockResolvedValueOnce([
+      ...Array.from({ length: 6 }, () => answer('skill-1', true)),
+      ...Array.from({ length: 4 }, () => answer('skill-1', false)),
+    ])
+
+    const result = await getSkillBreakdown('child-1')
+
+    expect(result.find((r) => r.skillId === 'skill-1')?.status).toBe('weak')
+  })
+})
+
+function sessionAnswer(sessionId: string, skillId: string, correct: boolean, completedAt: string) {
+  return { sessionId, answeredCorrectly: correct, session: { completedAt: new Date(completedAt) } }
+}
+
+describe('getSkillSessionDetail', () => {
+  it('does not conflate per-Skill accuracy across a Session spanning two Skills', async () => {
+    answerFindMany.mockResolvedValueOnce([
+      sessionAnswer('session-1', 'skill-1', true, '2026-07-20T10:00:00.000Z'),
+      sessionAnswer('session-1', 'skill-1', false, '2026-07-20T10:00:00.000Z'),
+      sessionAnswer('session-1', 'skill-1', true, '2026-07-20T10:00:00.000Z'),
+    ])
+
+    const result = await getSkillSessionDetail('child-1', 'skill-1')
+
+    expect(result).toEqual([{ sessionId: 'session-1', completedAt: '2026-07-20T10:00:00.000Z', correct: 2, total: 3 }])
+  })
+
+  it('returns only the 3 most recent qualifying Sessions, most-recent-first', async () => {
+    answerFindMany.mockResolvedValueOnce([
+      sessionAnswer('session-1', 'skill-1', true, '2026-07-10T10:00:00.000Z'),
+      sessionAnswer('session-2', 'skill-1', true, '2026-07-15T10:00:00.000Z'),
+      sessionAnswer('session-3', 'skill-1', true, '2026-07-18T10:00:00.000Z'),
+      sessionAnswer('session-4', 'skill-1', true, '2026-07-20T10:00:00.000Z'),
+    ])
+
+    const result = await getSkillSessionDetail('child-1', 'skill-1')
+
+    expect(result.map((r) => r.sessionId)).toEqual(['session-4', 'session-3', 'session-2'])
   })
 })
