@@ -1,19 +1,9 @@
-import NextAuth, { CredentialsSignin } from 'next-auth'
+import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
-import bcrypt from 'bcryptjs'
 import { db } from '@/lib/db'
 import { env } from '@/lib/env'
-
-// Fixed-cost dummy hash so a lookup miss still pays the bcrypt.compare cost —
-// otherwise response timing reveals whether an email is registered.
-const DUMMY_HASH = bcrypt.hashSync('dummy-password-for-timing-safety', 10)
-
-// Distinguishable error code for AC #5's specific message — see next-auth's
-// CredentialsSignin subclassing mechanism.
-class EmailNotVerifiedError extends CredentialsSignin {
-  code = 'email_not_verified'
-}
+import { authorizeCredentials } from '@/lib/credentials-authorize'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   secret: env.NEXTAUTH_SECRET,
@@ -21,17 +11,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       credentials: { email: {}, password: {} },
-      async authorize(credentials) {
-        if (typeof credentials?.email !== 'string' || typeof credentials?.password !== 'string') {
-          return null
-        }
-        const email = credentials.email.trim().toLowerCase()
-        const user = await db.user.findUnique({ where: { email } })
-        const valid = await bcrypt.compare(credentials.password, user?.passwordHash ?? DUMMY_HASH)
-        if (!user?.passwordHash || !valid) return null
-        if (!user.emailVerified) throw new EmailNotVerifiedError()
-        return { id: user.id, email: user.email, role: user.role }
-      },
+      authorize: authorizeCredentials,
     }),
     Google({ clientId: env.GOOGLE_CLIENT_ID, clientSecret: env.GOOGLE_CLIENT_SECRET }),
   ],
@@ -42,15 +22,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         return false
       }
       const email = user.email.trim().toLowerCase()
-      // Single lookup serves both the Google-Parent-only check (AC #3) and the
-      // Teacher-approval check (AC #4) — status re-checked here regardless of provider.
-      const dbUser = await db.user.findUnique({
-        where: { email },
-        include: { teacherAccount: true },
-      })
+      // Google is Parent-only; the Teacher approval gate lives in the
+      // Credentials authorize() (distinguishable pending/rejected codes) and,
+      // for already-issued sessions, in the (teacher)/layout.tsx status check.
+      const dbUser = await db.user.findUnique({ where: { email } })
       if (!dbUser) return false
       if (account?.provider === 'google' && dbUser.role !== 'PARENT') return false
-      if (dbUser.role === 'TEACHER' && dbUser.teacherAccount?.status !== 'APPROVED') return false
       // Attach the real DB id/role onto the user object — for the Google provider,
       // `user` is otherwise just the raw OAuth profile (no role, provider-subject id).
       user.id = dbUser.id

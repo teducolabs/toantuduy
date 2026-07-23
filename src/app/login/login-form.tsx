@@ -3,6 +3,7 @@
 import { useState, type FormEvent } from 'react'
 import { signIn } from 'next-auth/react'
 import { useSearchParams } from 'next/navigation'
+import Link from 'next/link'
 import { Eye, EyeOff } from 'lucide-react'
 import { auth } from '@/locales/vi/auth'
 
@@ -33,6 +34,12 @@ export function LoginForm() {
       const result = await signIn('credentials', { email, password, redirect: false })
 
       if (!result || result.error) {
+        if (result?.code === 'teacher_pending' || result?.code === 'teacher_rejected') {
+          // Full-screen pending/rejected state — server-side re-read of the
+          // TeacherAccount so the rejection reason never travels via NextAuth.
+          window.location.href = `/teacher-status?email=${encodeURIComponent(email)}`
+          return
+        }
         if (result?.code === 'email_not_verified') {
           setError(auth.emailNotVerified)
         } else if (result?.error === 'CredentialsSignin') {
@@ -147,6 +154,15 @@ export function LoginForm() {
       >
         {auth.googleSignIn}
       </button>
+
+      <div className="flex flex-col items-center gap-1 text-sm">
+        <Link href="/register" className="text-primary underline">
+          {auth.parentRegisterLink}
+        </Link>
+        <Link href="/register/teacher" className="text-primary underline">
+          {auth.teacherRegisterLink}
+        </Link>
+      </div>
     </main>
   )
 }

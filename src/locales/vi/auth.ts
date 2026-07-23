@@ -28,6 +28,21 @@ export const auth = {
   verificationEmailSubject: 'Xác thực email của bạn',
   verificationEmailBody: 'Nhấn vào liên kết sau để xác thực email của bạn',
 
+  parentRegisterLink: 'Đăng ký tài khoản phụ huynh',
+  teacherRegisterLink: 'Đăng ký tài khoản giáo viên',
+
+  teacherRegisterTitle: 'Đăng ký giáo viên',
+  teacherNameLabel: 'Họ và tên',
+  teacherSchoolNameLabel: 'Trường đang giảng dạy',
+  teacherGradeTaughtLabel: 'Khối lớp giảng dạy',
+  teacherGradeTaughtPlaceholder: 'Chọn khối lớp',
+  teacherNameRequired: 'Vui lòng nhập họ và tên.',
+  teacherSchoolNameRequired: 'Vui lòng nhập tên trường.',
+  teacherGradeTaughtRequired: 'Vui lòng chọn khối lớp.',
+
+  teacherRejected: 'Tài khoản giáo viên của bạn đã bị từ chối.',
+  teacherRejectedReason: (reason: string) => `Lý do: ${reason}`,
+
   resendLink: 'Không nhận được email? Gửi lại',
   resendSubmitting: 'Đang gửi lại...',
   resendSuccess: 'Đã gửi lại email xác thực.',
