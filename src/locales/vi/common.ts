@@ -6,5 +6,9 @@ export const common = {
   parentNavAccount: 'Tài khoản',
   signOut: 'Đăng xuất',
 
+  teacherNavClasses: 'Lớp học',
+  teacherNavAssignments: 'Bài tập',
+  teacherNavReports: 'Báo cáo',
+
   teacherPendingApproval: 'Tài khoản đang chờ xét duyệt. Chúng tôi sẽ thông báo qua email.',
 }

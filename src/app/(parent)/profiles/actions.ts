@@ -11,7 +11,9 @@ import {
   updateChildProfile,
   softDeleteChildProfile,
   findChildProfileById,
+  findChildProfileByIdForParent,
 } from '@/infrastructure/repositories/child-profile-repository'
+import { findClassByJoinCode, createClassMembership } from '@/infrastructure/repositories/class-repository'
 import { setChildProfileCookie } from '@/lib/child-profile-cookie'
 import type { ChildProfile, GradeBand } from '@prisma/client'
 
@@ -140,4 +142,53 @@ export async function switchActiveChildProfileAction(input: { id: string }): Pro
   await setChildProfileCookie(childProfile.id, cookieStore)
 
   return { data: { childProfileId: childProfile.id } }
+}
+
+function isMembershipConflict(error: unknown): boolean {
+  return typeof error === 'object' && error !== null && (error as { code?: string }).code === 'P2002'
+}
+
+const joinClassSchema = z.object({
+  childProfileId: z.string().min(1),
+  joinCode: z.string().trim().min(1, 'Join code is required'),
+})
+
+export async function joinClassAction(input: {
+  childProfileId: string
+  joinCode: string
+}): Promise<ActionResult<{ className: string }>> {
+  const resolved = await requireParentAccountId()
+  if ('error' in resolved) return resolved
+
+  const parsed = joinClassSchema.safeParse(input)
+  if (!parsed.success) {
+    return { error: { code: 'VALIDATION_ERROR', message: parsed.error.issues[0]?.message ?? 'Invalid input' } }
+  }
+
+  const childProfile = await findChildProfileByIdForParent(parsed.data.childProfileId, resolved.parentAccountId)
+  if (!childProfile) {
+    return { error: { code: 'NOT_FOUND', message: 'Child profile not found' } }
+  }
+
+  const normalizedCode = parsed.data.joinCode.trim().toUpperCase()
+  const foundClass = await findClassByJoinCode(normalizedCode)
+  if (!foundClass) {
+    return { error: { code: 'INVALID_JOIN_CODE', message: 'Invalid join code' } }
+  }
+
+  try {
+    // Denormalized teacherAccountId comes from the found class — that is what
+    // lets @@unique([teacherAccountId, childProfileId]) enforce A-5 (at most
+    // one Class per Teacher Account per Child Profile) at the DB level.
+    await createClassMembership(foundClass.id, childProfile.id, foundClass.teacherAccountId)
+  } catch (error) {
+    if (isMembershipConflict(error)) {
+      return { error: { code: 'ALREADY_IN_CLASS', message: 'Child is already in a class of this teacher' } }
+    }
+    return { error: { code: 'JOIN_FAILED', message: 'Could not join class' } }
+  }
+
+  revalidatePath('/profiles', 'layout')
+
+  return { data: { className: foundClass.name } }
 }

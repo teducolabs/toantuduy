@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { Card, CardContent } from '@/components/ui/card'
 import { ChildProfileForm } from '@/components/parent/child-profile-form'
 import { DeleteChildProfileDialog } from '@/components/parent/delete-child-profile-dialog'
+import { JoinClassDialog } from '@/components/parent/join-class-dialog'
 import { SelectChildProfileButton } from '@/components/parent/select-child-profile-button'
 import { switchActiveChildProfileAction } from '@/app/(parent)/profiles/actions'
 import { profiles } from '@/locales/vi/profiles'
@@ -67,6 +68,7 @@ export function ChildProfileList({
                       onSelect={() => handleSelect(childProfile.id)}
                     />
                   )}
+                  <JoinClassDialog childProfileId={childProfile.id} childName={childProfile.name} />
                   <ChildProfileForm
                     mode="edit"
                     profileId={childProfile.id}
