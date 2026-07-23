@@ -187,9 +187,10 @@ model AssignmentSet {
   id               String         @id @default(cuid())
   teacherAccountId String
   teacherAccount   TeacherAccount @relation(fields: [teacherAccountId], references: [id], onDelete: Cascade)
-  classId          String
-  class            Class          @relation(fields: [classId], references: [id], onDelete: Cascade)
+  classId          String? // null until assigned to a Class (Story 5.5); a 5.4 draft has classId = null AND assignedAt = null
+  class            Class?         @relation(fields: [classId], references: [id], onDelete: Cascade)
   title            String
+  gradeBand        GradeBand
   dueAt            DateTime?
   assignedAt       DateTime? // null = draft (per FR-20 "saved as draft until explicitly assigned")
   createdAt        DateTime       @default(now())
