@@ -3,6 +3,8 @@ import Link from 'next/link'
 import { Card } from '@/components/ui/card'
 import { WeeklyActivityStrip } from '@/components/parent/weekly-activity-strip'
 import { SkillDashboardSection } from '@/components/parent/skill-dashboard-section'
+import { GradeProgressIndicator } from '@/components/parent/grade-progress-indicator'
+import { SessionHistoryList } from '@/components/parent/session-history-list'
 import { getChildProfileId } from '@/lib/child-profile-cookie'
 import { getDashboardDataAction } from '@/app/(parent)/dashboard/actions'
 import { dashboard } from '@/locales/vi/dashboard'
@@ -44,6 +46,20 @@ export default async function ParentDashboardPage() {
             skills={result.data.skillBreakdown}
             hasAnyCompletedSession={result.data.weeklyActivity.hasAnyCompletedSession}
           />
+        </div>
+      </Card>
+
+      <Card data-slot="grade-progress-card" className="rounded-brand-md shadow-sm bg-white">
+        <div className="px-(--card-spacing) flex flex-col gap-3">
+          <p className="font-semibold">{dashboard.gradeProgressSectionTitle}</p>
+          <GradeProgressIndicator gradeBand={result.data.gradeBand} gradeProgress={result.data.gradeProgress} />
+        </div>
+      </Card>
+
+      <Card data-slot="session-history-card" className="rounded-brand-md shadow-sm bg-white">
+        <div className="px-(--card-spacing) flex flex-col gap-3">
+          <p className="font-semibold">{dashboard.sessionHistorySectionTitle}</p>
+          <SessionHistoryList childProfileId={activeProfileId} initialSessions={result.data.sessionHistory} />
         </div>
       </Card>
     </main>

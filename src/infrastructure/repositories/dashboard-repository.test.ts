@@ -4,16 +4,24 @@ vi.mock('@/lib/db', () => ({
   db: {
     session: { findMany: vi.fn() },
     skill: { findMany: vi.fn() },
-    sessionAnswer: { findMany: vi.fn() },
+    sessionAnswer: { findMany: vi.fn(), aggregate: vi.fn() },
   },
 }))
 
 import { db } from '@/lib/db'
-import { getWeeklyActivity, getCurrentStreak, getSkillBreakdown, getSkillSessionDetail } from './dashboard-repository'
+import {
+  getWeeklyActivity,
+  getCurrentStreak,
+  getSkillBreakdown,
+  getSkillSessionDetail,
+  getGradeProgress,
+  getSessionHistory,
+} from './dashboard-repository'
 
 const findMany = db.session.findMany as unknown as ReturnType<typeof vi.fn>
 const skillFindMany = db.skill.findMany as unknown as ReturnType<typeof vi.fn>
 const answerFindMany = db.sessionAnswer.findMany as unknown as ReturnType<typeof vi.fn>
+const answerAggregate = db.sessionAnswer.aggregate as unknown as ReturnType<typeof vi.fn>
 
 function row(iso: string) {
   return { completedAt: new Date(iso) }
@@ -30,6 +38,7 @@ beforeEach(() => {
   findMany.mockReset()
   skillFindMany.mockReset()
   answerFindMany.mockReset()
+  answerAggregate.mockReset()
 })
 
 describe('getWeeklyActivity', () => {
@@ -229,5 +238,110 @@ describe('getSkillSessionDetail', () => {
     const result = await getSkillSessionDetail('child-1', 'skill-1')
 
     expect(result.map((r) => r.sessionId)).toEqual(['session-4', 'session-3', 'session-2'])
+  })
+})
+
+describe('getGradeProgress', () => {
+  it('returns null when there are zero completed Sessions with difficulty data', async () => {
+    answerAggregate.mockResolvedValueOnce({ _avg: { difficultyLevelAtAnswer: null } })
+
+    const result = await getGradeProgress('child-1')
+
+    expect(result).toBeNull()
+  })
+
+  it('classifies an average of exactly 2.0 as early (boundary)', async () => {
+    answerAggregate.mockResolvedValueOnce({ _avg: { difficultyLevelAtAnswer: 2.0 } })
+
+    expect(await getGradeProgress('child-1')).toBe('early')
+  })
+
+  it('classifies an average of exactly 2.1 as mid (boundary)', async () => {
+    answerAggregate.mockResolvedValueOnce({ _avg: { difficultyLevelAtAnswer: 2.1 } })
+
+    expect(await getGradeProgress('child-1')).toBe('mid')
+  })
+
+  it('classifies an average of exactly 3.5 as mid (boundary)', async () => {
+    answerAggregate.mockResolvedValueOnce({ _avg: { difficultyLevelAtAnswer: 3.5 } })
+
+    expect(await getGradeProgress('child-1')).toBe('mid')
+  })
+
+  it('classifies an average of exactly 3.6 as late (boundary)', async () => {
+    answerAggregate.mockResolvedValueOnce({ _avg: { difficultyLevelAtAnswer: 3.6 } })
+
+    expect(await getGradeProgress('child-1')).toBe('late')
+  })
+})
+
+function sessionRow(id: string, completedAt: string, correctCount: number, questionCount: number, skillCodes: string[][]) {
+  return {
+    id,
+    completedAt: new Date(completedAt),
+    correctCount,
+    questionCount,
+    answers: skillCodes.map((codes) => ({ question: { skill: { code: codes[0] } } })),
+  }
+}
+
+describe('getSessionHistory', () => {
+  it('dedupes Skill codes for a Session spanning two Skills', async () => {
+    findMany.mockResolvedValueOnce([
+      {
+        id: 'session-1',
+        completedAt: new Date('2026-07-20T10:00:00.000Z'),
+        correctCount: 7,
+        questionCount: 10,
+        answers: [
+          { question: { skill: { code: 'pattern-recognition' } } },
+          { question: { skill: { code: 'classification' } } },
+          { question: { skill: { code: 'pattern-recognition' } } },
+        ],
+      },
+    ])
+
+    const result = await getSessionHistory('child-1', { skip: 0 })
+
+    expect(result).toEqual([
+      {
+        sessionId: 'session-1',
+        completedAt: '2026-07-20T10:00:00.000Z',
+        correct: 7,
+        total: 10,
+        skillCodes: ['pattern-recognition', 'classification'],
+      },
+    ])
+  })
+
+  it('uses Session.correctCount/questionCount directly for the score, not a re-derived tally', async () => {
+    findMany.mockResolvedValueOnce([sessionRow('session-1', '2026-07-20T10:00:00.000Z', 8, 10, [['pattern-recognition']])])
+
+    const result = await getSessionHistory('child-1', { skip: 0 })
+
+    expect(result[0]).toMatchObject({ correct: 8, total: 10 })
+  })
+
+  it('passes skip/take through to the query for pagination', async () => {
+    findMany.mockResolvedValueOnce([])
+
+    await getSessionHistory('child-1', { skip: 30 })
+
+    expect(findMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { childProfileId: 'child-1', completedAt: { not: null } },
+        orderBy: { completedAt: 'desc' },
+        skip: 30,
+        take: 30,
+      }),
+    )
+  })
+
+  it('excludes in-progress (completedAt: null) Sessions via the where clause', async () => {
+    findMany.mockResolvedValueOnce([])
+
+    await getSessionHistory('child-1', { skip: 0 })
+
+    expect(findMany.mock.calls[0][0].where).toEqual({ childProfileId: 'child-1', completedAt: { not: null } })
   })
 })

@@ -10,4 +10,17 @@ export const dashboard = {
   skillInsufficientData: 'Chưa đủ dữ liệu',
   noSkillDataEver: 'Chưa có dữ liệu kỹ năng. Bắt đầu luyện tập để xem kết quả.',
   skillDetailSessionAccuracy: (correct: number, total: number) => `${correct}/${total} câu đúng`,
+  gradeProgressSectionTitle: 'Tiến độ lớp',
+  gradeProgressLabel: (gradeLabel: string, periodLabel: string) => `Đang ở: ${gradeLabel}, ${periodLabel}`,
+  gradeProgressPeriodLabels: {
+    early: 'đầu kỳ',
+    mid: 'giữa kỳ',
+    late: 'cuối kỳ',
+  } as const,
+  gradeProgressTooltip: 'Dựa trên độ khó trung bình các câu hỏi đã làm.',
+  sessionHistorySectionTitle: 'Lịch sử buổi luyện',
+  sessionHistoryEmpty: '0 buổi đã hoàn thành.',
+  sessionHistoryScoreChip: (correct: number, total: number) => `${correct}/${total}`,
+  sessionHistoryLoadMoreCta: 'Xem thêm →',
+  weekdayLabels: ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'] as const,
 }

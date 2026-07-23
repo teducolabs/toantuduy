@@ -8,10 +8,13 @@ export interface WeeklyActivity {
   hasAnyCompletedSession: boolean // false ⇒ AC #4: caller must render zero streak text at all
 }
 
-// Dashboard-view constants (Story 4.2) — distinct from src/domain/constants.ts,
+// Dashboard-view constants (Story 4.2/4.3) — distinct from src/domain/constants.ts,
 // which is scoped exclusively to AD-11's adaptive-difficulty tuning.
 const SKILL_STRONG_THRESHOLD = 0.7
 const SKILL_MIN_ATTEMPTS = 5
+const GRADE_PROGRESS_EARLY_MAX = 2.0 // avg ≤ 2.0 → 'early' ("đầu kỳ")
+const GRADE_PROGRESS_MID_MAX = 3.5 // avg ≤ 3.5 (and > 2.0) → 'mid' ("giữa kỳ"); above → 'late' ("cuối kỳ")
+const SESSION_HISTORY_PAGE_SIZE = 30
 
 export interface SkillBreakdownRow {
   skillId: string
@@ -27,6 +30,14 @@ export interface SkillSessionDetail {
   completedAt: string
   correct: number
   total: number
+}
+
+export interface SessionHistoryRow {
+  sessionId: string
+  completedAt: string // ISO
+  correct: number
+  total: number
+  skillCodes: string[] // distinct Skill.code values covered in this Session, for skillDisplayName() lookup in the component
 }
 
 // FR-7's all-time running accuracy (correct/total across every completed
@@ -90,6 +101,53 @@ export async function getSkillSessionDetail(childProfileId: string, skillId: str
     .map(([sessionId, s]) => ({ sessionId, completedAt: s.completedAt.toISOString(), correct: s.correct, total: s.total }))
     .sort((a, b) => b.completedAt.localeCompare(a.completedAt))
     .slice(0, 3)
+}
+
+// FR-15's all-time average Difficulty Level across all Skills combined —
+// distinct from getSkillAccuracyHistory's WINDOW_SIZE=10 window (feeds AD-11)
+// and getSkillBreakdown's all-time per-Skill accuracy: this is a fresh,
+// Skill-agnostic aggregate of SessionAnswer.difficultyLevelAtAnswer.
+export async function getGradeProgress(childProfileId: string): Promise<'early' | 'mid' | 'late' | null> {
+  const result = await db.sessionAnswer.aggregate({
+    where: {
+      session: { childProfileId, completedAt: { not: null } },
+      difficultyLevelAtAnswer: { not: null },
+    },
+    _avg: { difficultyLevelAtAnswer: true },
+  })
+
+  const avg = result._avg.difficultyLevelAtAnswer
+  if (avg === null) return null
+  if (avg <= GRADE_PROGRESS_EARLY_MAX) return 'early'
+  if (avg <= GRADE_PROGRESS_MID_MAX) return 'mid'
+  return 'late'
+}
+
+export async function getSessionHistory(
+  childProfileId: string,
+  { skip, take = SESSION_HISTORY_PAGE_SIZE }: { skip: number; take?: number },
+): Promise<SessionHistoryRow[]> {
+  const sessions = await db.session.findMany({
+    where: { childProfileId, completedAt: { not: null } },
+    orderBy: { completedAt: 'desc' },
+    skip,
+    take,
+    select: {
+      id: true,
+      completedAt: true,
+      correctCount: true,
+      questionCount: true,
+      answers: { select: { question: { select: { skill: { select: { code: true } } } } } },
+    },
+  })
+
+  return sessions.map((session) => ({
+    sessionId: session.id,
+    completedAt: session.completedAt!.toISOString(),
+    correct: session.correctCount,
+    total: session.questionCount,
+    skillCodes: Array.from(new Set(session.answers.map((a) => a.question.skill.code))),
+  }))
 }
 
 export async function getWeeklyActivity(

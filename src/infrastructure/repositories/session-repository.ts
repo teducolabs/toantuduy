@@ -105,6 +105,13 @@ export function formatVnDateLabel(instantUtc: Date): string {
   return `${day}/${month}/${year}`
 }
 
+// Monday=0…Sunday=6 — same (getUTCDay() + 6) % 7 indexing convention
+// getWeeklyActivity already uses in dashboard-repository.ts.
+export function computeVnWeekdayIndex(instantUtc: Date): number {
+  const vnInstant = new Date(instantUtc.getTime() + VN_OFFSET_MS)
+  return (vnInstant.getUTCDay() + 6) % 7
+}
+
 export async function countQuestionsAnsweredToday(childProfileId: string): Promise<number> {
   const { todayStartUtc, todayEndUtc } = computeVnDayBoundaryUtc(new Date())
   return db.sessionAnswer.count({

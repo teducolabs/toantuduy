@@ -7,15 +7,27 @@ import {
   getCurrentStreak,
   getSkillBreakdown,
   getSkillSessionDetail,
+  getGradeProgress,
+  getSessionHistory,
   type WeeklyActivity,
   type SkillBreakdownRow,
   type SkillSessionDetail,
+  type SessionHistoryRow,
 } from '@/infrastructure/repositories/dashboard-repository'
+import type { GradeBand } from '@prisma/client'
 
 export async function getDashboardDataAction(
   childProfileId: string,
 ): Promise<
-  | { data: { weeklyActivity: WeeklyActivity; skillBreakdown: SkillBreakdownRow[] } }
+  | {
+      data: {
+        weeklyActivity: WeeklyActivity
+        skillBreakdown: SkillBreakdownRow[]
+        gradeProgress: 'early' | 'mid' | 'late' | null
+        gradeBand: GradeBand
+        sessionHistory: SessionHistoryRow[]
+      }
+    }
   | { error: { code: string; message: string } }
 > {
   const resolved = await requireParentAccountId()
@@ -26,13 +38,39 @@ export async function getDashboardDataAction(
     return { error: { code: 'FORBIDDEN', message: 'Child profile does not belong to this account' } }
   }
 
-  const [weekly, streakResult, skillBreakdown] = await Promise.all([
+  const [weekly, streakResult, skillBreakdown, gradeProgress, sessionHistory] = await Promise.all([
     getWeeklyActivity(childProfileId),
     getCurrentStreak(childProfileId),
     getSkillBreakdown(childProfileId),
+    getGradeProgress(childProfileId),
+    getSessionHistory(childProfileId, { skip: 0 }),
   ])
 
-  return { data: { weeklyActivity: { ...weekly, ...streakResult }, skillBreakdown } }
+  return {
+    data: {
+      weeklyActivity: { ...weekly, ...streakResult },
+      skillBreakdown,
+      gradeProgress,
+      gradeBand: childProfile.gradeBand,
+      sessionHistory,
+    },
+  }
+}
+
+export async function getMoreSessionHistoryAction(
+  childProfileId: string,
+  skip: number,
+): Promise<{ data: { sessions: SessionHistoryRow[] } } | { error: { code: string; message: string } }> {
+  const resolved = await requireParentAccountId()
+  if ('error' in resolved) return resolved
+
+  const childProfile = await findChildProfileByIdForParent(childProfileId, resolved.parentAccountId)
+  if (!childProfile) {
+    return { error: { code: 'FORBIDDEN', message: 'Child profile does not belong to this account' } }
+  }
+
+  const sessions = await getSessionHistory(childProfileId, { skip })
+  return { data: { sessions } }
 }
 
 export async function getSkillDetailAction(
