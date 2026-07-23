@@ -4,6 +4,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 export default function ParentDashboardLoading() {
   return (
     <main>
+      <Skeleton data-slot="upsell-banner-skeleton" className="h-12 w-full" />
+
       <Card data-slot="dashboard-card" className="rounded-brand-md shadow-sm bg-white gap-4">
         <div className="flex justify-between gap-2 px-(--card-spacing)">
           <Skeleton className="h-8 w-8 rounded-full" />

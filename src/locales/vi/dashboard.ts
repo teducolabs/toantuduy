@@ -22,5 +22,11 @@ export const dashboard = {
   sessionHistoryEmpty: '0 buổi đã hoàn thành.',
   sessionHistoryScoreChip: (correct: number, total: number) => `${correct}/${total}`,
   sessionHistoryLoadMoreCta: 'Xem thêm →',
+  upsellBannerText: (name: string) => `${name} đã dùng hết lượt miễn phí hôm nay 🌟`,
+  upsellBannerCta: 'Xem gói đăng ký →',
+  upsellBannerDismiss: 'Đóng',
+  offlineToastMessage: 'Không có kết nối. Dữ liệu có thể chưa cập nhật.',
+  loadErrorMessage: 'Không tải được dữ liệu.',
+  loadErrorRetryCta: 'Thử lại',
   weekdayLabels: ['Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy', 'Chủ Nhật'] as const,
 }

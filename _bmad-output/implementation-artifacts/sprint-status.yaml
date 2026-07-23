@@ -46,6 +46,7 @@ last_updated: 2026-07-23
 
 
 
+
 project: ToanTuDuy
 project_key: NOKEY
 tracking_system: file-system
@@ -81,13 +82,13 @@ development_status:
   epic-3-retrospective: done
 
   # ── Epic 4: Parent Dashboard ─────────────────────────────────────────────────
-  epic-4: in-progress
+  epic-4: done
   4-1-weekly-activity-strip-streak: done
   4-2-skill-breakdown-view-skill-detail: done
   4-3-grade-progress-indicator-session-history: done
-  4-4-free-tier-upsell-prompt-on-dashboard: backlog
-  4-5-parent-dashboard-performance-all-state-patterns: backlog
-  epic-4-retrospective: optional
+  4-4-free-tier-upsell-prompt-on-dashboard: done
+  4-5-parent-dashboard-performance-all-state-patterns: done
+  epic-4-retrospective: done
 
   # ── Epic 5: Teacher Portal & Class Reports ───────────────────────────────────
   epic-5: backlog

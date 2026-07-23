@@ -3,12 +3,10 @@
 import { headers } from 'next/headers'
 import { getChildProfileId } from '@/lib/child-profile-cookie'
 import { findChildProfileById } from '@/infrastructure/repositories/child-profile-repository'
-import { hasActiveSubscription } from '@/infrastructure/repositories/subscription-repository'
-import { getFreeTierDailyAllotment } from '@/infrastructure/repositories/global-config-repository'
+import { isAllotmentExhausted } from '@/infrastructure/repositories/subscription-repository'
 import {
   abandonPreviousSessions,
   completeSession,
-  countQuestionsAnsweredToday,
   createSession,
   computeVnDayBoundaryUtc,
   findActiveSession,
@@ -20,20 +18,6 @@ import { db } from '@/lib/db'
 import { student } from '@/locales/vi/student'
 
 type ActionResult<T> = { data: T } | { error: { code: string; message: string } }
-
-// Shared by startSessionAction (authoritative, on click) and
-// getSessionStartGateState (read-only pre-check, at render time) so the
-// subscription-bypass + allotment logic can't drift between the two callers.
-async function isAllotmentExhausted(childProfileId: string, parentAccountId: string): Promise<boolean> {
-  const subscribed = await hasActiveSubscription(parentAccountId)
-  if (subscribed) return false
-
-  const [allotment, answeredToday] = await Promise.all([
-    getFreeTierDailyAllotment(),
-    countQuestionsAnsweredToday(childProfileId),
-  ])
-  return answeredToday >= allotment
-}
 
 export async function startSessionAction(): Promise<ActionResult<{ sessionId: string }>> {
   try {
