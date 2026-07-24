@@ -2,14 +2,26 @@
 // ACTIVE/EXPIRED are invoked ONLY by the PayOS webhook route and the expiry cron
 // route. Creation/reset to PENDING_PAYMENT is invoked ONLY by the checkout server
 // action — it grants nothing; activation still requires the verified webhook.
+// ACTIVE → CANCELLED is invoked ONLY by the cancel server action — it grants
+// nothing (it REDUCES entitlement; access until renewsAt comes from the
+// paid-through read in hasActiveSubscription, not from this transition).
 import type { SubscriptionStatus } from '@prisma/client'
 import { db } from '@/lib/db'
 import { getFreeTierDailyAllotment } from '@/infrastructure/repositories/global-config-repository'
 import { countQuestionsAnsweredToday } from '@/infrastructure/repositories/session-repository'
 
+// Paid-through rule: access is granted while status is ACTIVE OR while a paid
+// period is still running (renewsAt in the future), regardless of status. This is
+// what makes end-of-period cancellation work — a CANCELLED parent keeps full
+// access until renewsAt, then the expiry cron flips CANCELLED → EXPIRED.
+// PENDING_PAYMENT with a future renewsAt must ALSO pass: that's a CANCELLED
+// parent who tapped reactivate and abandoned the PayOS page — createPendingSubscription
+// resets status but never touches renewsAt, and they paid for that period.
+// EXPIRED rows never have a future renewsAt (the cron only expires rows with
+// renewsAt <= now), and fresh PENDING_PAYMENT rows have renewsAt null.
 export async function hasActiveSubscription(parentAccountId: string): Promise<boolean> {
   const subscription = await db.subscription.findUnique({ where: { parentAccountId } })
-  return subscription?.status === 'ACTIVE'
+  return subscription?.status === 'ACTIVE' || (subscription?.renewsAt != null && subscription.renewsAt > new Date())
 }
 
 // Shared by the student surface (startSessionAction / getSessionStartGateState) and
@@ -83,6 +95,20 @@ export async function getSubscriptionSummary(
     where: { parentAccountId },
     select: { status: true, renewsAt: true },
   })
+}
+
+// ACTIVE → CANCELLED for the parent's own subscription (end-of-period cancel).
+// The `status: 'ACTIVE'` WHERE guard is the idempotency mechanism (same pattern
+// as activateSubscriptionByOrderCode): a double-tap or a cancel against a
+// non-ACTIVE row matches zero rows and is a no-op — hence updateMany. renewsAt
+// is deliberately untouched: it is the "có hiệu lực đến" date shown to the
+// parent and the trigger for expireDueSubscriptions.
+export async function cancelSubscription(parentAccountId: string, cancelledAt: Date): Promise<boolean> {
+  const result = await db.subscription.updateMany({
+    where: { parentAccountId, status: 'ACTIVE' },
+    data: { status: 'CANCELLED', cancelledAt },
+  })
+  return result.count > 0
 }
 
 // ACTIVE → EXPIRED and CANCELLED → EXPIRED for subscriptions past renewsAt.

@@ -14,8 +14,10 @@ import { db } from '@/lib/db'
 import { getFreeTierDailyAllotment } from '@/infrastructure/repositories/global-config-repository'
 import { countQuestionsAnsweredToday } from '@/infrastructure/repositories/session-repository'
 import {
+  hasActiveSubscription,
   isAllotmentExhausted,
   activateSubscriptionByOrderCode,
+  cancelSubscription,
   expireDueSubscriptions,
   createPendingSubscription,
   getParentEmailByOrderCode,
@@ -38,9 +40,80 @@ beforeEach(() => {
   answeredToday.mockReset()
 })
 
+// renewsAt fixtures are relative to Date.now() — the paid-through rule compares
+// against the real clock (hasActiveSubscription takes no `now` param by design).
+const tomorrow = () => new Date(Date.now() + 86_400_000)
+const yesterday = () => new Date(Date.now() - 86_400_000)
+
+describe('hasActiveSubscription', () => {
+  it('returns true for an ACTIVE subscription (even if the expiry cron is late)', async () => {
+    findUnique.mockResolvedValueOnce({ status: 'ACTIVE', renewsAt: yesterday() })
+
+    expect(await hasActiveSubscription('parent-1')).toBe(true)
+  })
+
+  it('returns true for CANCELLED with a future renewsAt (paid-through until period end)', async () => {
+    findUnique.mockResolvedValueOnce({ status: 'CANCELLED', renewsAt: tomorrow() })
+
+    expect(await hasActiveSubscription('parent-1')).toBe(true)
+  })
+
+  it('returns false for CANCELLED with a past renewsAt', async () => {
+    findUnique.mockResolvedValueOnce({ status: 'CANCELLED', renewsAt: yesterday() })
+
+    expect(await hasActiveSubscription('parent-1')).toBe(false)
+  })
+
+  it('returns true for PENDING_PAYMENT with a future renewsAt (abandoned reactivation keeps paid period)', async () => {
+    findUnique.mockResolvedValueOnce({ status: 'PENDING_PAYMENT', renewsAt: tomorrow() })
+
+    expect(await hasActiveSubscription('parent-1')).toBe(true)
+  })
+
+  it('returns false for a fresh PENDING_PAYMENT with null renewsAt (never paid)', async () => {
+    findUnique.mockResolvedValueOnce({ status: 'PENDING_PAYMENT', renewsAt: null })
+
+    expect(await hasActiveSubscription('parent-1')).toBe(false)
+  })
+
+  it('returns false for EXPIRED', async () => {
+    findUnique.mockResolvedValueOnce({ status: 'EXPIRED', renewsAt: yesterday() })
+
+    expect(await hasActiveSubscription('parent-1')).toBe(false)
+  })
+
+  it('returns false when the parent has no subscription row', async () => {
+    findUnique.mockResolvedValueOnce(null)
+
+    expect(await hasActiveSubscription('parent-1')).toBe(false)
+  })
+})
+
+describe('cancelSubscription', () => {
+  const cancelledAt = new Date('2026-07-24T10:00:00Z')
+
+  it('transitions the ACTIVE row to CANCELLED with the ACTIVE where-guard and returns true', async () => {
+    updateMany.mockResolvedValueOnce({ count: 1 })
+
+    const result = await cancelSubscription('parent-1', cancelledAt)
+
+    expect(result).toBe(true)
+    expect(updateMany).toHaveBeenCalledWith({
+      where: { parentAccountId: 'parent-1', status: 'ACTIVE' },
+      data: { status: 'CANCELLED', cancelledAt },
+    })
+  })
+
+  it('returns false when no ACTIVE row matches (double-tap or non-ACTIVE row)', async () => {
+    updateMany.mockResolvedValueOnce({ count: 0 })
+
+    expect(await cancelSubscription('parent-1', cancelledAt)).toBe(false)
+  })
+})
+
 describe('isAllotmentExhausted', () => {
   it('returns false when the parent account has an active subscription, regardless of usage', async () => {
-    findUnique.mockResolvedValueOnce({ status: 'ACTIVE' })
+    findUnique.mockResolvedValueOnce({ status: 'ACTIVE', renewsAt: tomorrow() })
 
     const result = await isAllotmentExhausted('child-1', 'parent-1')
 

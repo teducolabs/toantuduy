@@ -1,8 +1,10 @@
 'use server'
 
+import { revalidatePath } from 'next/cache'
 import { requireParentAccountId } from '@/app/(parent)/profiles/actions'
 import { getSubscriptionPlanPricing } from '@/infrastructure/repositories/global-config-repository'
 import {
+  cancelSubscription,
   createPendingSubscription,
   getSubscriptionSummary,
 } from '@/infrastructure/repositories/subscription-repository'
@@ -75,4 +77,23 @@ export async function getSubscriptionSummaryAction(): Promise<
   const summary = await getSubscriptionSummary(resolved.parentAccountId)
   if (!summary) return { data: null }
   return { data: { status: summary.status, renewsAt: summary.renewsAt?.toISOString() ?? null } }
+}
+
+// Takes NO subscription id from the client — it cancels the session-derived
+// parent's own row, so "parentAccountId matches the session" (AC #4) is
+// structurally guaranteed rather than checked.
+export async function cancelSubscriptionAction(): Promise<
+  { data: { cancelled: true } } | { error: { code: string; message: string } }
+> {
+  const resolved = await requireParentAccountId()
+  if ('error' in resolved) return resolved
+
+  const cancelled = await cancelSubscription(resolved.parentAccountId, new Date())
+  if (!cancelled) {
+    return { error: { code: 'FORBIDDEN', message: 'No active subscription to cancel' } }
+  }
+
+  revalidatePath('/account')
+  revalidatePath('/dashboard')
+  return { data: { cancelled: true } }
 }

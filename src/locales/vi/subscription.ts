@@ -22,4 +22,17 @@ export const subscription = {
   goToDashboardLink: 'Về bảng điều khiển →',
   backToPlansLink: 'Xem lại gói đăng ký →',
   nextBillingDateLabel: (date: string) => `Ngày thanh toán tiếp theo: ${date}`,
+  accountTitle: 'Tài khoản',
+  subscriptionSectionTitle: 'Gói đăng ký',
+  statusActiveLabel: 'Đang hoạt động',
+  statusCancelledLabel: (date: string) => `Đã hủy — có hiệu lực đến ${date}`,
+  statusNoneLabel: 'Chưa có gói đăng ký',
+  cancelCta: 'Hủy đăng ký',
+  reactivateCta: 'Kích hoạt lại',
+  cancelConfirmTitle: 'Hủy gói đăng ký?',
+  cancelConfirmBody: (date: string) =>
+    `Bạn vẫn có thể sử dụng không giới hạn đến ${date}. Sau đó tài khoản sẽ trở về gói miễn phí.`,
+  cancelConfirmKeepCta: 'Giữ gói đăng ký',
+  cancelSuccessToast: (date: string) => `Đã hủy gói đăng ký. Có hiệu lực đến ${date}.`,
+  cancelErrorToast: 'Không thể hủy gói đăng ký. Vui lòng thử lại.',
 }

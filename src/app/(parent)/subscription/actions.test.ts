@@ -7,8 +7,12 @@ vi.mock('@/infrastructure/repositories/global-config-repository', () => ({
   getSubscriptionPlanPricing: vi.fn(),
 }))
 vi.mock('@/infrastructure/repositories/subscription-repository', () => ({
+  cancelSubscription: vi.fn(),
   createPendingSubscription: vi.fn(),
   getSubscriptionSummary: vi.fn(),
+}))
+vi.mock('next/cache', () => ({
+  revalidatePath: vi.fn(),
 }))
 vi.mock('@/infrastructure/payment/payos', () => ({
   generateOrderCode: vi.fn(),
@@ -21,16 +25,25 @@ vi.mock('@/lib/env', () => ({
   },
 }))
 
+import { revalidatePath } from 'next/cache'
 import { requireParentAccountId } from '@/app/(parent)/profiles/actions'
 import { getSubscriptionPlanPricing } from '@/infrastructure/repositories/global-config-repository'
 import {
+  cancelSubscription,
   createPendingSubscription,
   getSubscriptionSummary,
 } from '@/infrastructure/repositories/subscription-repository'
 import { generateOrderCode, initiatePayment } from '@/infrastructure/payment/payos'
-import { getSubscriptionPlansAction, subscribeAction, getSubscriptionSummaryAction } from './actions'
+import {
+  getSubscriptionPlansAction,
+  subscribeAction,
+  getSubscriptionSummaryAction,
+  cancelSubscriptionAction,
+} from './actions'
 
 const requireParentAccountIdMock = requireParentAccountId as unknown as ReturnType<typeof vi.fn>
+const cancelSubscriptionMock = cancelSubscription as unknown as ReturnType<typeof vi.fn>
+const revalidatePathMock = revalidatePath as unknown as ReturnType<typeof vi.fn>
 const getSubscriptionPlanPricingMock = getSubscriptionPlanPricing as unknown as ReturnType<typeof vi.fn>
 const createPendingSubscriptionMock = createPendingSubscription as unknown as ReturnType<typeof vi.fn>
 const getSubscriptionSummaryMock = getSubscriptionSummary as unknown as ReturnType<typeof vi.fn>
@@ -39,6 +52,8 @@ const initiatePaymentMock = initiatePayment as unknown as ReturnType<typeof vi.f
 
 beforeEach(() => {
   requireParentAccountIdMock.mockReset()
+  cancelSubscriptionMock.mockReset()
+  revalidatePathMock.mockReset()
   getSubscriptionPlanPricingMock.mockReset()
   createPendingSubscriptionMock.mockReset()
   getSubscriptionSummaryMock.mockReset()
@@ -192,5 +207,40 @@ describe('getSubscriptionSummaryAction', () => {
     const result = await getSubscriptionSummaryAction()
 
     expect(result).toEqual({ data: null })
+  })
+})
+
+describe('cancelSubscriptionAction', () => {
+  it('returns the auth error and never calls the repository when unauthorized', async () => {
+    const error = { error: { code: 'UNAUTHORIZED', message: 'Not authenticated' } }
+    requireParentAccountIdMock.mockResolvedValueOnce(error)
+
+    const result = await cancelSubscriptionAction()
+
+    expect(result).toEqual(error)
+    expect(cancelSubscriptionMock).not.toHaveBeenCalled()
+    expect(revalidatePathMock).not.toHaveBeenCalled()
+  })
+
+  it('returns FORBIDDEN and skips revalidation when the parent has no ACTIVE subscription', async () => {
+    requireParentAccountIdMock.mockResolvedValueOnce({ parentAccountId: 'parent-1' })
+    cancelSubscriptionMock.mockResolvedValueOnce(false)
+
+    const result = await cancelSubscriptionAction()
+
+    expect(result).toMatchObject({ error: { code: 'FORBIDDEN' } })
+    expect(revalidatePathMock).not.toHaveBeenCalled()
+  })
+
+  it('cancels the session parent, revalidates account + dashboard, and returns cancelled: true', async () => {
+    requireParentAccountIdMock.mockResolvedValueOnce({ parentAccountId: 'parent-1' })
+    cancelSubscriptionMock.mockResolvedValueOnce(true)
+
+    const result = await cancelSubscriptionAction()
+
+    expect(result).toEqual({ data: { cancelled: true } })
+    expect(cancelSubscriptionMock).toHaveBeenCalledWith('parent-1', expect.any(Date))
+    expect(revalidatePathMock).toHaveBeenCalledWith('/account')
+    expect(revalidatePathMock).toHaveBeenCalledWith('/dashboard')
   })
 })

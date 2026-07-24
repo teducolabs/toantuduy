@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { subscribeAction } from '@/app/(parent)/subscription/actions'
 import { subscription } from '@/locales/vi/subscription'
 
-export function SubscribeButton({ plan }: { plan: 'MONTHLY' | 'ANNUAL' }) {
+export function SubscribeButton({ plan, label = subscription.subscribeCta }: { plan: 'MONTHLY' | 'ANNUAL'; label?: string }) {
   const [isPending, startTransition] = useTransition()
 
   function handleClick() {
@@ -24,7 +24,7 @@ export function SubscribeButton({ plan }: { plan: 'MONTHLY' | 'ANNUAL' }) {
 
   return (
     <Button className="w-full" disabled={isPending} onClick={handleClick}>
-      {isPending ? subscription.subscribeCtaPending : subscription.subscribeCta}
+      {isPending ? subscription.subscribeCtaPending : label}
     </Button>
   )
 }
