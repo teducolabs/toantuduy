@@ -99,6 +99,16 @@ describe('getClassReportAction — not found', () => {
   })
 })
 
+describe('getClassReportAction — load failure', () => {
+  it('returns LOAD_FAILED instead of throwing when the repo rejects (UX-DR15 retry card)', async () => {
+    setFindFirst.mockRejectedValue(new Error('db down'))
+
+    const result = await getClassReportAction({ assignmentSetId: 'set-1' })
+
+    expect('error' in result && result.error.code).toBe('LOAD_FAILED')
+  })
+})
+
 describe('getClassReportAction — happy path', () => {
   it('scopes the query to the resolved teacher and returns the computed report with header fields', async () => {
     setFindFirst.mockResolvedValue(reportData)

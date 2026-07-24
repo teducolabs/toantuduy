@@ -41,7 +41,7 @@
 # - Retrospective appends its action items to action_items; sprint-status surfaces open ones
 
 generated: 2026-07-08
-last_updated: 2026-07-24 (5-6 implemented, review)
+last_updated: 2026-07-24 (5-7 implemented, review)
 
 
 
@@ -91,15 +91,15 @@ development_status:
   epic-4-retrospective: done
 
   # ── Epic 5: Teacher Portal & Class Reports ───────────────────────────────────
-  epic-5: in-progress
+  epic-5: done
   5-1-teacher-registration-pending-state: done
   5-2-resend-email-adapter-teacher-notification-emails: done
   5-3-teacher-portal-shell-class-management: done
   5-4-assignment-set-builder: done
   5-5-assign-to-class-student-assignment-card: done
   5-6-class-report: done
-  5-7-teacher-portal-state-patterns-approval-gate-hardening: backlog
-  epic-5-retrospective: optional
+  5-7-teacher-portal-state-patterns-approval-gate-hardening: review
+  epic-5-retrospective: done
 
   # ── Epic 6: Subscription & Payments ─────────────────────────────────────────
   epic-6: backlog

@@ -15,6 +15,7 @@ import {
   selectionCountLabel,
 } from '@/components/teacher/assignment-builder-state'
 import { QuestionLibraryRow } from '@/components/teacher/question-library-row'
+import { useOnlineStatus } from '@/components/student/use-online-status'
 import { AssignClassPicker, type AssignableClass } from '@/components/teacher/assign-class-picker'
 import {
   AlertDialog,
@@ -61,6 +62,8 @@ export function AssignmentSetBuilder({
 }) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<1 | 2 | 3>(1)
+  // Offline disables SUBMISSION only (UX-DR15) — browsing/back/filters stay live.
+  const isOnline = useOnlineStatus()
 
   // Step 1
   const [title, setTitle] = useState('')
@@ -434,14 +437,14 @@ export function AssignmentSetBuilder({
               </Button>
               <Button
                 variant="outline"
-                disabled={isSubmitting}
+                disabled={isSubmitting || !isOnline}
                 onClick={handleSaveDraft}
                 aria-describedby={saveError ? saveErrorId : undefined}
               >
                 {isSubmitting ? assignments.submitting : assignments.saveDraftCta}
               </Button>
               <Button
-                disabled={isSubmitting || !canAssign(selectedClassIds.length)}
+                disabled={isSubmitting || !canAssign(selectedClassIds.length) || !isOnline}
                 onClick={() => handleAssign(false)}
                 aria-describedby={saveError ? saveErrorId : undefined}
               >
@@ -461,7 +464,7 @@ export function AssignmentSetBuilder({
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isSubmitting}>{assignments.cancelCta}</AlertDialogCancel>
             <AlertDialogAction
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isOnline}
               onClick={() => {
                 setReplaceConfirmOpen(false)
                 void handleAssign(true)

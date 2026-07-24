@@ -147,8 +147,15 @@ describe('createClassAction', () => {
     expect('error' in result && result.error.code).toBe('VALIDATION_ERROR')
   })
 
-  it('rejects a PENDING teacher before touching the database (AC #6)', async () => {
-    teacherFindUnique.mockResolvedValue({ id: 'teacher-1', userId: 'user-1', status: 'PENDING' })
+  // AD-6 dual gate — full rejection matrix (5.7 audit; supersedes the single PENDING case).
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s (AD-6)', async (_label, arrange) => {
+    arrange()
 
     const result = await createClassAction({ name: 'Lớp 1A', gradeBand: 'GRADE_1' })
 
@@ -165,6 +172,22 @@ describe('getClassesAction', () => {
 
     expect('data' in result && result.data.classes).toHaveLength(1)
     expect(classFindMany.mock.calls[0][0].where).toEqual({ teacherAccountId: 'teacher-1' })
+  })
+
+  // AD-6 dual gate — full rejection matrix (5.7 audit).
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s (AD-6)', async (_label, arrange) => {
+    arrange()
+
+    const result = await getClassesAction()
+
+    expect('error' in result && result.error.code).toBe('UNAUTHORIZED')
+    expect(classFindMany).not.toHaveBeenCalled()
   })
 })
 
@@ -184,5 +207,21 @@ describe('getClassDetailAction', () => {
     const result = await getClassDetailAction({ classId: 'class-1' })
 
     expect('data' in result && result.data.class.joinCode).toBe('ABC234')
+  })
+
+  // AD-6 dual gate — full rejection matrix (5.7 audit).
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s (AD-6)', async (_label, arrange) => {
+    arrange()
+
+    const result = await getClassDetailAction({ classId: 'class-1' })
+
+    expect('error' in result && result.error.code).toBe('UNAUTHORIZED')
+    expect(classFindFirst).not.toHaveBeenCalled()
   })
 })

@@ -12,6 +12,8 @@ export const reports = {
   noStudents: 'Lớp chưa có học sinh. Chia sẻ mã tham gia để thêm học sinh.',
   viewReportCta: 'Xem báo cáo',
 
+  loadErrorMessage: 'Không tải được dữ liệu.', // retry CTA reuses assignments.retryCta (UX-DR15)
+
   sortAscending: 'sắp xếp tăng dần',
   sortDescending: 'sắp xếp giảm dần',
 

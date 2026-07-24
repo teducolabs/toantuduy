@@ -4,6 +4,7 @@ import { useId, useState } from 'react'
 import { assignAssignmentSetAction } from '@/app/(teacher)/assignments/actions'
 import { toggleClassSelection, canAssign } from '@/components/teacher/assignment-builder-state'
 import { AssignClassPicker, type AssignableClass } from '@/components/teacher/assign-class-picker'
+import { useOnlineStatus } from '@/components/student/use-online-status'
 import { assignments } from '@/locales/vi/assignments'
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import {
@@ -27,6 +28,8 @@ const ASSIGN_ERROR_MESSAGES: Record<string, string> = {
 // button. Failures stay inline with state preserved (UX-DR15).
 export function AssignSetDialog({ assignmentSetId, classes }: { assignmentSetId: string; classes: AssignableClass[] }) {
   const [open, setOpen] = useState(false)
+  // Offline disables SUBMISSION only (UX-DR15) — browsing stays available.
+  const isOnline = useOnlineStatus()
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -87,7 +90,7 @@ export function AssignSetDialog({ assignmentSetId, classes }: { assignmentSetId:
 
           <DialogFooter>
             <Button
-              disabled={!canAssign(selectedIds.length) || isSubmitting}
+              disabled={!canAssign(selectedIds.length) || isSubmitting || !isOnline}
               onClick={() => handleAssign(false)}
               aria-describedby={error ? errorId : undefined}
             >
@@ -106,7 +109,7 @@ export function AssignSetDialog({ assignmentSetId, classes }: { assignmentSetId:
           <AlertDialogFooter>
             <AlertDialogCancel disabled={isSubmitting}>{assignments.cancelCta}</AlertDialogCancel>
             <AlertDialogAction
-              disabled={isSubmitting}
+              disabled={isSubmitting || !isOnline}
               onClick={() => {
                 setReplaceConfirmOpen(false)
                 void handleAssign(true)

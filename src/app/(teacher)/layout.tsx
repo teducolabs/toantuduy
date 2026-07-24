@@ -5,6 +5,7 @@ import { BookOpen, ClipboardList, BarChart3 } from 'lucide-react'
 import { auth } from '@/lib/auth'
 import { getTeacherAccountStatus } from '@/lib/teacher-status'
 import { signOutAction } from '@/lib/auth-actions'
+import { TeacherOfflineToast } from '@/components/teacher/teacher-offline-toast'
 import { common } from '@/locales/vi/common'
 
 const NAV_ITEMS = [
@@ -19,17 +20,16 @@ export default async function TeacherLayout({ children }: { children: ReactNode 
     redirect('/login')
   }
 
+  // AD-6: fresh DB status read per request — a post-issuance status flip
+  // (PENDING/REJECTED or a deleted row) is caught here regardless of the JWT.
   const status = await getTeacherAccountStatus(session.user.id)
   if (status !== 'APPROVED') {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center px-4 text-center">
-        <p className="text-body">{common.teacherPendingApproval}</p>
-      </main>
-    )
+    redirect('/register/teacher/pending')
   }
 
   return (
     <div className="flex min-h-screen">
+      <TeacherOfflineToast />
       <nav className="flex w-14 flex-col gap-1 border-r border-gray-200 p-2 lg:w-56 lg:p-4">
         {NAV_ITEMS.map(({ href, label, Icon }) => (
           <Link

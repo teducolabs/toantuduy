@@ -185,12 +185,20 @@ describe('getAssignmentBuilderContextAction', () => {
     expect('data' in result && result.data.maxQuestions).toBe(15)
   })
 
-  it('rejects an unapproved teacher (AD-6)', async () => {
-    teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })
+  // AD-6 dual gate — full rejection matrix (5.7 audit).
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s (AD-6)', async (_label, arrange) => {
+    arrange()
 
     const result = await getAssignmentBuilderContextAction()
 
     expect('error' in result && result.error.code).toBe('UNAUTHORIZED')
+    expect(skillFindMany).not.toHaveBeenCalled()
   })
 })
 
@@ -223,8 +231,15 @@ describe('getQuestionLibraryAction', () => {
     expect('error' in result && result.error.code).toBe('VALIDATION_ERROR')
   })
 
-  it('rejects an unapproved teacher (AD-6)', async () => {
-    teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })
+  // AD-6 dual gate — full rejection matrix (5.7 audit).
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s (AD-6)', async (_label, arrange) => {
+    arrange()
 
     const result = await getQuestionLibraryAction({ gradeBand: 'GRADE_1' })
 
@@ -386,5 +401,21 @@ describe('getAssignmentSetsAction', () => {
 
     expect('data' in result && result.data.assignmentSets).toHaveLength(1)
     expect(setFindMany.mock.calls[0][0].where).toEqual({ teacherAccountId: 'teacher-1' })
+  })
+
+  // AD-6 dual gate — full rejection matrix (5.7 audit).
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s (AD-6)', async (_label, arrange) => {
+    arrange()
+
+    const result = await getAssignmentSetsAction()
+
+    expect('error' in result && result.error.code).toBe('UNAUTHORIZED')
+    expect(setFindMany).not.toHaveBeenCalled()
   })
 })

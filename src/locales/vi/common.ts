@@ -11,4 +11,5 @@ export const common = {
   teacherNavReports: 'Báo cáo',
 
   teacherPendingApproval: 'Tài khoản đang chờ xét duyệt. Chúng tôi sẽ thông báo qua email.',
+  teacherOfflineToast: 'Không có kết nối.', // EXACT — EXPERIENCE.md 204 (UX-DR15)
 }
