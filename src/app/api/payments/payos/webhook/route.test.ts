@@ -6,14 +6,24 @@ vi.mock('@/infrastructure/payment/payos', () => ({
 }))
 vi.mock('@/infrastructure/repositories/subscription-repository', () => ({
   activateSubscriptionByOrderCode: vi.fn(),
+  getParentEmailByOrderCode: vi.fn(),
+}))
+vi.mock('@/infrastructure/email/resend', () => ({
+  sendSubscriptionActivatedEmail: vi.fn(),
 }))
 
 import { verifyWebhook } from '@/infrastructure/payment/payos'
-import { activateSubscriptionByOrderCode } from '@/infrastructure/repositories/subscription-repository'
+import {
+  activateSubscriptionByOrderCode,
+  getParentEmailByOrderCode,
+} from '@/infrastructure/repositories/subscription-repository'
+import { sendSubscriptionActivatedEmail } from '@/infrastructure/email/resend'
 import { POST } from './route'
 
 const verify = verifyWebhook as unknown as ReturnType<typeof vi.fn>
 const activate = activateSubscriptionByOrderCode as unknown as ReturnType<typeof vi.fn>
+const getParentEmail = getParentEmailByOrderCode as unknown as ReturnType<typeof vi.fn>
+const sendActivatedEmail = sendSubscriptionActivatedEmail as unknown as ReturnType<typeof vi.fn>
 
 function webhookRequest(body: string): NextRequest {
   return new NextRequest('http://localhost/api/payments/payos/webhook', {
@@ -25,6 +35,8 @@ function webhookRequest(body: string): NextRequest {
 beforeEach(() => {
   verify.mockReset()
   activate.mockReset()
+  getParentEmail.mockReset()
+  sendActivatedEmail.mockReset().mockResolvedValue({ data: { id: 'email-1' } })
 })
 
 describe('POST /api/payments/payos/webhook', () => {
@@ -48,6 +60,7 @@ describe('POST /api/payments/payos/webhook', () => {
   it('activates the subscription with the orderCode and ~30-day renewsAt on a verified PAID event', async () => {
     verify.mockResolvedValueOnce({ orderCode: 1753000000000123, amount: 99000, code: '00' })
     activate.mockResolvedValueOnce(true)
+    getParentEmail.mockResolvedValueOnce('parent@example.vn')
     const before = Date.now()
 
     const res = await POST(webhookRequest(JSON.stringify({ data: {}, signature: 'ok' })))
@@ -80,5 +93,43 @@ describe('POST /api/payments/payos/webhook', () => {
 
     expect(res.status).toBe(200)
     await expect(res.json()).resolves.toEqual({ received: true })
+  })
+
+  it('sends the activation email to the looked-up address when activation succeeds', async () => {
+    verify.mockResolvedValueOnce({ orderCode: 1753000000000123, amount: 99000, code: '00' })
+    activate.mockResolvedValueOnce(true)
+    getParentEmail.mockResolvedValueOnce('parent@example.vn')
+
+    const res = await POST(webhookRequest(JSON.stringify({ data: {}, signature: 'ok' })))
+
+    expect(res.status).toBe(200)
+    expect(getParentEmail).toHaveBeenCalledWith(BigInt(1753000000000123))
+    expect(sendActivatedEmail).toHaveBeenCalledTimes(1)
+    const [to, renewsAtLabel] = sendActivatedEmail.mock.calls[0]
+    expect(to).toBe('parent@example.vn')
+    expect(typeof renewsAtLabel).toBe('string')
+  })
+
+  it('does not look up or send email when activation is a no-op (replay)', async () => {
+    verify.mockResolvedValueOnce({ orderCode: 42, amount: 99000, code: '00' })
+    activate.mockResolvedValueOnce(false)
+
+    const res = await POST(webhookRequest(JSON.stringify({ data: {}, signature: 'ok' })))
+
+    expect(res.status).toBe(200)
+    expect(getParentEmail).not.toHaveBeenCalled()
+    expect(sendActivatedEmail).not.toHaveBeenCalled()
+  })
+
+  it('still returns 200 without sending when no parent email is found for the orderCode', async () => {
+    verify.mockResolvedValueOnce({ orderCode: 42, amount: 99000, code: '00' })
+    activate.mockResolvedValueOnce(true)
+    getParentEmail.mockResolvedValueOnce(null)
+
+    const res = await POST(webhookRequest(JSON.stringify({ data: {}, signature: 'ok' })))
+
+    expect(res.status).toBe(200)
+    await expect(res.json()).resolves.toEqual({ received: true })
+    expect(sendActivatedEmail).not.toHaveBeenCalled()
   })
 })

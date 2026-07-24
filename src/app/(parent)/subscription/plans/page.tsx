@@ -24,14 +24,14 @@ export default async function SubscriptionPlansPage() {
           name={subscription.monthlyPlanName}
           priceLabel={subscription.priceMonthly(monthlyPriceVnd)}
           bullets={subscription.planBullets}
-          cta={subscription.subscribeCta}
+          plan="MONTHLY"
         />
         {annualPriceVnd !== null && (
           <SubscriptionPlanCard
             name={subscription.annualPlanName}
             priceLabel={subscription.priceAnnual(annualPriceVnd)}
             bullets={subscription.planBullets}
-            cta={subscription.subscribeCta}
+            plan="ANNUAL"
           />
         )}
       </div>

@@ -6,6 +6,7 @@ import { env } from '@/lib/env'
 import { emails } from '@/locales/vi/emails'
 import { TeacherApprovalEmail } from './templates/teacher-approval-email'
 import { TeacherRejectionEmail } from './templates/teacher-rejection-email'
+import { SubscriptionActivatedEmail } from './templates/subscription-activated-email'
 
 // Temporary Resend sandbox sender — works with any Resend API key without a
 // verified domain, but can only deliver to the email address on the Resend
@@ -57,5 +58,13 @@ export async function sendTeacherRejectionEmail(to: string, name: string, reason
     to,
     subject: emails.teacherRejectionSubject,
     react: TeacherRejectionEmail({ name, reason }),
+  })
+}
+
+export async function sendSubscriptionActivatedEmail(to: string, renewsAtLabel: string): Promise<SendEmailResult> {
+  return sendEmail({
+    to,
+    subject: emails.subscriptionActivatedSubject,
+    react: SubscriptionActivatedEmail({ renewsAtLabel, dashboardUrl: `${env.NEXTAUTH_URL}/dashboard` }),
   })
 }

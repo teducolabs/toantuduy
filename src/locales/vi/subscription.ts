@@ -13,4 +13,13 @@ export const subscription = {
   subscribeCta: 'Đăng ký',
   viewPlansLink: 'Xem gói đăng ký →',
   loadErrorMessage: 'Không tải được dữ liệu.',
+  subscribeCtaPending: 'Đang xử lý…',
+  checkoutErrorToast: 'Thanh toán không thành công. Vui lòng thử lại.',
+  successToast: 'Đã đăng ký thành công! Lượt luyện tập đã được mở.',
+  resultSuccessTitle: 'Thanh toán thành công',
+  resultSuccessBody: 'Gói đăng ký của bạn đang được kích hoạt. Tất cả hồ sơ của bé đã có lượt luyện tập không giới hạn.',
+  resultFailureTitle: 'Thanh toán không thành công',
+  goToDashboardLink: 'Về bảng điều khiển →',
+  backToPlansLink: 'Xem lại gói đăng ký →',
+  nextBillingDateLabel: (date: string) => `Ngày thanh toán tiếp theo: ${date}`,
 }

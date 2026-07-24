@@ -5,7 +5,11 @@
 // Node runtime (default) — Prisma and the PayOS SDK require it; do not set edge.
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyWebhook } from '@/infrastructure/payment/payos'
-import { activateSubscriptionByOrderCode } from '@/infrastructure/repositories/subscription-repository'
+import {
+  activateSubscriptionByOrderCode,
+  getParentEmailByOrderCode,
+} from '@/infrastructure/repositories/subscription-repository'
+import { sendSubscriptionActivatedEmail } from '@/infrastructure/email/resend'
 
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000
 
@@ -36,9 +40,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   // `activated` is false on replays (row already ACTIVE) and on PayOS's
   // webhook-registration test payload (orderCode matches no Subscription) — both
   // must still get a 2xx, or PayOS retries / registration fails.
-  // Story 6.3 hooks sendSubscriptionActivatedEmail(...) here, gated on `activated`.
   const activated = await activateSubscriptionByOrderCode(BigInt(data.orderCode), renewsAt)
   console.log(`[payos-webhook] orderCode=${data.orderCode} activated=${activated}`)
+
+  // Best-effort activation email — sendEmail never throws, so the 200 response
+  // below can never be affected by email failure (PayOS retries non-2xx).
+  if (activated) {
+    const email = await getParentEmailByOrderCode(BigInt(data.orderCode))
+    if (email) await sendSubscriptionActivatedEmail(email, renewsAt.toLocaleDateString('vi-VN'))
+  }
 
   return NextResponse.json({ received: true })
 }

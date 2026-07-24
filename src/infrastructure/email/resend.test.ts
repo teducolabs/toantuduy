@@ -16,7 +16,12 @@ vi.mock('@/lib/env', () => ({
   },
 }))
 
-import { sendEmail, sendTeacherApprovalEmail, sendTeacherRejectionEmail } from './resend'
+import {
+  sendEmail,
+  sendTeacherApprovalEmail,
+  sendTeacherRejectionEmail,
+  sendSubscriptionActivatedEmail,
+} from './resend'
 import { emails } from '@/locales/vi/emails'
 
 const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
@@ -79,6 +84,29 @@ describe('sendTeacherApprovalEmail', () => {
     sendMock.mockRejectedValue(new Error('boom'))
 
     const result = await sendTeacherApprovalEmail('teacher@school.vn', 'Cô Lan')
+
+    expect(result).toEqual({ error: { code: 'EMAIL_SEND_FAILED' } })
+  })
+})
+
+describe('sendSubscriptionActivatedEmail', () => {
+  it('sends with the locale subject, the renewsAt label, and the dashboard link', async () => {
+    const result = await sendSubscriptionActivatedEmail('parent@example.vn', '23/8/2026')
+
+    expect(result).toEqual({ data: { id: 'email-1' } })
+    const payload = sendMock.mock.calls[0][0]
+    expect(payload.to).toBe('parent@example.vn')
+    expect(payload.subject).toBe(emails.subscriptionActivatedSubject)
+    expect(payload.html).toContain(emails.greetingFallback)
+    expect(payload.html).toContain(emails.subscriptionActivatedBody)
+    expect(payload.html).toContain('23/8/2026')
+    expect(payload.html).toContain('href="https://toantuduy.vn/dashboard"')
+  })
+
+  it('propagates the non-throwing error shape on failure', async () => {
+    sendMock.mockRejectedValue(new Error('boom'))
+
+    const result = await sendSubscriptionActivatedEmail('parent@example.vn', '23/8/2026')
 
     expect(result).toEqual({ error: { code: 'EMAIL_SEND_FAILED' } })
   })

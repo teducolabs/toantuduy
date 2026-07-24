@@ -41,7 +41,7 @@
 # - Retrospective appends its action items to action_items; sprint-status surfaces open ones
 
 generated: 2026-07-08
-last_updated: 2026-07-24 (6-2 implemented, review)
+last_updated: 2026-07-24 (6-3 implemented, review)
 
 
 
@@ -105,7 +105,7 @@ development_status:
   epic-6: in-progress
   6-1-payos-payment-infrastructure-webhook-handler: done
   6-2-subscription-plans-page: done
-  6-3-subscribe-via-momo-subscription-activation: backlog
+  6-3-subscribe-via-momo-subscription-activation: review
   6-4-subscription-management: backlog
   epic-6-retrospective: optional
 

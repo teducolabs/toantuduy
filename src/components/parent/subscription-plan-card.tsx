@@ -1,16 +1,16 @@
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
+import { SubscribeButton } from '@/components/parent/subscribe-button'
 
 export function SubscriptionPlanCard({
   name,
   priceLabel,
   bullets,
-  cta,
+  plan,
 }: {
   name: string
   priceLabel: string
   bullets: readonly string[]
-  cta: string
+  plan: 'MONTHLY' | 'ANNUAL'
 }) {
   return (
     <Card data-slot="subscription-plan-card" className="rounded-brand-md">
@@ -26,8 +26,7 @@ export function SubscriptionPlanCard({
         </ul>
       </CardContent>
       <CardFooter>
-        {/* Story 6.3 wires this CTA to the checkout server action */}
-        <Button className="w-full">{cta}</Button>
+        <SubscribeButton plan={plan} />
       </CardFooter>
     </Card>
   )
