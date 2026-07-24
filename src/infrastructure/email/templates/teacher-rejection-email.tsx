@@ -19,7 +19,7 @@ export function TeacherRejectionEmail(props: { name: string; reason: string }) {
         <Container style={container}>
           <Text style={text}>{greeting}</Text>
           <Text style={text}>{emails.teacherRejectionBody}</Text>
-          <Text style={text}>{emails.teacherRejectionReason(props.reason)}</Text>
+          {props.reason.trim() !== '' && <Text style={text}>{emails.teacherRejectionReason(props.reason)}</Text>}
           <Text style={text}>
             {emails.signOff}
             <br />

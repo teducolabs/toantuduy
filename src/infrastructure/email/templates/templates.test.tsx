@@ -43,4 +43,16 @@ describe('TeacherRejectionEmail', () => {
     expect(html).toContain(emails.greetingFallback)
     expect(html).not.toContain(emails.greeting(''))
   })
+
+  it('omits the reason line entirely when reason is empty — no dangling "Lý do:" (7.2 D5)', async () => {
+    const html = await render(<TeacherRejectionEmail name="Cô Lan" reason="" />)
+
+    expect(html).not.toContain('Lý do:')
+  })
+
+  it('omits the reason line when reason is whitespace-only', async () => {
+    const html = await render(<TeacherRejectionEmail name="Cô Lan" reason="   " />)
+
+    expect(html).not.toContain('Lý do:')
+  })
 })
