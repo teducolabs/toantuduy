@@ -1,3 +1,5 @@
+import { admin } from '@/locales/vi/admin'
+
 export default function AdminTeachersPage() {
-  return <main>Admin — teacher management — coming soon</main>
+  return <p className="text-body text-muted-foreground">{admin.teachersComingSoon}</p>
 }

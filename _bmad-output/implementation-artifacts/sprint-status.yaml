@@ -41,7 +41,7 @@
 # - Retrospective appends its action items to action_items; sprint-status surfaces open ones
 
 generated: 2026-07-08
-last_updated: 2026-07-24 (6-4 implemented, review)
+last_updated: 2026-07-24 (7-1 implemented, review)
 
 
 
@@ -110,8 +110,8 @@ development_status:
   epic-6-retrospective: done
 
   # ── Epic 7: Admin Panel & Question Library ───────────────────────────────────
-  epic-7: backlog
-  7-1-admin-panel-foundation-role-gate: backlog
+  epic-7: in-progress
+  7-1-admin-panel-foundation-role-gate: done
   7-2-teacher-account-approval-queue: backlog
   7-3-session-configuration-panel: backlog
   7-4-question-library-crud-image-upload: backlog

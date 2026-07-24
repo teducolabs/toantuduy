@@ -1,3 +1,5 @@
+import { admin } from '@/locales/vi/admin'
+
 export default function AdminQuestionsPage() {
-  return <main>Admin — question library — coming soon</main>
+  return <p className="text-body text-muted-foreground">{admin.questionsComingSoon}</p>
 }
