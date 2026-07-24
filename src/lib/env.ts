@@ -23,6 +23,9 @@ const envSchema = z.object({
   PAYOS_API_KEY: z.string().min(1),
   PAYOS_CHECKSUM_KEY: z.string().min(1), // used for HMAC-SHA256 webhook verification
 
+  // Vercel Cron (Bearer token for /api/cron/* routes)
+  CRON_SECRET: z.string().min(16),
+
   // Supabase
   SUPABASE_URL: z.string().url(),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),

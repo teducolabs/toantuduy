@@ -76,6 +76,7 @@ model Subscription {
   parentAccountId String             @unique // one Subscription per ParentAccount, applies to all its ChildProfiles (FR-24)
   parentAccount   ParentAccount      @relation(fields: [parentAccountId], references: [id], onDelete: Cascade)
   status          SubscriptionStatus
+  payosOrderCode  BigInt?            @unique // PayOS orderCode correlation; BigInt — never serialize to JSON (D7)
   renewsAt        DateTime?
   cancelledAt     DateTime?
   createdAt       DateTime           @default(now())
