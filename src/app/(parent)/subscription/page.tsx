@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation'
+
 export default function ParentSubscriptionPage() {
-  return <main>Parent subscription — coming soon</main>
+  redirect('/subscription/plans')
 }
