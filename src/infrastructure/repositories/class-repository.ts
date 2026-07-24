@@ -8,6 +8,7 @@ export type ClassWithStudentCount = Class & {
 
 export type ClassDetail = Class & {
   memberships: { id: string; childProfile: { id: string; name: string; gradeBand: GradeBand } }[]
+  assignmentSets: { id: string; title: string }[]
 }
 
 export function listClassesForTeacher(teacherAccountId: string): Promise<ClassWithStudentCount[]> {
@@ -44,6 +45,8 @@ export function getClassDetail(classId: string, teacherAccountId: string): Promi
           childProfile: { select: { id: true, name: true, gradeBand: true } },
         },
       },
+      // Active set (5.6 D5): the class detail page links to its class report.
+      assignmentSets: { where: { assignedAt: { not: null }, replacedAt: null }, select: { id: true, title: true }, take: 1 },
     },
   })
 }

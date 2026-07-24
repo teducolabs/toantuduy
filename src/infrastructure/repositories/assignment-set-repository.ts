@@ -82,6 +82,70 @@ export async function assignSetToClasses(assignmentSetId: string, classIds: stri
   })
 }
 
+export type ClassReportData = {
+  id: string
+  title: string
+  dueAt: Date | null
+  assignedAt: Date | null
+  replacedAt: Date | null
+  class: {
+    id: string
+    name: string
+    memberships: { childProfile: { id: string; name: string } }[]
+  } | null
+  questions: { question: { skillId: string; skill: { id: string; code: string; name: string } } }[]
+  sessions: {
+    childProfileId: string
+    completedAt: Date | null
+    answers: { answeredCorrectly: boolean | null; question: { skillId: string } }[]
+  }[]
+}
+
+// Class report read (5.6): ownership + assigned check in one query — foreign,
+// draft, and missing sets all resolve to null (one NOT_FOUND code, no
+// information leak). Replaced sets are intentionally includable (D6): reports
+// stay available for superseded sets, so there is NO replacedAt filter.
+// Privacy (D1/NFR-11): correctCount/questionCount never leave the DB layer.
+// No aggregation here — repositories carry no business logic (AD-2).
+export function getClassReportData(assignmentSetId: string, teacherAccountId: string): Promise<ClassReportData | null> {
+  return db.assignmentSet.findFirst({
+    where: { id: assignmentSetId, teacherAccountId, assignedAt: { not: null } },
+    select: {
+      id: true,
+      title: true,
+      dueAt: true,
+      assignedAt: true,
+      replacedAt: true,
+      class: {
+        select: {
+          id: true,
+          name: true,
+          memberships: {
+            where: { childProfile: { deletedAt: null } },
+            orderBy: { createdAt: 'asc' },
+            select: { childProfile: { select: { id: true, name: true } } },
+          },
+        },
+      },
+      questions: {
+        select: { question: { select: { skillId: true, skill: { select: { id: true, code: true, name: true } } } } },
+      },
+      sessions: {
+        where: { completedAt: { not: null } },
+        orderBy: { completedAt: 'desc' },
+        select: {
+          childProfileId: true,
+          completedAt: true,
+          answers: {
+            where: { answeredCorrectly: { not: null } },
+            select: { answeredCorrectly: true, question: { select: { skillId: true } } },
+          },
+        },
+      },
+    },
+  })
+}
+
 export type ActiveAssignmentForChild = {
   id: string
   title: string

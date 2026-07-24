@@ -92,6 +92,21 @@ describe('getClassDetail', () => {
     const callArg = classFindFirst.mock.calls[0][0]
     expect(callArg.include.memberships.where).toEqual({ childProfile: { deletedAt: null } })
   })
+
+  // Deliberate 5.6 change: class detail also carries the active set (id +
+  // title) so the page can link to its class report (D5).
+  it('includes the single active assignment set for the report link', async () => {
+    classFindFirst.mockResolvedValueOnce(null)
+
+    await getClassDetail('class-1', 'teacher-1')
+
+    const callArg = classFindFirst.mock.calls[0][0]
+    expect(callArg.include.assignmentSets).toEqual({
+      where: { assignedAt: { not: null }, replacedAt: null },
+      select: { id: true, title: true },
+      take: 1,
+    })
+  })
 })
 
 describe('findClassByJoinCode', () => {

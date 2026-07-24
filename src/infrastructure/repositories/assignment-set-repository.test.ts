@@ -16,6 +16,7 @@ import {
   assignSetToClasses,
   getActiveAssignmentsForChild,
   findStartableAssignmentForChild,
+  getClassReportData,
 } from './assignment-set-repository'
 
 const setCreate = db.assignmentSet.create as unknown as ReturnType<typeof vi.fn>
@@ -193,6 +194,63 @@ describe('getActiveAssignmentsForChild', () => {
         teacherAccount: { select: { fullName: true, schoolName: true } },
       },
     })
+  })
+})
+
+describe('getClassReportData', () => {
+  it('requires ownership + assigned (NOT draft) in one query and does NOT filter on replacedAt (D6)', async () => {
+    setFindFirst.mockResolvedValueOnce(null)
+
+    await getClassReportData('set-1', 'teacher-1')
+
+    const args = setFindFirst.mock.calls[0][0]
+    expect(args.where).toEqual({ id: 'set-1', teacherAccountId: 'teacher-1', assignedAt: { not: null } })
+    expect(args.where).not.toHaveProperty('replacedAt')
+  })
+
+  it('selects header fields, live roster (deletedAt filter, createdAt asc), assignment skills, and completed sessions newest-first', async () => {
+    setFindFirst.mockResolvedValueOnce(null)
+
+    await getClassReportData('set-1', 'teacher-1')
+
+    const select = setFindFirst.mock.calls[0][0].select
+    expect(select.title).toBe(true)
+    expect(select.dueAt).toBe(true)
+    expect(select.assignedAt).toBe(true)
+    expect(select.replacedAt).toBe(true)
+
+    expect(select.class).toEqual({
+      select: {
+        id: true,
+        name: true,
+        memberships: {
+          where: { childProfile: { deletedAt: null } },
+          orderBy: { createdAt: 'asc' },
+          select: { childProfile: { select: { id: true, name: true } } },
+        },
+      },
+    })
+
+    expect(select.questions).toEqual({
+      select: { question: { select: { skillId: true, skill: { select: { id: true, code: true, name: true } } } } },
+    })
+
+    // Privacy (D1/NFR-11): only completed sessions, newest first, answered rows
+    // only — and NO correctCount/questionCount anywhere in the select.
+    expect(select.sessions).toEqual({
+      where: { completedAt: { not: null } },
+      orderBy: { completedAt: 'desc' },
+      select: {
+        childProfileId: true,
+        completedAt: true,
+        answers: {
+          where: { answeredCorrectly: { not: null } },
+          select: { answeredCorrectly: true, question: { select: { skillId: true } } },
+        },
+      },
+    })
+    expect(select.sessions.select).not.toHaveProperty('correctCount')
+    expect(select.sessions.select).not.toHaveProperty('questionCount')
   })
 })
 

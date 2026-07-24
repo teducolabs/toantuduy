@@ -52,6 +52,7 @@ export default async function TeacherAssignmentsPage() {
               replacedAt={assignmentSet.replacedAt}
               className={assignmentSet.class?.name ?? null}
               classes={assignableClasses}
+              reportHref={`/reports/${assignmentSet.id}`}
             />
           </li>
         ))}
