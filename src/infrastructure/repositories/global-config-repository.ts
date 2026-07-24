@@ -26,6 +26,31 @@ async function getConfigIntOrNull(key: string): Promise<number | null> {
   return Number.isFinite(parsed) ? parsed : null
 }
 
+// '0' means the admin explicitly disabled the time limit (7.3 D1); a missing or
+// unparsable row means it was never configured. Both read as null (disabled).
+export async function getSessionTimeLimitMinutes(): Promise<number | null> {
+  const parsed = await getConfigIntOrNull('SESSION_TIME_LIMIT_MINUTES')
+  return parsed !== null && parsed > 0 ? parsed : null
+}
+
+function upsertConfig(key: string, value: string): Promise<unknown> {
+  return db.globalConfig.upsert({
+    where: { key },
+    update: { value },
+    create: { key, value },
+  })
+}
+
+// Upserts, never updates: GlobalConfig rows are not seeded, so the row may not
+// exist yet (7.3 D2).
+export async function setSessionQuestionCount(count: number): Promise<void> {
+  await upsertConfig('SESSION_QUESTION_COUNT', String(count))
+}
+
+export async function setSessionTimeLimitMinutes(minutes: number | null): Promise<void> {
+  await upsertConfig('SESSION_TIME_LIMIT_MINUTES', minutes === null ? '0' : String(minutes))
+}
+
 // Annual price has no fallback: a missing/unparsable row means the annual plan
 // is not offered and its card must not render.
 export async function getSubscriptionPlanPricing(): Promise<{

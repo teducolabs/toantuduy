@@ -11,8 +11,20 @@ export const admin = {
   navConfigDescription: 'Điều chỉnh số câu hỏi và hạn mức mỗi buổi học.',
   navQuestionsDescription: 'Thêm, sửa và quản lý câu hỏi luyện tập.',
 
-  configComingSoon: 'Cấu hình buổi học — sắp ra mắt',
   questionsComingSoon: 'Thư viện câu hỏi — sắp ra mắt',
+
+  // Session configuration panel (7.3)
+  configHeading: 'Cấu hình buổi học',
+  questionCountLabel: 'Số câu hỏi mỗi buổi',
+  questionCountHint: 'Từ 5 đến 30 câu.',
+  questionCountInvalid: 'Số câu hỏi phải từ 5 đến 30.',
+  timeLimitToggleLabel: 'Giới hạn thời gian mỗi buổi',
+  timeLimitMinutesLabel: 'Thời gian (phút)',
+  timeLimitInvalid: 'Thời gian phải từ 1 đến 180 phút.',
+  saveCta: 'Lưu',
+  configSavedToast: 'Đã lưu. Cài đặt mới áp dụng cho buổi tiếp theo.',
+  configSaveFailed: 'Lưu không thành công. Thử lại.',
+  configLoadFailed: 'Không thể tải cấu hình. Vui lòng thử lại.',
 
   // Teacher approval queue (7.2)
   teachersHeading: 'Duyệt giáo viên',
