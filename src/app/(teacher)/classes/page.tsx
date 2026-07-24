@@ -21,6 +21,12 @@ export default async function TeacherClassesPage() {
   const classList = classesResult.data.classes
   const assignmentSets = setsResult.data.assignmentSets
   const { skills, maxQuestions } = contextResult.data
+  const assignableClasses = classList.map((classItem) => ({
+    id: classItem.id,
+    name: classItem.name,
+    gradeBand: classItem.gradeBand,
+    studentCount: classItem._count.memberships,
+  }))
 
   // 5.3 empty state stays intact: no classes AND no sets → single primary CTA only.
   if (classList.length === 0 && assignmentSets.length === 0) {
@@ -50,6 +56,7 @@ export default async function TeacherClassesPage() {
                 name={classItem.name}
                 gradeBand={classItem.gradeBand}
                 studentCount={classItem._count.memberships}
+                activeAssignmentTitle={classItem.assignmentSets[0]?.title ?? null}
               />
             </li>
           ))}
@@ -59,7 +66,7 @@ export default async function TeacherClassesPage() {
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="text-heading">{assignments.pageTitle}</h2>
-          <AssignmentSetBuilder skills={skills} maxQuestions={maxQuestions} />
+          <AssignmentSetBuilder skills={skills} maxQuestions={maxQuestions} classes={assignableClasses} />
         </div>
 
         {assignmentSets.length === 0 ? (
@@ -69,10 +76,14 @@ export default async function TeacherClassesPage() {
             {assignmentSets.map((assignmentSet) => (
               <li key={assignmentSet.id}>
                 <AssignmentSetCard
+                  assignmentSetId={assignmentSet.id}
                   title={assignmentSet.title}
                   gradeBand={assignmentSet.gradeBand}
                   questionCount={assignmentSet._count.questions}
                   assignedAt={assignmentSet.assignedAt}
+                  replacedAt={assignmentSet.replacedAt}
+                  className={assignmentSet.class?.name ?? null}
+                  classes={assignableClasses}
                 />
               </li>
             ))}

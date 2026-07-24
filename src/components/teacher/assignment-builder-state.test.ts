@@ -3,6 +3,8 @@ import {
   canAdvanceFromStep1,
   toggleQuestionSelection,
   canSaveDraft,
+  toggleClassSelection,
+  canAssign,
   selectionCountLabel,
 } from './assignment-builder-state'
 
@@ -50,6 +52,34 @@ describe('canSaveDraft', () => {
     expect(canSaveDraft(0)).toBe(false)
     expect(canSaveDraft(1)).toBe(true)
     expect(canSaveDraft(10)).toBe(true)
+  })
+})
+
+describe('toggleClassSelection', () => {
+  it('adds an unselected class', () => {
+    expect(toggleClassSelection(['c1'], 'c2')).toEqual(['c1', 'c2'])
+  })
+
+  it('removes an already-selected class', () => {
+    expect(toggleClassSelection(['c1', 'c2'], 'c1')).toEqual(['c2'])
+  })
+
+  it('has no cap — keeps adding classes', () => {
+    expect(toggleClassSelection(['c1', 'c2', 'c3'], 'c4')).toEqual(['c1', 'c2', 'c3', 'c4'])
+  })
+
+  it('does not mutate the input array', () => {
+    const input = ['c1']
+    toggleClassSelection(input, 'c2')
+    expect(input).toEqual(['c1'])
+  })
+})
+
+describe('canAssign', () => {
+  it('requires at least one selected class', () => {
+    expect(canAssign(0)).toBe(false)
+    expect(canAssign(1)).toBe(true)
+    expect(canAssign(5)).toBe(true)
   })
 })
 

@@ -13,6 +13,10 @@ import {
   formatVnDateLabel,
   recordAnswer,
 } from '@/infrastructure/repositories/session-repository'
+import {
+  getActiveAssignmentsForChild,
+  findStartableAssignmentForChild,
+} from '@/infrastructure/repositories/assignment-set-repository'
 import { selectSessionQuestionIds } from '@/app/(student)/session-question-selection'
 import { db } from '@/lib/db'
 import { student } from '@/locales/vi/student'
@@ -44,6 +48,57 @@ export async function startSessionAction(): Promise<ActionResult<{ sessionId: st
   } catch {
     return { error: { code: 'INTERNAL_ERROR', message: student.genericStartError } }
   }
+}
+
+// D8: an assignment session is the set's fixed question list — no adaptive
+// selection. Play/answer/complete/summary flows are reused untouched, so
+// completion records a Session (with assignmentSetId) and every answer counts
+// toward the free-tier allotment exactly like a normal session (A-1).
+export async function startAssignmentSessionAction(assignmentSetId: string): Promise<ActionResult<{ sessionId: string }>> {
+  try {
+    const childProfileId = await getChildProfileId(await headers())
+    if (!childProfileId) {
+      return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
+    }
+
+    const childProfile = await findChildProfileById(childProfileId)
+    if (!childProfile) {
+      return { error: { code: 'UNAUTHORIZED', message: student.unauthorizedError } }
+    }
+
+    // One code for not-active/replaced/not-a-member — no information leak.
+    const assignment = await findStartableAssignmentForChild(assignmentSetId, childProfile.id)
+    if (!assignment) {
+      return { error: { code: 'ASSIGNMENT_NOT_AVAILABLE', message: student.assignmentNotAvailableError } }
+    }
+
+    if (await isAllotmentExhausted(childProfile.id, childProfile.parentAccountId)) {
+      return { error: { code: 'ALLOTMENT_EXHAUSTED', message: student.allotmentExhaustedError } }
+    }
+
+    await abandonPreviousSessions(childProfile.id)
+
+    const questionIds = assignment.questions.map((question) => question.questionId)
+    const session = await createSession(childProfile.id, questionIds, assignment.id)
+
+    return { data: { sessionId: session.id } }
+  } catch {
+    return { error: { code: 'INTERNAL_ERROR', message: student.genericStartError } }
+  }
+}
+
+// Server-side data loader for the student home (RootPage is a Server
+// Component) — one card per active assignment, assignedAt desc from the repo.
+export async function getActiveAssignmentsState(
+  childProfileId: string,
+): Promise<{ id: string; title: string; teacherName: string; dueAt: Date | null }[]> {
+  const assignments = await getActiveAssignmentsForChild(childProfileId)
+  return assignments.map((assignment) => ({
+    id: assignment.id,
+    title: assignment.title,
+    teacherName: assignment.teacherAccount.fullName ?? assignment.teacherAccount.schoolName,
+    dueAt: assignment.dueAt,
+  }))
 }
 
 // Read-only pre-check used by the student-home render (RootPage) to decide

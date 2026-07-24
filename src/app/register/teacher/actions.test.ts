@@ -41,7 +41,7 @@ describe('registerTeacher', () => {
       data: { email: 'lan@school.vn', passwordHash: null, role: 'TEACHER', emailVerified: null },
     })
     expect(tx.teacherAccount.create).toHaveBeenCalledWith({
-      data: { userId: 'user-1', schoolName: 'Tiểu học Kim Đồng', gradeTaught: 'GRADE_2', status: 'PENDING' },
+      data: { userId: 'user-1', fullName: 'Cô Lan', schoolName: 'Tiểu học Kim Đồng', gradeTaught: 'GRADE_2', status: 'PENDING' },
     })
   })
 

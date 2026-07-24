@@ -24,6 +24,18 @@ export function canSaveDraft(selectedCount: number): boolean {
   return selectedCount >= 1
 }
 
+// Toggles a class in/out of the assign selection — no cap (Story 5.5).
+export function toggleClassSelection(selectedIds: string[], id: string): string[] {
+  if (selectedIds.includes(id)) {
+    return selectedIds.filter((selectedId) => selectedId !== id)
+  }
+  return [...selectedIds, id]
+}
+
+export function canAssign(selectedClassCount: number): boolean {
+  return selectedClassCount >= 1
+}
+
 export function selectionCountLabel(count: number, max: number): string {
   return assignments.selectionCount(count, max)
 }

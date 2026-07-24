@@ -30,4 +30,8 @@ export const student = {
   exitToDashboardCta: 'Về trang phụ huynh',
   doneForTodayCta: 'Xong cho hôm nay',
   viewResultsCta: 'Xem kết quả',
+  startAssignmentCta: 'Làm bài tập',
+  assignmentFrom: (teacherName: string) => `Cô/Thầy ${teacherName} giao`,
+  assignmentDue: (day: number, month: number) => `Hạn: ${day}/${month}`,
+  assignmentNotAvailableError: 'Bài tập này không còn khả dụng, vui lòng thử lại.',
 }

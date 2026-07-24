@@ -86,6 +86,7 @@ model TeacherAccount {
   id             String        @id @default(cuid())
   userId         String        @unique
   user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fullName       String? // teacher display name; nullable because pre-5.5 rows never stored it (D4)
   schoolName     String
   gradeTaught    GradeBand
   status         TeacherStatus @default(PENDING)
@@ -163,6 +164,8 @@ model Session {
   startedAt      DateTime     @default(now())
   completedAt    DateTime? // null = in-progress/abandoned; only completed Sessions count toward accuracy (FR-7)
   abandonedAt    DateTime? // non-null = superseded by a newer Session for this Child Profile; never counts toward accuracy (completedAt stays null)
+  assignmentSetId String?
+  assignmentSet   AssignmentSet? @relation(fields: [assignmentSetId], references: [id], onDelete: SetNull)
 
   answers SessionAnswer[]
 
@@ -193,10 +196,14 @@ model AssignmentSet {
   gradeBand        GradeBand
   dueAt            DateTime?
   assignedAt       DateTime? // null = draft (per FR-20 "saved as draft until explicitly assigned")
+  replacedAt       DateTime? // non-null = superseded by a newer set for the same class (D2); active = assignedAt set AND replacedAt null
   createdAt        DateTime       @default(now())
   updatedAt        DateTime       @updatedAt
 
   questions AssignmentSetQuestion[]
+  sessions  Session[]
+
+  @@index([classId, assignedAt])
 }
 
 model AssignmentSetQuestion {

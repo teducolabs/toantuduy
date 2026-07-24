@@ -14,10 +14,10 @@ function toDomainSession(row: PrismaSession): Session {
   }
 }
 
-export async function createSession(childProfileId: string, questionIds: string[]): Promise<Session> {
+export async function createSession(childProfileId: string, questionIds: string[], assignmentSetId?: string): Promise<Session> {
   const session = await db.$transaction(async (tx) => {
     const created = await tx.session.create({
-      data: { childProfileId, questionCount: questionIds.length },
+      data: { childProfileId, questionCount: questionIds.length, assignmentSetId },
     })
     await tx.sessionAnswer.createMany({
       data: questionIds.map((questionId) => ({

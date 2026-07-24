@@ -42,4 +42,18 @@ export const assignments = {
   errorTooManyQuestions: 'Số câu hỏi vượt quá giới hạn cho phép.',
   errorInvalidQuestions: 'Một số câu hỏi không hợp lệ. Vui lòng chọn lại.',
   errorCreateFailed: 'Không thể lưu bộ bài tập. Vui lòng thử lại.',
+
+  assignSectionLabel: 'Giao cho lớp',
+  assignCta: 'Giao bài',
+  assignDialogTitle: 'Giao bài tập',
+  noClassesToAssign: 'Chưa có lớp học để giao bài. Tạo lớp học trước.',
+  replaceConfirmTitle: 'Thay thế bộ bài tập?',
+  replaceConfirmBody: 'Lớp này đã có bộ bài tập đang giao. Thay thế?',
+  replaceConfirmCta: 'Thay thế',
+  cancelCta: 'Hủy',
+  replacedPill: 'Đã thay thế',
+  assignedToClass: (className: string) => `Đã giao · ${className}`,
+  errorSetNotFound: 'Không tìm thấy bộ bài tập hoặc đã được giao.',
+  errorInvalidClasses: 'Một số lớp học không hợp lệ. Vui lòng chọn lại.',
+  errorAssignFailed: 'Không thể giao bài tập. Vui lòng thử lại.',
 }

@@ -4,14 +4,28 @@ import { useEffect, useId, useState } from 'react'
 import {
   getQuestionLibraryAction,
   createAssignmentSetDraftAction,
+  assignAssignmentSetAction,
 } from '@/app/(teacher)/assignments/actions'
 import {
   canAdvanceFromStep1,
   toggleQuestionSelection,
   canSaveDraft,
+  canAssign,
+  toggleClassSelection,
   selectionCountLabel,
 } from '@/components/teacher/assignment-builder-state'
 import { QuestionLibraryRow } from '@/components/teacher/question-library-row'
+import { AssignClassPicker, type AssignableClass } from '@/components/teacher/assign-class-picker'
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from '@/components/ui/alert-dialog'
 import { assignments } from '@/locales/vi/assignments'
 import { profiles } from '@/locales/vi/profiles'
 import { Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet'
@@ -31,12 +45,19 @@ const SAVE_ERROR_MESSAGES: Record<string, string> = {
   INVALID_QUESTIONS: assignments.errorInvalidQuestions,
 }
 
+const ASSIGN_ERROR_MESSAGES: Record<string, string> = {
+  SET_NOT_FOUND: assignments.errorSetNotFound,
+  INVALID_CLASSES: assignments.errorInvalidClasses,
+}
+
 export function AssignmentSetBuilder({
   skills,
   maxQuestions,
+  classes,
 }: {
   skills: { id: string; code: string; name: string }[]
   maxQuestions: number
+  classes: AssignableClass[]
 }) {
   const [open, setOpen] = useState(false)
   const [step, setStep] = useState<1 | 2 | 3>(1)
@@ -59,6 +80,10 @@ export function AssignmentSetBuilder({
   // Step 3
   const [saveError, setSaveError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedClassIds, setSelectedClassIds] = useState<string[]>([])
+  // Kept across retries/confirm so a re-attempt NEVER creates a second draft.
+  const [createdDraftId, setCreatedDraftId] = useState<string | null>(null)
+  const [replaceConfirmOpen, setReplaceConfirmOpen] = useState(false)
 
   const nameId = useId()
   const nameErrorId = useId()
@@ -81,6 +106,9 @@ export function AssignmentSetBuilder({
       setFetchFailed(false)
       setSelectedIds([])
       setSaveError(null)
+      setSelectedClassIds([])
+      setCreatedDraftId(null)
+      setReplaceConfirmOpen(false)
     }
   }
 
@@ -132,6 +160,11 @@ export function AssignmentSetBuilder({
 
   async function handleSaveDraft() {
     if (!gradeBand || !canSaveDraft(selectedIds.length)) return
+    // A failed assign attempt already persisted the draft — nothing to save.
+    if (createdDraftId) {
+      handleOpenChange(false)
+      return
+    }
     setSaveError(null)
     setIsSubmitting(true)
     try {
@@ -148,6 +181,51 @@ export function AssignmentSetBuilder({
       handleOpenChange(false)
     } catch {
       setSaveError(assignments.saveFailed)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  // D5: "Giao bài" = create draft → assign in sequence. If the assign leg
+  // fails the set remains a normal draft — the teacher retries from its card,
+  // and the kept draft id guarantees no duplicate draft on retry here.
+  async function handleAssign(confirmReplace: boolean) {
+    if (!gradeBand || !canSaveDraft(selectedIds.length) || !canAssign(selectedClassIds.length)) return
+    setSaveError(null)
+    setIsSubmitting(true)
+    try {
+      let draftId = createdDraftId
+      if (!draftId) {
+        const created = await createAssignmentSetDraftAction({
+          title: title.trim(),
+          gradeBand,
+          ...(dueDate ? { dueDate } : {}),
+          questionIds: selectedIds,
+        })
+        if ('error' in created) {
+          setSaveError(SAVE_ERROR_MESSAGES[created.error.code] ?? assignments.errorCreateFailed)
+          return
+        }
+        draftId = created.data.assignmentSet.id
+        setCreatedDraftId(draftId)
+      }
+
+      const result = await assignAssignmentSetAction({
+        assignmentSetId: draftId,
+        classIds: selectedClassIds,
+        confirmReplace,
+      })
+      if ('error' in result) {
+        if (result.error.code === 'CLASS_HAS_ACTIVE_SET') {
+          setReplaceConfirmOpen(true)
+          return
+        }
+        setSaveError(ASSIGN_ERROR_MESSAGES[result.error.code] ?? assignments.errorAssignFailed)
+        return
+      }
+      handleOpenChange(false)
+    } catch {
+      setSaveError(assignments.errorAssignFailed)
     } finally {
       setIsSubmitting(false)
     }
@@ -334,6 +412,15 @@ export function AssignmentSetBuilder({
                 <p className="text-sm text-muted-foreground">{assignments.dueDateDisplay(dueDateParts[2], dueDateParts[1])}</p>
               )}
 
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-medium">{assignments.assignSectionLabel}</p>
+                <AssignClassPicker
+                  classes={classes}
+                  selectedIds={selectedClassIds}
+                  onToggle={(id) => setSelectedClassIds((ids) => toggleClassSelection(ids, id))}
+                />
+              </div>
+
               {saveError && (
                 <p role="alert" id={saveErrorId} className="text-sm text-feedback-incorrect">
                   {saveError}
@@ -345,13 +432,46 @@ export function AssignmentSetBuilder({
               <Button variant="outline" disabled={isSubmitting} onClick={() => setStep(2)}>
                 {assignments.backCta}
               </Button>
-              <Button disabled={isSubmitting} onClick={handleSaveDraft} aria-describedby={saveError ? saveErrorId : undefined}>
+              <Button
+                variant="outline"
+                disabled={isSubmitting}
+                onClick={handleSaveDraft}
+                aria-describedby={saveError ? saveErrorId : undefined}
+              >
                 {isSubmitting ? assignments.submitting : assignments.saveDraftCta}
+              </Button>
+              <Button
+                disabled={isSubmitting || !canAssign(selectedClassIds.length)}
+                onClick={() => handleAssign(false)}
+                aria-describedby={saveError ? saveErrorId : undefined}
+              >
+                {isSubmitting ? assignments.submitting : assignments.assignCta}
               </Button>
             </SheetFooter>
           </>
         )}
       </SheetContent>
+
+      <AlertDialog open={replaceConfirmOpen} onOpenChange={setReplaceConfirmOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>{assignments.replaceConfirmTitle}</AlertDialogTitle>
+            <AlertDialogDescription>{assignments.replaceConfirmBody}</AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSubmitting}>{assignments.cancelCta}</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isSubmitting}
+              onClick={() => {
+                setReplaceConfirmOpen(false)
+                void handleAssign(true)
+              }}
+            >
+              {assignments.replaceConfirmCta}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </Sheet>
   )
 }

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 
 vi.mock('@/lib/db', () => ({
   db: {
-    class: { findMany: vi.fn(), create: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn() },
+    class: { findMany: vi.fn(), create: vi.fn(), findFirst: vi.fn(), findUnique: vi.fn(), count: vi.fn() },
     classMembership: { create: vi.fn() },
   },
 }))
@@ -14,6 +14,7 @@ import {
   getClassDetail,
   findClassByJoinCode,
   createClassMembership,
+  countClassesForTeacher,
 } from './class-repository'
 
 const classFindMany = db.class.findMany as unknown as ReturnType<typeof vi.fn>
@@ -21,6 +22,7 @@ const classCreate = db.class.create as unknown as ReturnType<typeof vi.fn>
 const classFindFirst = db.class.findFirst as unknown as ReturnType<typeof vi.fn>
 const classFindUnique = db.class.findUnique as unknown as ReturnType<typeof vi.fn>
 const membershipCreate = db.classMembership.create as unknown as ReturnType<typeof vi.fn>
+const classCount = db.class.count as unknown as ReturnType<typeof vi.fn>
 
 beforeEach(() => {
   classFindMany.mockReset()
@@ -28,10 +30,22 @@ beforeEach(() => {
   classFindFirst.mockReset()
   classFindUnique.mockReset()
   membershipCreate.mockReset()
+  classCount.mockReset()
+})
+
+describe('countClassesForTeacher', () => {
+  it('counts only classes owned by the teacher among the given ids', async () => {
+    classCount.mockResolvedValueOnce(2)
+
+    const count = await countClassesForTeacher(['c1', 'c2'], 'teacher-1')
+
+    expect(count).toBe(2)
+    expect(classCount).toHaveBeenCalledWith({ where: { id: { in: ['c1', 'c2'] }, teacherAccountId: 'teacher-1' } })
+  })
 })
 
 describe('listClassesForTeacher', () => {
-  it('scopes to the teacher, orders by createdAt asc, and includes the student count', async () => {
+  it('scopes to the teacher, orders by createdAt asc, and includes student count + active assignment title', async () => {
     classFindMany.mockResolvedValueOnce([])
 
     await listClassesForTeacher('teacher-1')
@@ -39,7 +53,10 @@ describe('listClassesForTeacher', () => {
     expect(classFindMany).toHaveBeenCalledWith({
       where: { teacherAccountId: 'teacher-1' },
       orderBy: { createdAt: 'asc' },
-      include: { _count: { select: { memberships: true } } },
+      include: {
+        _count: { select: { memberships: true } },
+        assignmentSets: { where: { assignedAt: { not: null }, replacedAt: null }, select: { title: true }, take: 1 },
+      },
     })
   })
 })

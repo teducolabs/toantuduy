@@ -6,8 +6,12 @@ import { requireTeacherAccountId } from '../classes/actions'
 import {
   createAssignmentSetDraft,
   listAssignmentSetsForTeacher,
+  findDraftSetForTeacher,
+  findActiveSetsForClasses,
+  assignSetToClasses,
   type AssignmentSetWithMeta,
 } from '@/infrastructure/repositories/assignment-set-repository'
+import { countClassesForTeacher } from '@/infrastructure/repositories/class-repository'
 import {
   listQuestionsForLibrary,
   listSkills,
@@ -102,6 +106,58 @@ export async function createAssignmentSetDraftAction(input: {
   } catch {
     return { error: { code: 'CREATE_FAILED', message: 'Could not create assignment set' } }
   }
+}
+
+const assignSetSchema = z.object({
+  assignmentSetId: z.string().min(1),
+  classIds: z.array(z.string().min(1)).min(1, 'At least one class is required'),
+  confirmReplace: z.boolean(),
+})
+
+export async function assignAssignmentSetAction(input: {
+  assignmentSetId: string
+  classIds: string[]
+  confirmReplace: boolean
+}): Promise<ActionResult<{ assignedClassCount: number }>> {
+  const resolved = await requireTeacherAccountId()
+  if ('error' in resolved) return resolved
+
+  const parsed = assignSetSchema.safeParse(input)
+  if (!parsed.success) {
+    return { error: { code: 'VALIDATION_ERROR', message: parsed.error.issues[0]?.message ?? 'Invalid input' } }
+  }
+
+  const classIds = [...new Set(parsed.data.classIds)]
+
+  const draft = await findDraftSetForTeacher(parsed.data.assignmentSetId, resolved.teacherAccountId)
+  if (!draft) {
+    return { error: { code: 'SET_NOT_FOUND', message: 'Assignment set not found or already assigned' } }
+  }
+
+  const ownedCount = await countClassesForTeacher(classIds, resolved.teacherAccountId)
+  if (ownedCount !== classIds.length) {
+    return { error: { code: 'INVALID_CLASSES', message: 'Some classes do not exist or belong to another teacher' } }
+  }
+
+  // D6: replacement is server-driven — the client never pre-fetches conflicts.
+  const activeSets = await findActiveSetsForClasses(classIds)
+  if (activeSets.length > 0 && !parsed.data.confirmReplace) {
+    return { error: { code: 'CLASS_HAS_ACTIVE_SET', message: 'A selected class already has an active assignment set' } }
+  }
+
+  try {
+    await assignSetToClasses(
+      draft.id,
+      classIds,
+      draft.questions.map((question) => question.questionId),
+    )
+  } catch {
+    return { error: { code: 'ASSIGN_FAILED', message: 'Could not assign the set' } }
+  }
+
+  revalidatePath('/classes')
+  revalidatePath('/assignments')
+  return { data: { assignedClassCount: classIds.length } }
 }
 
 export async function getAssignmentSetsAction(): Promise<ActionResult<{ assignmentSets: AssignmentSetWithMeta[] }>> {

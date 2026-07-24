@@ -6,10 +6,12 @@ vi.mock('@/lib/auth', () => ({
 vi.mock('@/lib/db', () => ({
   db: {
     teacherAccount: { findUnique: vi.fn() },
-    assignmentSet: { create: vi.fn(), findMany: vi.fn() },
+    assignmentSet: { create: vi.fn(), findMany: vi.fn(), findFirst: vi.fn() },
+    class: { count: vi.fn() },
     question: { findMany: vi.fn(), count: vi.fn() },
     skill: { findMany: vi.fn() },
     globalConfig: { findUnique: vi.fn() },
+    $transaction: vi.fn(),
   },
 }))
 vi.mock('next/cache', () => ({
@@ -24,12 +26,20 @@ import {
   getQuestionLibraryAction,
   createAssignmentSetDraftAction,
   getAssignmentSetsAction,
+  assignAssignmentSetAction,
 } from './actions'
 
 const authMock = auth as unknown as ReturnType<typeof vi.fn>
 const teacherFindUnique = db.teacherAccount.findUnique as unknown as ReturnType<typeof vi.fn>
 const setCreate = db.assignmentSet.create as unknown as ReturnType<typeof vi.fn>
 const setFindMany = db.assignmentSet.findMany as unknown as ReturnType<typeof vi.fn>
+const setFindFirst = db.assignmentSet.findFirst as unknown as ReturnType<typeof vi.fn>
+const classCount = db.class.count as unknown as ReturnType<typeof vi.fn>
+const transactionMock = db.$transaction as unknown as ReturnType<typeof vi.fn>
+
+const tx = {
+  assignmentSet: { update: vi.fn(), updateMany: vi.fn(), create: vi.fn() },
+}
 const questionFindMany = db.question.findMany as unknown as ReturnType<typeof vi.fn>
 const questionCount = db.question.count as unknown as ReturnType<typeof vi.fn>
 const skillFindMany = db.skill.findMany as unknown as ReturnType<typeof vi.fn>
@@ -47,11 +57,17 @@ beforeEach(() => {
   teacherFindUnique.mockReset()
   setCreate.mockReset()
   setFindMany.mockReset()
+  setFindFirst.mockReset()
+  classCount.mockReset()
   questionFindMany.mockReset()
   questionCount.mockReset()
   skillFindMany.mockReset()
   globalConfigFindUnique.mockReset()
   revalidatePathMock.mockReset()
+  tx.assignmentSet.update.mockReset()
+  tx.assignmentSet.updateMany.mockReset()
+  tx.assignmentSet.create.mockReset()
+  transactionMock.mockReset().mockImplementation(async (fn: (tx: unknown) => Promise<unknown>) => fn(tx))
 
   authMock.mockResolvedValue({ user: { id: 'user-1', role: 'TEACHER' } })
   teacherFindUnique.mockResolvedValue({ id: 'teacher-1', userId: 'user-1', status: 'APPROVED' })
@@ -214,6 +230,151 @@ describe('getQuestionLibraryAction', () => {
 
     expect('error' in result && result.error.code).toBe('UNAUTHORIZED')
     expect(questionFindMany).not.toHaveBeenCalled()
+  })
+})
+
+const validAssignInput = {
+  assignmentSetId: 'set-1',
+  classIds: ['c1'],
+  confirmReplace: false,
+}
+
+const draftRow = {
+  id: 'set-1',
+  teacherAccountId: 'teacher-1',
+  title: 'Ôn tập tuần 3',
+  gradeBand: 'GRADE_1',
+  dueAt: null,
+  questions: [{ questionId: 'q1' }, { questionId: 'q2' }],
+}
+
+describe('assignAssignmentSetAction — AD-6 approval gate', () => {
+  it.each([
+    ['no session', () => authMock.mockResolvedValue(null)],
+    ['wrong role', () => authMock.mockResolvedValue({ user: { id: 'user-1', role: 'PARENT' } })],
+    ['no TeacherAccount row', () => teacherFindUnique.mockResolvedValue(null)],
+    ['status PENDING', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'PENDING' })],
+    ['status REJECTED', () => teacherFindUnique.mockResolvedValue({ id: 'teacher-1', status: 'REJECTED' })],
+  ])('rejects with UNAUTHORIZED when %s', async (_label, arrange) => {
+    arrange()
+
+    const result = await assignAssignmentSetAction(validAssignInput)
+
+    expect('error' in result && result.error.code).toBe('UNAUTHORIZED')
+    expect(transactionMock).not.toHaveBeenCalled()
+  })
+})
+
+describe('assignAssignmentSetAction — validation & guards', () => {
+  it('rejects an empty classIds array', async () => {
+    const result = await assignAssignmentSetAction({ ...validAssignInput, classIds: [] })
+
+    expect('error' in result && result.error.code).toBe('VALIDATION_ERROR')
+    expect(transactionMock).not.toHaveBeenCalled()
+  })
+
+  it('returns SET_NOT_FOUND for a foreign or already-assigned set', async () => {
+    setFindFirst.mockResolvedValue(null)
+
+    const result = await assignAssignmentSetAction(validAssignInput)
+
+    expect('error' in result && result.error.code).toBe('SET_NOT_FOUND')
+    expect(transactionMock).not.toHaveBeenCalled()
+  })
+
+  it("returns INVALID_CLASSES when a classId isn't the teacher's", async () => {
+    setFindFirst.mockResolvedValue(draftRow)
+    classCount.mockResolvedValue(1) // 2 ids submitted, only 1 owned
+
+    const result = await assignAssignmentSetAction({ ...validAssignInput, classIds: ['c1', 'c2'] })
+
+    expect('error' in result && result.error.code).toBe('INVALID_CLASSES')
+    expect(transactionMock).not.toHaveBeenCalled()
+  })
+
+  it('returns CLASS_HAS_ACTIVE_SET with NO mutation when conflicts exist and confirmReplace is false', async () => {
+    setFindFirst.mockResolvedValue(draftRow)
+    classCount.mockResolvedValue(1)
+    setFindMany.mockResolvedValue([{ id: 'other-set', classId: 'c1', title: 'Bộ cũ' }])
+
+    const result = await assignAssignmentSetAction(validAssignInput)
+
+    expect('error' in result && result.error.code).toBe('CLASS_HAS_ACTIVE_SET')
+    expect(transactionMock).not.toHaveBeenCalled()
+    expect(tx.assignmentSet.update).not.toHaveBeenCalled()
+    expect(tx.assignmentSet.updateMany).not.toHaveBeenCalled()
+    expect(tx.assignmentSet.create).not.toHaveBeenCalled()
+  })
+})
+
+describe('assignAssignmentSetAction — happy paths', () => {
+  beforeEach(() => {
+    setFindFirst.mockResolvedValue(draftRow)
+    setFindMany.mockResolvedValue([])
+    tx.assignmentSet.update.mockResolvedValue(draftRow)
+    tx.assignmentSet.updateMany.mockResolvedValue({ count: 0 })
+    tx.assignmentSet.create.mockResolvedValue({ id: 'clone-1' })
+  })
+
+  it('single class: assigns the draft (classId + assignedAt) with no clones', async () => {
+    classCount.mockResolvedValue(1)
+
+    const result = await assignAssignmentSetAction(validAssignInput)
+
+    expect('data' in result && result.data.assignedClassCount).toBe(1)
+    const updateArgs = tx.assignmentSet.update.mock.calls[0][0]
+    expect(updateArgs.where).toEqual({ id: 'set-1' })
+    expect(updateArgs.data.classId).toBe('c1')
+    expect(updateArgs.data.assignedAt).toBeInstanceOf(Date)
+    expect(tx.assignmentSet.create).not.toHaveBeenCalled()
+    expect(revalidatePathMock).toHaveBeenCalledWith('/classes')
+    expect(revalidatePathMock).toHaveBeenCalledWith('/assignments')
+  })
+
+  it('multi-class: clones with copied fields and nested question rows', async () => {
+    classCount.mockResolvedValue(2)
+
+    const result = await assignAssignmentSetAction({ ...validAssignInput, classIds: ['c1', 'c2'] })
+
+    expect('data' in result && result.data.assignedClassCount).toBe(2)
+    expect(tx.assignmentSet.create).toHaveBeenCalledTimes(1)
+    const cloneData = tx.assignmentSet.create.mock.calls[0][0].data
+    expect(cloneData.classId).toBe('c2')
+    expect(cloneData.teacherAccountId).toBe('teacher-1')
+    expect(cloneData.title).toBe('Ôn tập tuần 3')
+    expect(cloneData.gradeBand).toBe('GRADE_1')
+    expect(cloneData.questions).toEqual({ create: [{ questionId: 'q1' }, { questionId: 'q2' }] })
+  })
+
+  it('replace path: confirmReplace true supersedes the conflicting active sets (replacedAt)', async () => {
+    classCount.mockResolvedValue(1)
+    setFindMany.mockResolvedValue([{ id: 'other-set', classId: 'c1', title: 'Bộ cũ' }])
+
+    const result = await assignAssignmentSetAction({ ...validAssignInput, confirmReplace: true })
+
+    expect('data' in result).toBe(true)
+    const updateManyArgs = tx.assignmentSet.updateMany.mock.calls[0][0]
+    expect(updateManyArgs.where).toEqual({ classId: { in: ['c1'] }, assignedAt: { not: null }, replacedAt: null })
+    expect(updateManyArgs.data.replacedAt).toBeInstanceOf(Date)
+  })
+
+  it('dedupes duplicate classIds before assigning', async () => {
+    classCount.mockResolvedValue(1)
+
+    const result = await assignAssignmentSetAction({ ...validAssignInput, classIds: ['c1', 'c1'] })
+
+    expect('data' in result && result.data.assignedClassCount).toBe(1)
+    expect(tx.assignmentSet.create).not.toHaveBeenCalled()
+  })
+
+  it('maps a transaction failure to ASSIGN_FAILED instead of throwing', async () => {
+    classCount.mockResolvedValue(1)
+    transactionMock.mockRejectedValue(new Error('db down'))
+
+    const result = await assignAssignmentSetAction(validAssignInput)
+
+    expect('error' in result && result.error.code).toBe('ASSIGN_FAILED')
+    expect(revalidatePathMock).not.toHaveBeenCalled()
   })
 })
 

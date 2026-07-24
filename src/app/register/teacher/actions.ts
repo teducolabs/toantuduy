@@ -52,6 +52,7 @@ export async function registerTeacher(input: {
       await tx.teacherAccount.create({
         data: {
           userId: createdUser.id,
+          fullName: parsed.data.name,
           schoolName: parsed.data.schoolName,
           gradeTaught: parsed.data.gradeTaught,
           status: 'PENDING',

@@ -9,11 +9,13 @@ export function ClassCard({
   name,
   gradeBand,
   studentCount,
+  activeAssignmentTitle,
 }: {
   classId: string
   name: string
   gradeBand: GradeBand
   studentCount: number
+  activeAssignmentTitle: string | null
 }) {
   return (
     <Link href={`/classes/${classId}`} className="block">
@@ -25,8 +27,8 @@ export function ClassCard({
               {profiles.gradeBandLabels[gradeBand]} · {classes.studentCount(studentCount)}
             </p>
           </div>
-          <span className="rounded-brand-sm bg-muted px-2 py-1 text-xs text-muted-foreground">
-            {classes.noAssignmentPill}
+          <span className="max-w-40 shrink-0 truncate rounded-brand-sm bg-muted px-2 py-1 text-xs text-muted-foreground">
+            {activeAssignmentTitle ?? classes.noAssignmentPill}
           </span>
         </CardContent>
       </Card>
